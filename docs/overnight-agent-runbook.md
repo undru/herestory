@@ -1,60 +1,70 @@
 # Overnight agent runbook
 
-## Safety model
+## How it works
 
-The agent may create a branch, commit, push, and open a pull request. It may not
-merge, release, change Bilt settings, change secrets, or make production-data
-changes. You review and merge pull requests in the morning.
+You file issues during the day and start one agent run before bed. The agent
+takes `agent:ready` issues one at a time, implements each, and commits it
+directly to `main`. Every commit is gated twice:
 
-This gives Bilt a stable branch to sync: only merged changes reach `main`.
+1. The agent runs lint, CSS lint, the format check, and the web export locally
+   before pushing.
+2. **Verify app** runs the same checks on `main`. **Deploy web preview** starts
+   only after Verify app passes, and publishes <https://undru.github.io/herestory/>.
 
-## One-time GitHub setup
+If Verify app fails on `main`, the agent fixes it or reverts its own commit.
+The agent never force-pushes, merges PRs, changes settings or secrets, or
+discards work it did not make.
 
-1. In the repository, create these labels:
-   - `agent:ready` — safe and fully specified work the agent can pick up.
-   - `agent:review` — a pull request is ready for your review.
-   - `agent:blocked` — an agent needs a decision or missing access.
-2. Create a GitHub Project with columns: **Backlog**, **Ready**, **In progress**,
-   **Needs review**, **Blocked**, and **Done**.
-3. Use the **Agent task** issue template for every task intended for the agent.
-   Do not add `agent:ready` until its acceptance criteria and verification steps
-   are complete.
-4. Protect `main`: require pull requests and the **Verify app** status check;
-   do not allow direct pushes. If you use Bilt two-way sync, verify that Bilt
-   writes through pull requests or to a non-protected integration branch.
-5. In **Settings → Pages**, choose **GitHub Actions** as the publishing source.
-   After the first successful deployment, the shareable web preview will be
-   `https://undru.github.io/herestory/`.
+## One-time setup (done)
 
-## Nightly routine
+- Labels: `agent:ready`, `agent:in-progress`, `agent:blocked`.
+- The repository is public and GitHub Pages publishes from GitHub Actions.
+- `CLAUDE.md` loads `AGENTS.md` for Claude Code, `.claude/commands/work-issues.md`
+  provides the `/work-issues` command, and `.claude/settings.json` allows the
+  commands a run needs so it does not stop for permission prompts.
 
-1. Add at most three independent, well-defined issues with `agent:ready`.
-2. Start your Codex automation or orchestration runner with this repository as
-   its workspace and `WORKFLOW.md` as its task policy.
-3. Keep it to one concurrent task. The runner should select a ready issue, then
-   follow `AGENTS.md`.
-4. In the morning, review each pull request, run the app if needed, and merge
-   only the changes you approve. GitHub then verifies, builds, and deploys the
-   web preview automatically. The **Deploy web preview** workflow shows the
-   deployed URL; share that link after it succeeds.
-5. If **Verify app** or **Deploy web preview** fails, do not share the preview.
-   Reopen or create an `agent:ready` bug issue with the workflow error, then let
-   the agent fix it in a new pull request.
+## Writing an issue
 
-## Prompt for an agent automation
+1. Use the **Agent task** template. Keep each issue small enough for one commit.
+2. Fill in the desired outcome, acceptance criteria, priority, and verification.
+   Use **Depends on** when the issue needs another issue to be finished first.
+3. Add the `agent:ready` label only once the issue is complete. The agent skips
+   issues without it.
+
+## Starting a run
+
+From the repository root, with a clean working tree on `main`:
+
+```sh
+claude --permission-mode acceptEdits "/work-issues"
+```
+
+To work on one issue only: `claude --permission-mode acceptEdits "/work-issues 12"`.
+Keep the machine awake while it runs (for example `caffeinate -i` on macOS).
+
+For another coding agent, point it at this repository and use this prompt:
 
 ```text
-Read AGENTS.md and WORKFLOW.md. Process up to three independent GitHub issues
-labelled agent:ready, one at a time, in priority order. For each, create a branch,
-implement only its acceptance criteria, run the required validation including
-`npm run export:web`, review your diff, commit, push, and open a PR. Fix any
-build failure before opening a PR. Do not merge, deploy, alter secrets, change
-Bilt/GitHub settings, or continue past an ambiguous or blocked task. Mark blocked
-tasks clearly and then proceed only to an independent ready task.
+Read AGENTS.md and WORKFLOW.md, then follow WORKFLOW.md exactly: process the
+GitHub issues labelled agent:ready one at a time in priority order, commit each
+finished issue directly to main, push, wait for the Verify app workflow to pass,
+and comment on the issue. Block unclear issues instead of guessing. Never
+force-push, change settings or secrets, or discard changes you did not make.
 ```
+
+## In the morning
+
+1. Read the run summary, then check closed issues for the agent's comments and
+   `git log` for what landed.
+2. Open <https://undru.github.io/herestory/> once **Deploy web preview** has
+   passed.
+3. Answer the questions on `agent:blocked` issues. Relabel them `agent:ready`
+   when they can be retried.
+4. If a shipped change is wrong, reopen the issue with what is wrong and label it
+   `agent:ready`, or ask for a `git revert` of the commit.
 
 ## Bilt sync rule
 
-Use GitHub's default branch as the code Bilt sees. Do local or agent work in
-branches and merge it only after review. Avoid editing the same feature in Bilt
-while an agent has an open PR for it; otherwise the merge can conflict.
+Bilt reads and writes `main`. Avoid editing a feature in Bilt while the agent is
+working on an issue that touches it; the agent rebases before every push and
+blocks the issue if the conflict is not obvious to resolve.

@@ -1,0 +1,46 @@
+{
+  "permissions": {
+    "allow": [
+      "Edit",
+      "Write",
+      "Bash(npm ci)",
+      "Bash(npm run lint)",
+      "Bash(npm run lint:css)",
+      "Bash(npm run format:check)",
+      "Bash(npm run export:web)",
+      "Bash(git status:*)",
+      "Bash(git diff:*)",
+      "Bash(git log:*)",
+      "Bash(git show:*)",
+      "Bash(git rev-parse:*)",
+      "Bash(git fetch:*)",
+      "Bash(git add:*)",
+      "Bash(git commit:*)",
+      "Bash(git pull --rebase origin main)",
+      "Bash(git rebase --abort)",
+      "Bash(git rebase --continue)",
+      "Bash(git revert:*)",
+      "Bash(git restore:*)",
+      "Bash(git push origin main)",
+      "Bash(gh issue list:*)",
+      "Bash(gh issue view:*)",
+      "Bash(gh issue comment:*)",
+      "Bash(gh issue edit:*)",
+      "Bash(gh issue close:*)",
+      "Bash(gh run list:*)",
+      "Bash(gh run view:*)",
+      "Bash(gh run watch:*)"
+    ],
+    "deny": [
+      "Bash(git push --force:*)",
+      "Bash(git push -f:*)",
+      "Bash(git reset --hard:*)",
+      "Bash(git clean:*)",
+      "Bash(gh issue delete:*)",
+      "Bash(gh pr merge:*)",
+      "Bash(gh repo:*)",
+      "Bash(gh secret:*)",
+      "Bash(gh api:*)"
+    ]
+  }
+}

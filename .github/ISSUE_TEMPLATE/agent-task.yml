@@ -1,8 +1,7 @@
 name: Agent task
 description: A small, testable task that an overnight coding agent may implement.
 title: '[Task]: '
-labels:
-  - agent:ready
+# Add the agent:ready label yourself once every field below is complete.
 body:
   - type: markdown
     attributes:
@@ -32,6 +31,12 @@ body:
     attributes:
       label: Context and constraints
       description: Include designs, relevant screens/files, API details, and what must not change.
+  - type: input
+    id: depends-on
+    attributes:
+      label: Depends on
+      description: Issues that must be closed before the agent starts this one.
+      placeholder: '#12, #15'
   - type: dropdown
     id: priority
     attributes:
