@@ -10,7 +10,6 @@ import {
 import {
   DEEPENING_QUESTIONS,
   MAX_FEELINGS,
-  type LifeAreaId,
   type Mentor,
   type MentorChallenge,
   type MomentCardData,
@@ -34,7 +33,6 @@ import {
 export type MenteeStep =
   | 'welcome'
   | 'feeling'
-  | 'lifeArea'
   | 'context'
   | 'conversationIntro'
   | 'deepening'
@@ -72,7 +70,6 @@ export const EXTRA_STEPS: MenteeStep[] = [
 const PROGRESS_ORDER: MenteeStep[] = [
   'welcome',
   'feeling',
-  'lifeArea',
   'context',
   'conversationIntro',
   'deepening',
@@ -94,14 +91,12 @@ export type MentorStage =
   | 'declined';
 
 /** Where the back arrow leads. Deepening questions step back one at a time first. */
-function previousStep(step: MenteeStep, lifeArea: LifeAreaId | null): MenteeStep | null {
+function previousStep(step: MenteeStep): MenteeStep | null {
   switch (step) {
-    case 'lifeArea':
-      return 'feeling';
     case 'context':
-      return 'lifeArea';
+      return 'feeling';
     case 'conversationIntro':
-      return lifeArea === 'personal' ? 'lifeArea' : 'context';
+      return 'context';
     case 'deepening':
       return 'conversationIntro';
     case 'moment':
@@ -137,7 +132,6 @@ interface MomentumState {
   step: MenteeStep;
   progress: number;
   feelings: string[];
-  lifeArea: LifeAreaId | null;
   workLife: string;
   deepeningIndex: number;
   answers: Record<string, string>;
@@ -168,8 +162,6 @@ interface MomentumActions {
   startJourney: () => void;
   toggleFeeling: (id: string) => void;
   continueFromFeeling: () => void;
-  chooseLifeArea: (id: LifeAreaId) => void;
-  continueFromLifeArea: () => void;
   setWorkLife: (value: string) => void;
   continueFromWorkLife: () => void;
   skipWorkLife: () => void;
@@ -225,7 +217,6 @@ const MomentumContext = createContext<MomentumContextValue | null>(null);
 export function MomentumProvider({ children }: PropsWithChildren) {
   const [step, setStep] = useState<MenteeStep>('welcome');
   const [feelings, setFeelings] = useState<string[]>([]);
-  const [lifeArea, setLifeArea] = useState<LifeAreaId | null>(null);
   const [workLife, setWorkLife] = useState('');
   const [deepeningIndex, setDeepeningIndex] = useState(0);
   const [answers, setAnswers] = useState<Record<string, string>>({});
@@ -262,16 +253,8 @@ export function MomentumProvider({ children }: PropsWithChildren) {
   }, []);
 
   const continueFromFeeling = useCallback(() => {
-    setStep('lifeArea');
+    setStep('context');
   }, []);
-
-  const chooseLifeArea = useCallback((id: LifeAreaId) => {
-    setLifeArea(id);
-  }, []);
-
-  const continueFromLifeArea = useCallback(() => {
-    setStep(lifeArea === 'personal' ? 'conversationIntro' : 'context');
-  }, [lifeArea]);
 
   const continueFromWorkLife = useCallback(() => {
     setStep('conversationIntro');
@@ -305,7 +288,6 @@ export function MomentumProvider({ children }: PropsWithChildren) {
       try {
         const card = await generateMomentCard({
           feelings,
-          lifeArea,
           workLife,
           answers: currentAnswers,
         });
@@ -317,7 +299,7 @@ export function MomentumProvider({ children }: PropsWithChildren) {
         setIsGeneratingCard(false);
       }
     },
-    [feelings, lifeArea, workLife],
+    [feelings, workLife],
   );
 
   const advanceDeepening = useCallback(async () => {
@@ -444,9 +426,9 @@ export function MomentumProvider({ children }: PropsWithChildren) {
       setDeepeningIndex(deepeningIndex - 1);
       return;
     }
-    const previous = previousStep(step, lifeArea);
+    const previous = previousStep(step);
     if (previous) setStep(previous);
-  }, [deepeningIndex, lifeArea, step]);
+  }, [deepeningIndex, step]);
 
   const loadChallenge = useCallback(async () => {
     setIsLoadingChallenge(true);
@@ -517,7 +499,6 @@ export function MomentumProvider({ children }: PropsWithChildren) {
   const resetAll = useCallback(() => {
     setStep('welcome');
     setFeelings([]);
-    setLifeArea(null);
     setWorkLife('');
     setDeepeningIndex(0);
     setAnswers({});
@@ -556,8 +537,6 @@ export function MomentumProvider({ children }: PropsWithChildren) {
       startJourney,
       toggleFeeling,
       continueFromFeeling,
-      chooseLifeArea,
-      continueFromLifeArea,
       setWorkLife,
       continueFromWorkLife,
       skipWorkLife,
@@ -608,13 +587,11 @@ export function MomentumProvider({ children }: PropsWithChildren) {
       appendAnswer,
       askMentor,
       chooseAvailability,
-      chooseLifeArea,
       commitMomentCard,
       confirmBooking,
       confirmMomentCard,
       confirmRedaction,
       continueFromFeeling,
-      continueFromLifeArea,
       continueFromWorkLife,
       dismissChallenge,
       goBack,
@@ -656,7 +633,6 @@ export function MomentumProvider({ children }: PropsWithChildren) {
       step,
       progress,
       feelings,
-      lifeArea,
       workLife,
       deepeningIndex,
       answers,
@@ -694,7 +670,6 @@ export function MomentumProvider({ children }: PropsWithChildren) {
       isMatching,
       isSending,
       isSendingReply,
-      lifeArea,
       matches,
       mentorStage,
       momentCard,

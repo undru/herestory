@@ -43,7 +43,7 @@ function QuestionView({ question, index }: QuestionViewProps) {
       transitionKey={`deepening-${question.id}`}
       progress={progress}
       onBack={actions.goBack}
-      eyebrow={`4 of 7 · question ${index + 1} of ${DEEPENING_QUESTIONS.length}`}
+      eyebrow={`3 of 6 · question ${index + 1} of ${DEEPENING_QUESTIONS.length}`}
       headline={question.headline}
       footer={
         <ActionButton

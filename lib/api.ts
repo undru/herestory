@@ -11,7 +11,6 @@ import {
   MENTOR_REPLY_MOCK_TRANSCRIPT,
   MENTORS,
   MOMENT_CARD_DRAFT,
-  type LifeAreaId,
   type Mentor,
   type MentorChallenge,
   type MomentCardData,
@@ -75,13 +74,12 @@ export async function stopRecording(session: RecordingSession): Promise<Recordin
 
 export interface MomentInput {
   feelings: string[];
-  lifeArea: LifeAreaId | null;
   /** A few lines about her work life, or empty if she skipped it. */
   workLife: string;
   answers: Record<string, string>;
 }
 
-/** Step 5: turns her answers into the moment card. */
+/** Step 4: turns her answers into the moment card. */
 export async function generateMomentCard(_input: MomentInput): Promise<MomentCardData> {
   await wait();
   return {
@@ -91,7 +89,7 @@ export async function generateMomentCard(_input: MomentInput): Promise<MomentCar
   };
 }
 
-/** Step 5: persists her edits to the moment card. */
+/** Step 4: persists her edits to the moment card. */
 export async function saveMomentCard(card: MomentCardData): Promise<MomentCardData> {
   await wait();
   return card;
@@ -104,7 +102,7 @@ export interface MatchInput {
   destination: string;
 }
 
-/** Matching: returns the three mentors shown in step 7. */
+/** Matching: returns the three mentors shown in step 6. */
 export async function findMatches(_input: MatchInput): Promise<Mentor[]> {
   await wait();
   return MENTORS;

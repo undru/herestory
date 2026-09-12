@@ -14,7 +14,7 @@ export function ContextStep() {
       transitionKey="context"
       progress={progress}
       onBack={actions.goBack}
-      eyebrow="3 of 7"
+      eyebrow="2 of 6"
       headline="Give me a sense of your work life."
       intro="A few lines is enough. This stays private."
       footer={

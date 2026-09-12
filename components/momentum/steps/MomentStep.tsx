@@ -57,7 +57,7 @@ export function MomentStep() {
       transitionKey="moment"
       progress={progress}
       onBack={actions.goBack}
-      eyebrow="5 of 7"
+      eyebrow="4 of 6"
       headline="Here's what I heard."
       footer={
         <View>

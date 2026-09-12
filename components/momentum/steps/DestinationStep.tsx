@@ -16,7 +16,7 @@ export function DestinationStep() {
       transitionKey="destination"
       progress={progress}
       onBack={actions.goBack}
-      eyebrow="6 of 7"
+      eyebrow="5 of 6"
       headline="Where do you want to go from here?"
       footer={
         <ActionButton

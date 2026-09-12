@@ -12,7 +12,7 @@ export function MatchesStep() {
       transitionKey="matches"
       progress={progress}
       onBack={actions.goBack}
-      eyebrow="7 of 7"
+      eyebrow="6 of 6"
       headline="Three women who have been where you are."
     >
       <View className="gap-2.5">

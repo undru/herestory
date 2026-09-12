@@ -32,7 +32,7 @@ export function FeelingStep() {
     <StepShell
       transitionKey="feeling"
       progress={progress}
-      eyebrow="1 of 7"
+      eyebrow="1 of 6"
       headline={FEELING_HEADLINE}
       intro={FEELING_INTRO}
       footer={

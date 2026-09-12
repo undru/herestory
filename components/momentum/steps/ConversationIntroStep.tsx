@@ -17,7 +17,7 @@ export function ConversationIntroStep() {
       transitionKey="conversationIntro"
       progress={progress}
       onBack={actions.goBack}
-      eyebrow="4 of 7"
+      eyebrow="3 of 6"
       headline="Now, let's actually talk."
       intro="A short voice conversation — think of it as a coffee chat, not an interview. We'll ask a few real questions to understand what you're looking for and what you have to offer."
       footer={<ActionButton label="Start the conversation" onPress={actions.startConversation} />}

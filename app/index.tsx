@@ -17,7 +17,6 @@ import { DestinationStep } from '@/components/momentum/steps/DestinationStep';
 import { ExtrasStep } from '@/components/momentum/steps/ExtrasStep';
 import { FeelingStep } from '@/components/momentum/steps/FeelingStep';
 import { FinishStep, HelpAnswerStep, HelpOfferStep } from '@/components/momentum/steps/HelpSteps';
-import { LifeAreaStep } from '@/components/momentum/steps/LifeAreaStep';
 import { MatchesStep } from '@/components/momentum/steps/MatchesStep';
 import { MatchingStep } from '@/components/momentum/steps/MatchingStep';
 import { MomentStep } from '@/components/momentum/steps/MomentStep';
@@ -32,8 +31,6 @@ function StepScreen({ step }: { step: MenteeStep }) {
       return <WelcomeStep />;
     case 'feeling':
       return <FeelingStep />;
-    case 'lifeArea':
-      return <LifeAreaStep />;
     case 'context':
       return <ContextStep />;
     case 'conversationIntro':
@@ -81,7 +78,7 @@ function StepScreen({ step }: { step: MenteeStep }) {
   }
 }
 
-/** The mentee flow. One question per screen, seven steps, then the handover and one step ahead. */
+/** The mentee flow. One question per screen, six steps, then the handover and one step ahead. */
 export default function MenteeFlowScreen() {
   const { step, actions } = useMomentum();
 

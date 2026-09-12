@@ -60,25 +60,9 @@ export const FEELING_OPTIONS: FeelingOption[] = [
 
 /* ---------------------------------------------------------------- step 2 */
 
-export type LifeAreaId = 'professional' | 'personal' | 'both';
-
-export interface LifeAreaOption {
-  id: LifeAreaId;
-  title: string;
-  subtitle: string;
-}
-
-export const LIFE_AREA_OPTIONS: LifeAreaOption[] = [
-  { id: 'professional', title: 'Work', subtitle: 'Your career, your role, what comes next' },
-  { id: 'personal', title: 'Life', subtitle: 'Health, family, the ground under you' },
-  { id: 'both', title: 'Both, tangled together', subtitle: 'Usually the honest answer' },
-];
-
-/* ---------------------------------------------------------------- step 3 */
-
 export const WORK_LIFE_PLACEHOLDER = 'Your role, how long, what you were known for';
 
-/* ---------------------------------------------------------------- step 4 */
+/* ---------------------------------------------------------------- step 3 */
 
 export interface DeepeningQuestion {
   id: string;
@@ -126,7 +110,7 @@ export const DEEPENING_QUESTIONS: DeepeningQuestion[] = [
   },
 ];
 
-/* ---------------------------------------------------------------- step 5 */
+/* ---------------------------------------------------------------- step 4 */
 
 export interface MomentCardData {
   quote: string;
@@ -143,7 +127,7 @@ export const MOMENT_CARD_DRAFT: MomentCardData = {
   whatYouBring: ['Curiosity', 'Resilience', 'Eight years of it'],
 };
 
-/* ---------------------------------------------------------------- step 6 */
+/* ---------------------------------------------------------------- step 5 */
 
 export const DESTINATION_PLACEHOLDER = 'In a year from now, I want to…';
 
@@ -162,7 +146,7 @@ export const MATCHING_LINES: string[] = [
   'Found three.',
 ];
 
-/* ---------------------------------------------------------------- step 7 */
+/* ---------------------------------------------------------------- step 6 */
 
 export interface Mentor {
   id: string;
