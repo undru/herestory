@@ -47,17 +47,28 @@ For another coding agent, point it at this repository and use this prompt:
 ```text
 Read AGENTS.md and WORKFLOW.md, then follow WORKFLOW.md exactly: process the
 GitHub issues labelled agent:ready one at a time in priority order, commit each
-finished issue directly to main, push, wait for the Verify app workflow to pass,
-and comment on the issue. Block unclear issues instead of guessing. Never
+finished issue directly to main, push, wait for the Verify app and Deploy web
+preview workflows to pass, and comment on the issue with the commit SHA and the
+link https://undru.github.io/herestory/ . Block unclear issues instead of guessing. Never
 force-push, change settings or secrets, or discard changes you did not make.
 ```
+
+## Seeing the changes
+
+Every commit that passes **Verify app** is built as a web version of the app and
+published to <https://undru.github.io/herestory/>. Open it in any browser,
+including on your phone; there is nothing to install.
+
+The agent waits for that deploy to finish before it posts the link, in the issue
+comment and again at the end of the run. The site always shows the current
+`main`, so after a run with several issues it shows all of them together; the
+per-issue commit SHA is in each issue comment.
 
 ## In the morning
 
 1. Read the run summary, then check closed issues for the agent's comments and
    `git log` for what landed.
-2. Open <https://undru.github.io/herestory/> once **Deploy web preview** has
-   passed.
+2. Open <https://undru.github.io/herestory/>.
 3. Answer the questions on `agent:blocked` issues. Relabel them `agent:ready`
    when they can be retried.
 4. If a shipped change is wrong, reopen the issue with what is wrong and label it

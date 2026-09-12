@@ -63,9 +63,18 @@ is still open. If nothing is left, end the run.
 5. If **Verify app** fails on `main`, fix forward with another commit for the
    same issue. If it still fails after two fix attempts, `git revert` the issue's
    commits, push, block the issue, and end the run.
-6. When it passes, comment on the issue: what changed, how it was verified
-   (checks run, anything tested manually), the commit SHA, and the preview URL.
-   Remove `agent:in-progress`. Close the issue if the commit did not close it.
+6. When it passes, wait for the web version of the app to publish:
+   ```sh
+   gh run list --workflow "Deploy web preview" --json databaseId,headSha \
+     --jq "[.[] | select(.headSha==\"$(git rev-parse HEAD)\")][0].databaseId"
+   gh run watch <id> --exit-status
+   ```
+   A failed deploy is handled like a failed **Verify app** (step 5). Do not give
+   out the link until the deploy has succeeded.
+7. Comment on the issue: what changed, how it was verified (checks run, anything
+   tested manually), the commit SHA, and the live link
+   <https://undru.github.io/herestory/>. Remove `agent:in-progress`. Close the
+   issue if the commit did not close it.
 
 Then return to section 2, until the queue is empty or `max_tasks_per_run` issues
 have been shipped.
@@ -80,6 +89,12 @@ only your own uncommitted changes for that issue, and move on to the next issue.
 
 ## 6. End of run
 
-Print a short summary: issues shipped (with commit SHAs), issues blocked (with
-the reason), and whether the last **Verify app** and **Deploy web preview** runs
-on `main` passed.
+Print a short summary:
+
+- issues shipped, each with its commit SHA and a one-line description
+- issues blocked, with the reason
+- whether the last **Verify app** and **Deploy web preview** runs on `main`
+  passed
+- the link to the deployed web version, <https://undru.github.io/herestory/>,
+  last on its own line so it is easy to click. The site always shows the current
+  `main`, so it includes every issue shipped in the run.

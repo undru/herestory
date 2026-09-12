@@ -46,9 +46,10 @@ you did.
 ## Definition of done
 
 An issue is done only when its acceptance criteria are met, the required checks
-pass locally, the commit is on `origin/main`, **Verify app** passed for that
-commit, and the issue has a comment explaining what changed, how it was tested,
-and any follow-up needed.
+pass locally, the commit is on `origin/main`, **Verify app** and **Deploy web
+preview** passed for that commit, and the issue has a comment explaining what
+changed, how it was tested, and any follow-up needed, ending with the link to
+the deployed web version.
 
 ## Project commands
 
