@@ -9,7 +9,7 @@ import {
 } from 'react-native-reanimated';
 import Svg, { Circle } from 'react-native-svg';
 
-import { HAIRLINE, TERRACOTTA } from '@/lib/theme';
+import { usePalette } from '@/lib/theme';
 
 const AnimatedCircle = createAnimatedComponent(Circle);
 
@@ -33,6 +33,7 @@ export function CountdownRing({
   active,
   children,
 }: CountdownRingProps) {
+  const palette = usePalette();
   const radius = (size - strokeWidth) / 2;
   const circumference = 2 * Math.PI * radius;
   const elapsed = useSharedValue(0);
@@ -61,7 +62,7 @@ export function CountdownRing({
           cx={size / 2}
           cy={size / 2}
           r={radius}
-          stroke={HAIRLINE}
+          stroke={palette.hairline}
           strokeWidth={strokeWidth}
           fill="none"
         />
@@ -69,7 +70,7 @@ export function CountdownRing({
           cx={size / 2}
           cy={size / 2}
           r={radius}
-          stroke={TERRACOTTA}
+          stroke={palette.plum}
           strokeWidth={strokeWidth}
           strokeLinecap="round"
           fill="none"

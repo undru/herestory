@@ -17,36 +17,52 @@ interface QuestionViewProps {
 
 function QuestionView({ question, index }: QuestionViewProps) {
   const { answers, progress, actions } = useMomentum();
-  const [typing, setTyping] = useState(false);
   const answer = answers[question.id] ?? '';
+  const hasAnswer = answer.trim().length > 0;
+  // Coming back to add more: show what she already said instead of hiding it behind the mic.
+  const [returning] = useState(hasAnswer);
+  const [typing, setTyping] = useState(hasAnswer);
 
   const recorder = useMockRecorder(question.id, {
+    continuing: hasAnswer,
     onResult: (result) => {
-      actions.setAnswer(question.id, result.transcript);
+      actions.appendAnswer(question.id, result.transcript);
       setTyping(true);
     },
   });
 
-  const isLast = index === DEEPENING_QUESTIONS.length - 1;
+  const fieldLabel =
+    recorder.state === 'done'
+      ? 'What I heard'
+      : returning
+        ? 'Your answer so far'
+        : 'In your own words';
 
   return (
     <StepShell
       transitionKey={`deepening-${question.id}`}
       progress={progress}
       onBack={actions.goBack}
-      eyebrow={`Question ${index + 1} of ${DEEPENING_QUESTIONS.length}`}
+      eyebrow={`4 of 7 · question ${index + 1} of ${DEEPENING_QUESTIONS.length}`}
       headline={question.headline}
       footer={
         <ActionButton
-          label={isLast ? 'That is everything' : 'Continue'}
-          disabled={answer.trim().length === 0 || recorder.state === 'transcribing'}
+          label="Continue"
+          disabled={!hasAnswer || recorder.state === 'transcribing'}
           onPress={() => void actions.advanceDeepening()}
         />
       }
     >
       <View className="items-center">
-        <MicButton state={recorder.state} seconds={recorder.seconds} onPress={recorder.toggle} />
-        <Caption className="mt-3 max-w-[280px] text-center">{question.hint}</Caption>
+        <MicButton
+          state={recorder.state}
+          seconds={recorder.seconds}
+          onPress={recorder.toggle}
+          idleLabel={hasAnswer ? 'Tap to add more' : 'Tap to speak'}
+        />
+        {returning ? null : (
+          <Caption className="mt-3 max-w-[280px] text-center">{question.hint}</Caption>
+        )}
 
         {typing ? null : (
           <TextLink className="mt-6" label="I'd rather type" onPress={() => setTyping(true)} />
@@ -56,14 +72,18 @@ function QuestionView({ question, index }: QuestionViewProps) {
       {typing ? (
         <View className="mt-8">
           <TextField
-            label={recorder.state === 'done' ? 'What I heard' : 'In your own words'}
+            label={fieldLabel}
             textarea
-            autoFocus={recorder.state !== 'done'}
+            autoFocus={!returning && recorder.state !== 'done'}
             placeholder="Start anywhere."
             value={answer}
             onChangeText={(value) => actions.setAnswer(question.id, value)}
           />
-          <Caption className="mt-3">Change anything that is not quite it.</Caption>
+          <Caption className="mt-3">
+            {returning
+              ? 'Add to it by typing or speaking again. Nothing you said is lost.'
+              : 'Change anything that is not quite it.'}
+          </Caption>
         </View>
       ) : null}
     </StepShell>

@@ -12,6 +12,8 @@ export type RecorderState = 'idle' | 'recording' | 'transcribing' | 'done';
 interface UseMockRecorderOptions {
   /** Auto-stops once the timer reaches this many seconds. */
   maxSeconds?: number;
+  /** True when this recording adds to an answer she already gave. */
+  continuing?: boolean;
   onResult?: (result: RecordingResult) => void;
 }
 
@@ -21,17 +23,22 @@ interface UseMockRecorderOptions {
  * means touching those two functions, not this hook.
  */
 export function useMockRecorder(promptId: string, options: UseMockRecorderOptions = {}) {
-  const { maxSeconds, onResult } = options;
+  const { maxSeconds, continuing = false, onResult } = options;
   const [state, setState] = useState<RecorderState>('idle');
   const [seconds, setSeconds] = useState(0);
   const sessionRef = useRef<RecordingSession | null>(null);
   const intervalRef = useRef<ReturnType<typeof setInterval> | null>(null);
   const busyRef = useRef(false);
   const onResultRef = useRef(onResult);
+  const continuingRef = useRef(continuing);
 
   useEffect(() => {
     onResultRef.current = onResult;
   }, [onResult]);
+
+  useEffect(() => {
+    continuingRef.current = continuing;
+  }, [continuing]);
 
   const clearTimer = useCallback(() => {
     if (intervalRef.current !== null) {
@@ -62,7 +69,7 @@ export function useMockRecorder(promptId: string, options: UseMockRecorderOption
     if (busyRef.current || sessionRef.current) return;
     busyRef.current = true;
     try {
-      const session = await startRecording(promptId);
+      const session = await startRecording(promptId, { continuing: continuingRef.current });
       sessionRef.current = session;
       setSeconds(0);
       setState('recording');

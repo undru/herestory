@@ -6,14 +6,11 @@
  * the signatures and return types are meant to stay exactly as they are.
  */
 import {
-  ANONYMIZED_PREVIEW,
   DEEPENING_QUESTIONS,
   MENTOR_CHALLENGE,
   MENTOR_REPLY_MOCK_TRANSCRIPT,
   MENTORS,
   MOMENT_CARD_DRAFT,
-  PARSED_CONTEXT_CHIPS,
-  type AnonymizedCard,
   type LifeAreaId,
   type Mentor,
   type MentorChallenge,
@@ -27,32 +24,14 @@ const wait = (ms: number = FAKE_LATENCY_MS) =>
     setTimeout(resolve, ms);
   });
 
-/* ------------------------------------------------------- professional context */
-
-export interface ProfessionalContextInput {
-  /** Pasted CV or free-text description of her work life. */
-  description: string;
-  /** Filename only — the mock never parses the file. */
-  uploadedFileName: string | null;
-  linkedInUrl: string;
-}
-
-/** Step 3: returns the chips shown as "Did I get that right?". */
-export async function parseProfessionalContext(input: ProfessionalContextInput): Promise<string[]> {
-  await wait();
-  const hasAnything =
-    input.description.trim().length > 0 ||
-    input.uploadedFileName !== null ||
-    input.linkedInUrl.trim().length > 0;
-  return hasAnything ? PARSED_CONTEXT_CHIPS.slice(0, 5) : [];
-}
-
 /* ------------------------------------------------------------------ recording */
 
 export interface RecordingSession {
   id: string;
   /** Deepening question id, or 'mentor-reply' for the mentor voice note. */
   promptId: string;
+  /** True when she is adding to an answer she already gave. */
+  continuing: boolean;
   startedAt: number;
 }
 
@@ -63,11 +42,15 @@ export interface RecordingResult {
 }
 
 /** Begins a (mocked) voice capture. Wire this to a real voice API later. */
-export async function startRecording(promptId: string): Promise<RecordingSession> {
+export async function startRecording(
+  promptId: string,
+  options: { continuing?: boolean } = {},
+): Promise<RecordingSession> {
   await wait(120);
   return {
     id: `rec-${promptId}-${Date.now()}`,
     promptId,
+    continuing: options.continuing ?? false,
     startedAt: Date.now(),
   };
 }
@@ -76,7 +59,11 @@ export async function startRecording(promptId: string): Promise<RecordingSession
 export async function stopRecording(session: RecordingSession): Promise<RecordingResult> {
   await wait();
   const question = DEEPENING_QUESTIONS.find((item) => item.id === session.promptId);
-  const transcript = question?.mockTranscript ?? MENTOR_REPLY_MOCK_TRANSCRIPT;
+  const transcript = question
+    ? session.continuing
+      ? question.mockFollowUp
+      : question.mockTranscript
+    : MENTOR_REPLY_MOCK_TRANSCRIPT;
   return {
     session,
     durationSeconds: Math.max(1, Math.round((Date.now() - session.startedAt) / 1000)),
@@ -88,9 +75,9 @@ export async function stopRecording(session: RecordingSession): Promise<Recordin
 
 export interface MomentInput {
   feelings: string[];
-  feelingNote: string;
   lifeArea: LifeAreaId | null;
-  contextChips: string[];
+  /** A few lines about her work life, or empty if she skipped it. */
+  workLife: string;
   answers: Record<string, string>;
 }
 
@@ -117,7 +104,7 @@ export interface MatchInput {
   destination: string;
 }
 
-/** Step 7: returns the three mentors shown in step 8. */
+/** Matching: returns the three mentors shown in step 7. */
 export async function findMatches(_input: MatchInput): Promise<Mentor[]> {
   await wait();
   return MENTORS;
@@ -125,25 +112,25 @@ export async function findMatches(_input: MatchInput): Promise<Mentor[]> {
 
 /* ------------------------------------------------------------------- request */
 
-/** Step 8: the anonymized card a mentor will receive. */
-export async function buildAnonymizedCard(card: MomentCardData): Promise<AnonymizedCard> {
-  await wait(300);
-  return { ...ANONYMIZED_PREVIEW, quote: card.quote };
-}
-
 export interface MentorRequest {
   requestId: string;
   mentorId: string;
   sentAt: number;
 }
 
-/** Step 8: sends the 30 minute ask. */
+/** "Before it goes": sends the redacted message to the chosen mentor. */
 export async function sendMentorRequest(
   mentorId: string,
-  _card: AnonymizedCard,
+  _message: string,
 ): Promise<MentorRequest> {
   await wait();
   return { requestId: `req-${mentorId}-${Date.now()}`, mentorId, sentAt: Date.now() };
+}
+
+/** "Tell her the one thing you know": her answer to the woman one step behind. */
+export async function sendHelpReply(text: string): Promise<{ replyId: string; text: string }> {
+  await wait();
+  return { replyId: `help-${Date.now()}`, text };
 }
 
 /* -------------------------------------------------------------- mentor inbox */

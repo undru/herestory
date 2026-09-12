@@ -28,8 +28,8 @@ export function ProgressBar({ value }: ProgressBarProps) {
   }));
 
   return (
-    <View className="bg-stone h-[2px] w-full flex-row">
-      <AnimatedView className="bg-terracotta h-full" style={fillStyle} />
+    <View className="bg-hairline h-[2px] w-full flex-row">
+      <AnimatedView className="bg-ink h-full" style={fillStyle} />
       <AnimatedView className="h-full" style={remainderStyle} />
     </View>
   );

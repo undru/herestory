@@ -8,7 +8,7 @@ import { Title } from '@/components/momentum/Type';
 import { MATCHING_LINES } from '@/data/mock';
 import { useMomentum } from '@/lib/momentum-context';
 
-const LINE_DELAY_MS = 900;
+const LINE_DELAY_MS = 700;
 
 export function MatchingStep() {
   const { progress, actions } = useMomentum();
@@ -33,7 +33,7 @@ export function MatchingStep() {
       <View className="gap-6">
         {MATCHING_LINES.map((line, index) => (
           <AnimatedView key={line} entering={FadeIn.duration(800).delay(index * LINE_DELAY_MS)}>
-            <Title className="text-ink-soft">{line}</Title>
+            <Title className="text-ink">{line}</Title>
           </AnimatedView>
         ))}
       </View>

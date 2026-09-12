@@ -1,31 +1,32 @@
 import { View } from 'react-native';
-import { useRouter } from 'expo-router';
 
-import { Body, Display } from '@/components/momentum/Type';
+import { ActionButton } from '@/components/momentum/ActionButton';
+import { Seal } from '@/components/momentum/Seal';
 import { StepShell } from '@/components/momentum/StepShell';
-import { TextLink } from '@/components/momentum/ActionButton';
-import { SENT_HEADLINE } from '@/data/mock';
+import { Body, Headline } from '@/components/momentum/Type';
 import { useMomentum } from '@/lib/momentum-context';
 
 export function SentStep() {
-  const router = useRouter();
-  const { progress, actions } = useMomentum();
-
-  const seeMentorView = () => {
-    actions.startMentorHandoff();
-    router.push('/mentor');
-  };
+  const { selectedMentor, progress, actions } = useMomentum();
+  const name = selectedMentor?.firstName ?? 'She';
 
   return (
-    <StepShell transitionKey="sent" progress={progress} centered>
-      <View className="items-center">
-        <View className="bg-terracotta h-[6px] w-[6px] rounded-full" />
-        <Display className="mt-8 text-center">{SENT_HEADLINE}</Display>
-        <Body className="mt-5 max-w-[300px] text-center">
-          She hears your card as a voice note first. You will get one back before the day is out.
-        </Body>
-        <TextLink className="mt-9" label="See what she sees" onPress={seeMentorView} />
-      </View>
+    <StepShell
+      transitionKey="sent"
+      progress={progress}
+      centered
+      footer={
+        <View className="border-hairline border-t pt-4">
+          <Body>{"While you wait, there's someone I'd like you to see."}</Body>
+          <ActionButton className="mt-3" label="Show me" onPress={actions.openHelpOffer} />
+        </View>
+      }
+    >
+      <Seal />
+      <Headline className="mt-4">{"It's with her."}</Headline>
+      <Body className="mt-3">
+        {`${name} sees your challenge, not your name. She usually answers within a day.`}
+      </Body>
     </StepShell>
   );
 }

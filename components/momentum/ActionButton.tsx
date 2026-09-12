@@ -16,7 +16,7 @@ interface ActionButtonProps {
   className?: string;
 }
 
-/** Full-width bottom action. Terracotta for primary, hairline outline for secondary. */
+/** Full-width bottom action. Ink for primary, firm outline for secondary. */
 export function ActionButton({
   label,
   onPress,
@@ -38,17 +38,17 @@ export function ActionButton({
       onPress={onPress}
       pressScale={0.99}
       className={cn(
-        'h-[54px] w-full items-center justify-center rounded-full border',
-        isPrimary ? 'border-terracotta bg-terracotta' : 'border-hairline bg-transparent',
-        isBlocked && isPrimary && 'border-stone-deep bg-stone-deep',
-        isBlocked && !isPrimary && 'border-stone',
+        'h-[52px] w-full items-center justify-center rounded-[14px] border',
+        isPrimary ? 'border-ink bg-ink' : 'border-line-firm bg-transparent',
+        isBlocked && isPrimary && 'border-hairline bg-hairline',
+        isBlocked && !isPrimary && 'border-hairline',
         className,
       )}
     >
       <Text
         style={{ fontFamily: sans.medium, letterSpacing: 0.1 }}
         className={cn(
-          'text-[16px]',
+          'text-[15px]',
           isPrimary ? 'text-paper' : 'text-ink',
           isBlocked && 'text-ink-faint',
         )}
@@ -66,7 +66,7 @@ interface TextLinkProps {
   className?: string;
 }
 
-/** Quiet inline text action, e.g. "Skip for now" or "I'd rather type". */
+/** Quiet inline text action, e.g. "Skip this" or "I'd rather type". */
 export function TextLink({ label, onPress, tone = 'accent', className }: TextLinkProps) {
   return (
     <Tappable
@@ -77,11 +77,8 @@ export function TextLink({ label, onPress, tone = 'accent', className }: TextLin
       className={cn('min-h-11 items-center justify-center px-2', className)}
     >
       <Text
-        style={{ fontFamily: sans.medium }}
-        className={cn(
-          'text-[14px] underline',
-          tone === 'accent' ? 'text-terracotta' : 'text-ink-soft',
-        )}
+        style={{ fontFamily: sans.regular }}
+        className={cn('text-[14px]', tone === 'accent' ? 'text-plum' : 'text-ink-faint')}
       >
         {label}
       </Text>

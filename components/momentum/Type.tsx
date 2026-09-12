@@ -5,13 +5,13 @@ import { cn } from '@/lib/utils';
 
 type TypeProps = TextProps & { className?: string };
 
-/** Editorial serif, largest size. Used for the moment card quote and hero lines. */
+/** Editorial serif, largest size. Used for calm, centered hero lines. */
 export function Display({ className, style, ...rest }: TypeProps) {
   return (
     <Text
       {...rest}
-      style={[{ fontFamily: serif.medium, letterSpacing: -0.6 }, style]}
-      className={cn('text-ink text-[34px] leading-[42px]', className)}
+      style={[{ fontFamily: serif.light, letterSpacing: -0.4 }, style]}
+      className={cn('text-ink text-[30px] leading-[37px]', className)}
     />
   );
 }
@@ -21,8 +21,8 @@ export function Headline({ className, style, ...rest }: TypeProps) {
   return (
     <Text
       {...rest}
-      style={[{ fontFamily: serif.medium, letterSpacing: -0.4 }, style]}
-      className={cn('text-ink text-[28px] leading-[36px]', className)}
+      style={[{ fontFamily: serif.light, letterSpacing: -0.27 }, style]}
+      className={cn('text-ink text-[27px] leading-[33px]', className)}
     />
   );
 }
@@ -31,8 +31,8 @@ export function Title({ className, style, ...rest }: TypeProps) {
   return (
     <Text
       {...rest}
-      style={[{ fontFamily: serif.medium, letterSpacing: -0.2 }, style]}
-      className={cn('text-ink text-[20px] leading-[27px]', className)}
+      style={[{ fontFamily: serif.regular, letterSpacing: -0.1 }, style]}
+      className={cn('text-ink text-[20px] leading-[26px]', className)}
     />
   );
 }
@@ -42,8 +42,8 @@ export function Quote({ className, style, ...rest }: TypeProps) {
   return (
     <Text
       {...rest}
-      style={[{ fontFamily: serif.italic, fontStyle: 'italic' }, style]}
-      className={cn('text-ink text-[23px] leading-[34px]', className)}
+      style={[{ fontFamily: serif.lightItalic, fontStyle: 'italic' }, style]}
+      className={cn('text-ink text-[18px] leading-[25px]', className)}
     />
   );
 }
@@ -53,7 +53,7 @@ export function Body({ className, style, ...rest }: TypeProps) {
     <Text
       {...rest}
       style={[{ fontFamily: sans.regular }, style]}
-      className={cn('text-ink-soft text-[15px] leading-[23px]', className)}
+      className={cn('text-ink-soft text-[14px] leading-[22px]', className)}
     />
   );
 }
@@ -63,18 +63,18 @@ export function BodyStrong({ className, style, ...rest }: TypeProps) {
     <Text
       {...rest}
       style={[{ fontFamily: sans.medium }, style]}
-      className={cn('text-ink text-[15px] leading-[23px]', className)}
+      className={cn('text-ink text-[15px] leading-[22px]', className)}
     />
   );
 }
 
-/** Small uppercase section label. */
+/** Small sentence-case label: step eyebrows and card field names. */
 export function Overline({ className, style, ...rest }: TypeProps) {
   return (
     <Text
       {...rest}
-      style={[{ fontFamily: sans.medium, letterSpacing: 1.8 }, style]}
-      className={cn('text-ink-faint text-[11px] leading-[14px] uppercase', className)}
+      style={[{ fontFamily: sans.regular, letterSpacing: 0.1 }, style]}
+      className={cn('text-ink-faint text-[12px] leading-[16px]', className)}
     />
   );
 }

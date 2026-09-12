@@ -1,3 +1,6 @@
+import { View } from 'react-native';
+
+import { PreviewReturn } from '@/components/momentum/PreviewReturn';
 import {
   AnswerStep,
   BookedStep,
@@ -5,25 +8,24 @@ import {
   ChatStep,
   ConnectedStep,
   PeopleStep,
-  RedactionStep,
   SignalStep,
-  WelcomeStep,
 } from '@/components/momentum/steps/ContinuationSteps';
 import { ContextStep } from '@/components/momentum/steps/ContextStep';
 import { DeepeningStep } from '@/components/momentum/steps/DeepeningStep';
 import { DestinationStep } from '@/components/momentum/steps/DestinationStep';
+import { ExtrasStep } from '@/components/momentum/steps/ExtrasStep';
 import { FeelingStep } from '@/components/momentum/steps/FeelingStep';
+import { FinishStep, HelpAnswerStep, HelpOfferStep } from '@/components/momentum/steps/HelpSteps';
 import { LifeAreaStep } from '@/components/momentum/steps/LifeAreaStep';
 import { MatchesStep } from '@/components/momentum/steps/MatchesStep';
 import { MatchingStep } from '@/components/momentum/steps/MatchingStep';
 import { MomentStep } from '@/components/momentum/steps/MomentStep';
+import { RedactionStep } from '@/components/momentum/steps/RedactionStep';
 import { SentStep } from '@/components/momentum/steps/SentStep';
-import { useMomentum } from '@/lib/momentum-context';
+import { WelcomeStep } from '@/components/momentum/steps/WelcomeStep';
+import { EXTRA_STEPS, useMomentum, type MenteeStep } from '@/lib/momentum-context';
 
-/** The mentee flow. One question per screen, eight steps, then the handover. */
-export default function MenteeFlowScreen() {
-  const { step } = useMomentum();
-
+function StepScreen({ step }: { step: MenteeStep }) {
   switch (step) {
     case 'welcome':
       return <WelcomeStep />;
@@ -47,6 +49,14 @@ export default function MenteeFlowScreen() {
       return <RedactionStep />;
     case 'sent':
       return <SentStep />;
+    case 'helpOffer':
+      return <HelpOfferStep />;
+    case 'helpAnswer':
+      return <HelpAnswerStep />;
+    case 'finish':
+      return <FinishStep />;
+    case 'extras':
+      return <ExtrasStep />;
     case 'signal':
       return <SignalStep />;
     case 'answer':
@@ -66,4 +76,16 @@ export default function MenteeFlowScreen() {
       throw new Error(`Unhandled mentee step: ${String(exhaustiveCheck)}`);
     }
   }
+}
+
+/** The mentee flow. One question per screen, seven steps, then the handover and one step ahead. */
+export default function MenteeFlowScreen() {
+  const { step, actions } = useMomentum();
+
+  return (
+    <View className="flex-1">
+      <StepScreen step={step} />
+      {EXTRA_STEPS.includes(step) ? <PreviewReturn onPress={actions.openExtras} /> : null}
+    </View>
+  );
 }

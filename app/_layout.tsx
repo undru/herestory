@@ -10,11 +10,10 @@ import {
   useFonts,
 } from '@expo-google-fonts/inter';
 import {
-  Lora_400Regular,
-  Lora_400Regular_Italic,
-  Lora_500Medium,
-  Lora_600SemiBold,
-} from '@expo-google-fonts/lora';
+  Newsreader_300Light,
+  Newsreader_300Light_Italic,
+  Newsreader_400Regular,
+} from '@expo-google-fonts/newsreader';
 import Constants, { ExecutionEnvironment } from 'expo-constants';
 import { Platform, View } from 'react-native';
 import { useEffect } from 'react';
@@ -34,7 +33,7 @@ import { registerServiceWorker } from '@/lib/registerServiceWorker';
 import { reportErrorToParent } from '@/lib/reportPreviewError';
 import { InstallPrompt } from '@/components/InstallPrompt';
 import { MomentumProvider } from '@/lib/momentum-context';
-import { PAPER } from '@/lib/theme';
+import { usePalette } from '@/lib/theme';
 
 /**
  * Custom ErrorBoundary that reports React render errors to the parent window (Bilt preview iframe)
@@ -52,21 +51,21 @@ function ErrorBoundary({ error, retry }: ErrorBoundaryProps) {
 
 export { ErrorBoundary };
 
-// Starter is light-only by default. Remove this when implementing requested dark mode.
-Uniwind.setTheme('light');
+// Follow the phone's light or dark setting.
+Uniwind.setTheme('system');
 
 void SplashScreen.preventAutoHideAsync();
 
 export default function RootLayout() {
+  const palette = usePalette();
   const [loaded, error] = useFonts({
     Inter_400Regular,
     Inter_500Medium,
     Inter_600SemiBold,
     Inter_700Bold,
-    Lora_400Regular,
-    Lora_400Regular_Italic,
-    Lora_500Medium,
-    Lora_600SemiBold,
+    Newsreader_300Light,
+    Newsreader_300Light_Italic,
+    Newsreader_400Regular,
   });
 
   // Report uncaught JS errors and unhandled promise rejections to parent (Bilt preview iframe)
@@ -99,7 +98,7 @@ export default function RootLayout() {
     if (Platform.OS === 'web') {
       const families = [
         'https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap',
-        'https://fonts.googleapis.com/css2?family=Lora:ital,wght@0,400;0,500;0,600;1,400&display=swap',
+        'https://fonts.googleapis.com/css2?family=Newsreader:ital,wght@0,300;0,400;1,300&display=swap',
       ];
 
       for (const href of families) {
@@ -152,14 +151,14 @@ export default function RootLayout() {
         <MomentumProvider>
           {/* expo-status-bar's `style` prop is a string enum ('dark' | 'light' | 'auto' | 'inverted'), not a RN style object */}
           {/* oxlint-disable-next-line react/style-prop-object */}
-          <StatusBar style="dark" />
+          <StatusBar style="auto" />
           <View className="bg-stone flex-1 flex-row justify-center">
             <View className="web:border-x web:border-hairline bg-paper max-w-[430px] flex-1">
               <Stack
                 screenOptions={{
                   headerShown: false,
                   animation: 'slide_from_right',
-                  contentStyle: { backgroundColor: PAPER },
+                  contentStyle: { backgroundColor: palette.paper },
                 }}
               >
                 <Stack.Screen name="index" />

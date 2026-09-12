@@ -14,6 +14,7 @@ export function LifeAreaStep() {
       transitionKey="lifeArea"
       progress={progress}
       onBack={actions.goBack}
+      eyebrow="2 of 7"
       headline="Where is this coming from?"
       footer={
         <ActionButton
@@ -23,7 +24,7 @@ export function LifeAreaStep() {
         />
       }
     >
-      <View className="gap-4">
+      <View className="gap-2.5">
         {LIFE_AREA_OPTIONS.map((option) => (
           <OptionCard
             key={option.id}

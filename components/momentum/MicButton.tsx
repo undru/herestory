@@ -14,7 +14,7 @@ import { AnimatedView } from '@/components/ui/primitives/AnimatedView';
 import { Caption } from '@/components/momentum/Type';
 import { Tappable } from '@/components/momentum/Tappable';
 import type { RecorderState } from '@/hooks/useRecorder';
-import { PAPER, TERRACOTTA } from '@/lib/theme';
+import { usePalette } from '@/lib/theme';
 import { cn, formatDuration } from '@/lib/utils';
 
 interface MicButtonProps {
@@ -39,6 +39,7 @@ export function MicButton({
   idleLabel = 'Tap to speak',
   showLabel = true,
 }: MicButtonProps) {
+  const palette = usePalette();
   const pulse = useSharedValue(0);
   const isRecording = state === 'recording';
 
@@ -76,7 +77,7 @@ export function MicButton({
       : state === 'transcribing'
         ? 'Writing it down'
         : state === 'done'
-          ? 'Tap to record again'
+          ? 'Tap to add more'
           : idleLabel;
 
   return (
@@ -84,12 +85,12 @@ export function MicButton({
       <View className="items-center justify-center" style={{ width: size, height: size }}>
         <AnimatedView
           pointerEvents="none"
-          className="bg-terracotta absolute rounded-full"
+          className="bg-plum absolute rounded-full"
           style={[{ width: size, height: size }, firstRing]}
         />
         <AnimatedView
           pointerEvents="none"
-          className="bg-terracotta absolute rounded-full"
+          className="bg-plum absolute rounded-full"
           style={[{ width: size, height: size }, secondRing]}
         />
         <Tappable
@@ -101,15 +102,15 @@ export function MicButton({
           pressScale={0.95}
           className={cn(
             'items-center justify-center rounded-full border',
-            isRecording ? 'border-terracotta bg-terracotta' : 'border-terracotta bg-paper-raised',
+            isRecording ? 'border-plum bg-plum' : 'border-plum bg-paper-raised',
             state === 'transcribing' && 'border-hairline bg-stone',
           )}
           style={{ width: size, height: size }}
         >
           {isRecording ? (
-            <Square size={size * 0.24} color={PAPER} fill={PAPER} strokeWidth={1} />
+            <Square size={size * 0.24} color={palette.paper} fill={palette.paper} strokeWidth={1} />
           ) : (
-            <Mic size={size * 0.3} color={TERRACOTTA} strokeWidth={1.4} />
+            <Mic size={size * 0.3} color={palette.plum} strokeWidth={1.4} />
           )}
         </Tappable>
       </View>

@@ -1,9 +1,9 @@
 import { useState } from 'react';
-import { TextInput, View } from 'react-native';
+import { TextInput } from 'react-native';
 
 import { Body, Quote } from '@/components/momentum/Type';
 import { Tappable } from '@/components/momentum/Tappable';
-import { INK_FAINT, sans, serif } from '@/lib/theme';
+import { sans, serif, usePalette } from '@/lib/theme';
 import { cn } from '@/lib/utils';
 
 interface EditableFieldProps {
@@ -11,7 +11,7 @@ interface EditableFieldProps {
   onChange: (value: string) => void;
   accessibilityLabel: string;
   placeholder?: string;
-  /** 'quote' is the large serif italic line, 'line' is body copy. */
+  /** 'quote' is the serif italic line, 'line' is body copy. */
   variant?: 'quote' | 'line';
 }
 
@@ -23,6 +23,7 @@ export function EditableField({
   placeholder,
   variant = 'line',
 }: EditableFieldProps) {
+  const palette = usePalette();
   const [editing, setEditing] = useState(false);
   const isQuote = variant === 'quote';
 
@@ -35,14 +36,16 @@ export function EditableField({
         onChangeText={onChange}
         onBlur={() => setEditing(false)}
         placeholder={placeholder}
-        placeholderTextColor={INK_FAINT}
+        placeholderTextColor={palette.inkFaint}
         accessibilityLabel={accessibilityLabel}
         style={
-          isQuote ? { fontFamily: serif.italic, fontStyle: 'italic' } : { fontFamily: sans.regular }
+          isQuote
+            ? { fontFamily: serif.lightItalic, fontStyle: 'italic' }
+            : { fontFamily: sans.regular }
         }
         className={cn(
-          'border-terracotta bg-paper text-ink rounded-xl border px-3 py-2',
-          isQuote ? 'text-[23px] leading-[34px]' : 'text-[15px] leading-[23px]',
+          'border-plum text-ink -mx-2 rounded-lg border bg-transparent px-2 py-1',
+          isQuote ? 'text-[18px] leading-[25px]' : 'text-[14px] leading-[21px]',
         )}
       />
     );
@@ -54,14 +57,13 @@ export function EditableField({
       accessibilityLabel={`${accessibilityLabel}. Tap to edit.`}
       onPress={() => setEditing(true)}
       pressScale={1}
-      className="rounded-xl px-3 py-2"
+      className="-mx-2 rounded-lg px-2 py-1"
     >
       {isQuote ? (
-        <Quote>{value || placeholder}</Quote>
+        <Quote>{value ? `“${value}”` : placeholder}</Quote>
       ) : (
-        <Body className="text-ink">{value || placeholder}</Body>
+        <Body className="text-ink leading-[21px]">{value || placeholder}</Body>
       )}
-      <View className="bg-hairline mt-2 h-[1px] w-10" />
     </Tappable>
   );
 }
@@ -74,6 +76,7 @@ interface EditableChipProps {
 
 /** Chip whose text can be rewritten in place. */
 export function EditableChip({ value, onChange, accessibilityLabel }: EditableChipProps) {
+  const palette = usePalette();
   const [editing, setEditing] = useState(false);
 
   if (editing) {
@@ -85,9 +88,9 @@ export function EditableChip({ value, onChange, accessibilityLabel }: EditableCh
         onBlur={() => setEditing(false)}
         onSubmitEditing={() => setEditing(false)}
         accessibilityLabel={accessibilityLabel}
-        placeholderTextColor={INK_FAINT}
+        placeholderTextColor={palette.inkFaint}
         style={{ fontFamily: sans.regular, minWidth: 96 }}
-        className="border-terracotta bg-paper text-ink min-h-11 rounded-full border px-[18px] text-[15px]"
+        className="border-plum text-ink min-h-10 rounded-full border bg-transparent px-[14px] text-[14px]"
       />
     );
   }
@@ -98,9 +101,9 @@ export function EditableChip({ value, onChange, accessibilityLabel }: EditableCh
       accessibilityLabel={`${accessibilityLabel}: ${value}. Tap to edit.`}
       onPress={() => setEditing(true)}
       pressScale={0.97}
-      className="border-hairline bg-paper min-h-11 justify-center rounded-full border px-[18px] py-[11px]"
+      className="border-line-firm min-h-10 justify-center rounded-full border px-[14px] py-[8px]"
     >
-      <Body className="text-ink">{value}</Body>
+      <Body className="text-ink leading-[20px]">{value}</Body>
     </Tappable>
   );
 }

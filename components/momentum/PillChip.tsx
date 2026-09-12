@@ -2,7 +2,7 @@ import { Text, View } from 'react-native';
 import { X } from 'lucide-react-native';
 
 import { Tappable } from '@/components/momentum/Tappable';
-import { INK_FAINT, sans } from '@/lib/theme';
+import { sans, usePalette } from '@/lib/theme';
 import { cn } from '@/lib/utils';
 
 interface PillChipProps {
@@ -12,12 +12,12 @@ interface PillChipProps {
   /** Turns the chip into a "tap to remove" chip with a small cross. */
   onRemove?: () => void;
   disabled?: boolean;
-  /** 'quiet' renders the grey, non-selectable summary chips. */
+  /** 'quiet' renders a plain, non-selectable summary chip. */
   tone?: 'select' | 'quiet';
   className?: string;
 }
 
-/** Selectable pill. Terracotta when chosen, hairline outline when not. */
+/** Selectable pill. Soft plum when chosen, firm outline when not. */
 export function PillChip({
   label,
   selected = false,
@@ -27,6 +27,9 @@ export function PillChip({
   tone = 'select',
   className,
 }: PillChipProps) {
+  const palette = usePalette();
+  const isChosen = tone === 'select' && selected;
+
   return (
     <Tappable
       accessibilityRole="button"
@@ -36,28 +39,21 @@ export function PillChip({
       onPress={onRemove ?? onPress}
       pressScale={0.97}
       className={cn(
-        'min-h-11 flex-row items-center justify-center rounded-full border px-[18px] py-[11px]',
-        tone === 'quiet'
-          ? 'bg-stone border-transparent'
-          : selected
-            ? 'border-terracotta bg-terracotta'
-            : 'border-hairline bg-paper-raised',
-        disabled && !selected && tone === 'select' && 'opacity-45',
+        'min-h-11 flex-row items-center justify-center rounded-full border px-[14px] py-[9px]',
+        isChosen ? 'border-plum bg-plum-soft' : 'border-line-firm bg-transparent',
+        disabled && !selected && tone === 'select' && 'opacity-40',
         className,
       )}
     >
       <Text
         style={{ fontFamily: sans.regular }}
-        className={cn(
-          'text-[15px]',
-          tone === 'quiet' ? 'text-ink-soft' : selected ? 'text-paper' : 'text-ink',
-        )}
+        className={cn('text-[14px]', isChosen ? 'text-plum' : 'text-ink')}
       >
         {label}
       </Text>
       {onRemove ? (
         <View className="ml-2">
-          <X size={14} color={INK_FAINT} strokeWidth={1.8} />
+          <X size={14} color={palette.inkFaint} strokeWidth={1.8} />
         </View>
       ) : null}
     </Tappable>

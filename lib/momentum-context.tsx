@@ -10,7 +10,6 @@ import {
 import {
   DEEPENING_QUESTIONS,
   MAX_FEELINGS,
-  type AnonymizedCard,
   type LifeAreaId,
   type Mentor,
   type MentorChallenge,
@@ -18,19 +17,17 @@ import {
 } from '@/data/mock';
 import {
   acceptChallenge,
-  buildAnonymizedCard,
   confirmConversationTime,
   declineChallenge,
   fetchMentorChallenge,
   findMatches,
   generateMomentCard,
   offerAvailability,
-  parseProfessionalContext,
   saveMomentCard,
+  sendHelpReply,
   sendMentorRequest,
   sendTextReply,
   sendVoiceReply,
-  type ProfessionalContextInput,
   type RecordingResult,
 } from '@/lib/api';
 
@@ -46,6 +43,11 @@ export type MenteeStep =
   | 'matches'
   | 'redaction'
   | 'sent'
+  | 'helpOffer'
+  | 'helpAnswer'
+  | 'finish'
+  /* Screens outside the mockup flow, opened from the "Other screens" list. */
+  | 'extras'
   | 'signal'
   | 'answer'
   | 'connected'
@@ -54,8 +56,20 @@ export type MenteeStep =
   | 'booked'
   | 'people';
 
-/** Progress bar positions. 'sent' sits at the end of the flow. */
-export const STEP_ORDER: MenteeStep[] = [
+/** Screens reached only from the "Other screens" list. */
+export const EXTRA_STEPS: MenteeStep[] = [
+  'signal',
+  'answer',
+  'connected',
+  'chat',
+  'book',
+  'booked',
+  'people',
+];
+
+/** Progress bar positions: empty on welcome, full once the mentors appear. */
+const PROGRESS_ORDER: MenteeStep[] = [
+  'welcome',
   'feeling',
   'lifeArea',
   'context',
@@ -66,6 +80,8 @@ export const STEP_ORDER: MenteeStep[] = [
   'matches',
 ];
 
+const AFTER_MATCHES: MenteeStep[] = ['redaction', 'sent', 'helpOffer', 'helpAnswer', 'finish'];
+
 export type MentorStage =
   | 'handoff'
   | 'notification'
@@ -75,16 +91,50 @@ export type MentorStage =
   | 'done'
   | 'declined';
 
+/** Where the back arrow leads. Deepening questions step back one at a time first. */
+function previousStep(step: MenteeStep, lifeArea: LifeAreaId | null): MenteeStep | null {
+  switch (step) {
+    case 'lifeArea':
+      return 'feeling';
+    case 'context':
+      return 'lifeArea';
+    case 'deepening':
+      return lifeArea === 'personal' ? 'lifeArea' : 'context';
+    case 'moment':
+      return 'deepening';
+    case 'destination':
+      return 'moment';
+    case 'matches':
+      return 'destination';
+    case 'redaction':
+      return 'matches';
+    case 'helpAnswer':
+      return 'helpOffer';
+    case 'extras':
+      return 'finish';
+    case 'answer':
+      return 'signal';
+    case 'chat':
+      return 'connected';
+    case 'book':
+      return 'chat';
+    case 'people':
+      return 'booked';
+    default:
+      return null;
+  }
+}
+
+const sameAnswers = (a: Record<string, string>, b: Record<string, string>) =>
+  DEEPENING_QUESTIONS.every((question) => (a[question.id] ?? '') === (b[question.id] ?? ''));
+
 interface MomentumState {
   /* mentee flow */
   step: MenteeStep;
   progress: number;
   feelings: string[];
-  feelingNote: string;
   lifeArea: LifeAreaId | null;
-  professionalContext: ProfessionalContextInput;
-  contextChips: string[];
-  isParsingContext: boolean;
+  workLife: string;
   deepeningIndex: number;
   answers: Record<string, string>;
   momentCard: MomentCardData | null;
@@ -92,9 +142,12 @@ interface MomentumState {
   destination: string;
   matches: Mentor[];
   isMatching: boolean;
+  /** The open mentor card, and later the mentor she asked. */
   selectedMentorId: string | null;
-  anonymizedCard: AnonymizedCard | null;
+  selectedMentor: Mentor | null;
   isSending: boolean;
+  /** Whether she answered the woman one step behind, or skipped. */
+  helped: boolean;
   /* mentor inbox */
   mentorStage: MentorStage;
   challenge: MentorChallenge | null;
@@ -108,32 +161,34 @@ interface MomentumState {
 interface MomentumActions {
   startJourney: () => void;
   toggleFeeling: (id: string) => void;
-  setFeelingNote: (value: string) => void;
   continueFromFeeling: () => void;
   chooseLifeArea: (id: LifeAreaId) => void;
   continueFromLifeArea: () => void;
-  setProfessionalField: <K extends keyof ProfessionalContextInput>(
-    key: K,
-    value: ProfessionalContextInput[K],
-  ) => void;
-  submitProfessionalContext: () => Promise<void>;
-  removeContextChip: (chip: string) => void;
-  skipProfessionalContext: () => void;
-  goToDeepening: () => void;
+  setWorkLife: (value: string) => void;
+  continueFromWorkLife: () => void;
+  skipWorkLife: () => void;
   setAnswer: (questionId: string, value: string) => void;
+  /** Adds a new recording to the end of what she already said. */
+  appendAnswer: (questionId: string, text: string) => void;
   advanceDeepening: () => Promise<void>;
   updateMomentCard: (patch: Partial<MomentCardData>) => void;
   commitMomentCard: () => Promise<void>;
   confirmMomentCard: () => void;
-  rejectMomentCard: () => void;
+  /** "Not quite": back to the questions with every answer kept. */
+  addToAnswers: () => void;
   setDestination: (value: string) => void;
-  appendDestinationSuggestion: (value: string) => void;
   startMatching: () => void;
   runMatching: () => Promise<void>;
-  selectMentor: (mentorId: string) => Promise<void>;
-  clearSelectedMentor: () => void;
-  sendRequest: () => Promise<void>;
-  confirmRedaction: () => Promise<void>;
+  openMentor: (mentorId: string) => void;
+  askMentor: (mentorId: string) => void;
+  confirmRedaction: (message: string) => Promise<void>;
+  openHelpOffer: () => void;
+  offerHelp: () => void;
+  skipHelp: () => void;
+  sendHelp: (text: string) => Promise<void>;
+  openExtras: () => void;
+  previewStep: (step: MenteeStep) => void;
+  previewMentorStage: (stage: MentorStage) => void;
   openSignal: () => void;
   viewAnswer: () => void;
   acceptConnection: () => void;
@@ -142,7 +197,6 @@ interface MomentumActions {
   confirmBooking: (slot: string) => Promise<void>;
   openPeople: () => void;
   goBack: () => void;
-  startMentorHandoff: () => void;
   openMentorNotification: () => void;
   openMentorInbox: () => void;
   loadChallenge: () => Promise<void>;
@@ -156,34 +210,25 @@ interface MomentumActions {
 
 type MomentumContextValue = MomentumState & { actions: MomentumActions };
 
-const EMPTY_PROFESSIONAL_CONTEXT: ProfessionalContextInput = {
-  description: '',
-  uploadedFileName: null,
-  linkedInUrl: '',
-};
-
 const MomentumContext = createContext<MomentumContextValue | null>(null);
 
 export function MomentumProvider({ children }: PropsWithChildren) {
   const [step, setStep] = useState<MenteeStep>('welcome');
   const [feelings, setFeelings] = useState<string[]>([]);
-  const [feelingNote, setFeelingNote] = useState('');
   const [lifeArea, setLifeArea] = useState<LifeAreaId | null>(null);
-  const [professionalContext, setProfessionalContext] = useState<ProfessionalContextInput>(
-    EMPTY_PROFESSIONAL_CONTEXT,
-  );
-  const [contextChips, setContextChips] = useState<string[]>([]);
-  const [isParsingContext, setIsParsingContext] = useState(false);
+  const [workLife, setWorkLife] = useState('');
   const [deepeningIndex, setDeepeningIndex] = useState(0);
   const [answers, setAnswers] = useState<Record<string, string>>({});
   const [momentCard, setMomentCard] = useState<MomentCardData | null>(null);
+  /** The answers the current moment card was built from. */
+  const [cardAnswers, setCardAnswers] = useState<Record<string, string> | null>(null);
   const [isGeneratingCard, setIsGeneratingCard] = useState(false);
   const [destination, setDestinationValue] = useState('');
   const [matches, setMatches] = useState<Mentor[]>([]);
   const [isMatching, setIsMatching] = useState(false);
   const [selectedMentorId, setSelectedMentorId] = useState<string | null>(null);
-  const [anonymizedCard, setAnonymizedCard] = useState<AnonymizedCard | null>(null);
   const [isSending, setIsSending] = useState(false);
+  const [helped, setHelped] = useState(false);
 
   const [mentorStage, setMentorStage] = useState<MentorStage>('handoff');
   const [challenge, setChallenge] = useState<MentorChallenge | null>(null);
@@ -200,56 +245,41 @@ export function MomentumProvider({ children }: PropsWithChildren) {
   const toggleFeeling = useCallback((id: string) => {
     setFeelings((current) => {
       if (current.includes(id)) return current.filter((item) => item !== id);
-      if (current.length >= MAX_FEELINGS) return [current[current.length - 1], id];
+      if (current.length >= MAX_FEELINGS) return current;
       return [...current, id];
     });
-  }, []);
-
-  const chooseLifeArea = useCallback((id: LifeAreaId) => {
-    setLifeArea(id);
   }, []);
 
   const continueFromFeeling = useCallback(() => {
     setStep('lifeArea');
   }, []);
 
+  const chooseLifeArea = useCallback((id: LifeAreaId) => {
+    setLifeArea(id);
+  }, []);
+
   const continueFromLifeArea = useCallback(() => {
     setStep(lifeArea === 'personal' ? 'deepening' : 'context');
   }, [lifeArea]);
 
-  const setProfessionalField = useCallback(
-    <K extends keyof ProfessionalContextInput>(key: K, value: ProfessionalContextInput[K]) => {
-      setProfessionalContext((current) => ({ ...current, [key]: value }));
-    },
-    [],
-  );
-
-  const submitProfessionalContext = useCallback(async () => {
-    setIsParsingContext(true);
-    try {
-      const chips = await parseProfessionalContext(professionalContext);
-      setContextChips(chips);
-    } finally {
-      setIsParsingContext(false);
-    }
-  }, [professionalContext]);
-
-  const removeContextChip = useCallback((chip: string) => {
-    setContextChips((current) => current.filter((item) => item !== chip));
-  }, []);
-
-  const goToDeepening = useCallback(() => {
+  const continueFromWorkLife = useCallback(() => {
     setStep('deepening');
   }, []);
 
-  const skipProfessionalContext = useCallback(() => {
-    setContextChips([]);
-    setProfessionalContext(EMPTY_PROFESSIONAL_CONTEXT);
+  const skipWorkLife = useCallback(() => {
+    setWorkLife('');
     setStep('deepening');
   }, []);
 
   const setAnswer = useCallback((questionId: string, value: string) => {
     setAnswers((current) => ({ ...current, [questionId]: value }));
+  }, []);
+
+  const appendAnswer = useCallback((questionId: string, text: string) => {
+    setAnswers((current) => {
+      const previous = (current[questionId] ?? '').trimEnd();
+      return { ...current, [questionId]: previous ? `${previous} ${text}` : text };
+    });
   }, []);
 
   const buildCard = useCallback(
@@ -258,27 +288,29 @@ export function MomentumProvider({ children }: PropsWithChildren) {
       try {
         const card = await generateMomentCard({
           feelings,
-          feelingNote,
           lifeArea,
-          contextChips,
+          workLife,
           answers: currentAnswers,
         });
         setMomentCard(card);
+        setCardAnswers(currentAnswers);
       } finally {
         setIsGeneratingCard(false);
       }
     },
-    [contextChips, feelingNote, feelings, lifeArea],
+    [feelings, lifeArea, workLife],
   );
 
   const advanceDeepening = useCallback(async () => {
     if (deepeningIndex < DEEPENING_QUESTIONS.length - 1) {
-      setDeepeningIndex((current) => current + 1);
+      setDeepeningIndex(deepeningIndex + 1);
       return;
     }
     setStep('moment');
+    // Nothing new was added: keep the card, including any edits she made on it.
+    if (momentCard && cardAnswers && sameAnswers(cardAnswers, answers)) return;
     await buildCard(answers);
-  }, [answers, buildCard, deepeningIndex]);
+  }, [answers, buildCard, cardAnswers, deepeningIndex, momentCard]);
 
   const updateMomentCard = useCallback((patch: Partial<MomentCardData>) => {
     setMomentCard((current) => (current ? { ...current, ...patch } : current));
@@ -293,23 +325,13 @@ export function MomentumProvider({ children }: PropsWithChildren) {
     setStep('destination');
   }, []);
 
-  const rejectMomentCard = useCallback(() => {
+  const addToAnswers = useCallback(() => {
     setDeepeningIndex(0);
     setStep('deepening');
   }, []);
 
   const setDestination = useCallback((value: string) => {
     setDestinationValue(value);
-  }, []);
-
-  const appendDestinationSuggestion = useCallback((value: string) => {
-    setDestinationValue((current) => {
-      const trimmed = current.trimEnd();
-      if (trimmed.length === 0) return value;
-      if (trimmed.toLowerCase().includes(value.toLowerCase())) return current;
-      const separator = /[.,;]$/.test(trimmed) ? ' ' : ', ';
-      return `${trimmed}${separator}${value}`;
-    });
   }, []);
 
   const startMatching = useCallback(() => {
@@ -322,42 +344,60 @@ export function MomentumProvider({ children }: PropsWithChildren) {
     try {
       const found = await findMatches({ card: momentCard, destination });
       setMatches(found);
+      setSelectedMentorId(found[0]?.id ?? null);
       setStep('matches');
     } finally {
       setIsMatching(false);
     }
   }, [destination, momentCard]);
 
-  const selectMentor = useCallback(
-    async (mentorId: string) => {
-      setSelectedMentorId(mentorId);
-      if (!momentCard) return;
-      const preview = await buildAnonymizedCard(momentCard);
-      setAnonymizedCard(preview);
-    },
-    [momentCard],
-  );
-
-  const clearSelectedMentor = useCallback(() => {
-    setSelectedMentorId(null);
+  const openMentor = useCallback((mentorId: string) => {
+    setSelectedMentorId(mentorId);
   }, []);
 
-  const sendRequest = useCallback(async () => {
-    if (!selectedMentorId || !anonymizedCard) return;
+  const askMentor = useCallback((mentorId: string) => {
+    setSelectedMentorId(mentorId);
     setStep('redaction');
-  }, [anonymizedCard, selectedMentorId]);
+  }, []);
 
-  const confirmRedaction = useCallback(async () => {
-    if (!selectedMentorId || !anonymizedCard) return;
+  const confirmRedaction = useCallback(
+    async (message: string) => {
+      if (!selectedMentorId) return;
+      setIsSending(true);
+      try {
+        await sendMentorRequest(selectedMentorId, message);
+        setStep('sent');
+      } finally {
+        setIsSending(false);
+      }
+    },
+    [selectedMentorId],
+  );
+
+  const openHelpOffer = useCallback(() => setStep('helpOffer'), []);
+  const offerHelp = useCallback(() => setStep('helpAnswer'), []);
+
+  const skipHelp = useCallback(() => {
+    setHelped(false);
+    setStep('finish');
+  }, []);
+
+  const sendHelp = useCallback(async (text: string) => {
+    if (!text.trim()) return;
     setIsSending(true);
     try {
-      await sendMentorRequest(selectedMentorId, anonymizedCard);
-      setSelectedMentorId(null);
-      setStep('sent');
+      await sendHelpReply(text.trim());
+      setHelped(true);
+      setStep('finish');
     } finally {
       setIsSending(false);
     }
-  }, [anonymizedCard, selectedMentorId]);
+  }, []);
+
+  const openExtras = useCallback(() => setStep('extras'), []);
+  const previewStep = useCallback((next: MenteeStep) => setStep(next), []);
+  const previewMentorStage = useCallback((stage: MentorStage) => setMentorStage(stage), []);
+
   const openSignal = useCallback(() => setStep('signal'), []);
   const viewAnswer = useCallback(() => setStep('answer'), []);
   const acceptConnection = useCallback(() => setStep('connected'), []);
@@ -370,44 +410,17 @@ export function MomentumProvider({ children }: PropsWithChildren) {
   }, []);
   const openPeople = useCallback(() => setStep('people'), []);
 
-  const startMentorHandoff = useCallback(() => setMentorStage('handoff'), []);
   const openMentorNotification = useCallback(() => setMentorStage('notification'), []);
   const openMentorInbox = useCallback(() => setMentorStage('inbox'), []);
 
   const goBack = useCallback(() => {
-    setStep((current) => {
-      switch (current) {
-        case 'lifeArea':
-          return 'feeling';
-        case 'context':
-          return 'lifeArea';
-        case 'deepening':
-          if (deepeningIndex > 0) {
-            setDeepeningIndex((index) => index - 1);
-            return current;
-          }
-          return lifeArea === 'personal' ? 'lifeArea' : 'context';
-        case 'moment':
-          return 'deepening';
-        case 'destination':
-          return 'moment';
-        case 'matches':
-          return 'destination';
-        case 'redaction':
-          return 'matches';
-        case 'answer':
-          return 'signal';
-        case 'chat':
-          return 'connected';
-        case 'book':
-          return 'chat';
-        case 'people':
-          return 'booked';
-        default:
-          return current;
-      }
-    });
-  }, [deepeningIndex, lifeArea]);
+    if (step === 'deepening' && deepeningIndex > 0) {
+      setDeepeningIndex(deepeningIndex - 1);
+      return;
+    }
+    const previous = previousStep(step, lifeArea);
+    if (previous) setStep(previous);
+  }, [deepeningIndex, lifeArea, step]);
 
   const loadChallenge = useCallback(async () => {
     setIsLoadingChallenge(true);
@@ -478,17 +491,16 @@ export function MomentumProvider({ children }: PropsWithChildren) {
   const resetAll = useCallback(() => {
     setStep('welcome');
     setFeelings([]);
-    setFeelingNote('');
     setLifeArea(null);
-    setProfessionalContext(EMPTY_PROFESSIONAL_CONTEXT);
-    setContextChips([]);
+    setWorkLife('');
     setDeepeningIndex(0);
     setAnswers({});
     setMomentCard(null);
+    setCardAnswers(null);
     setDestinationValue('');
     setMatches([]);
     setSelectedMentorId(null);
-    setAnonymizedCard(null);
+    setHelped(false);
     setMentorStage('handoff');
     setChallenge(null);
     setReplyDurationSeconds(0);
@@ -497,43 +509,51 @@ export function MomentumProvider({ children }: PropsWithChildren) {
   }, []);
 
   const progress = useMemo(() => {
-    const index = STEP_ORDER.indexOf(step);
-    if (step === 'sent') return 1;
+    if (AFTER_MATCHES.includes(step)) return 1;
+    const index = PROGRESS_ORDER.indexOf(step);
     if (index < 0) return 0;
-    if (step === 'deepening') {
-      const within = (deepeningIndex + 1) / (DEEPENING_QUESTIONS.length + 1);
-      return (index + within) / STEP_ORDER.length;
-    }
-    return (index + 1) / STEP_ORDER.length;
+    const extraQuestions = DEEPENING_QUESTIONS.length - 1;
+    const total = PROGRESS_ORDER.length - 1 + extraQuestions;
+    const deepeningAt = PROGRESS_ORDER.indexOf('deepening');
+    const offset = step === 'deepening' ? deepeningIndex : index > deepeningAt ? extraQuestions : 0;
+    return (index + offset) / total;
   }, [deepeningIndex, step]);
+
+  const selectedMentor = useMemo(
+    () => matches.find((mentor) => mentor.id === selectedMentorId) ?? null,
+    [matches, selectedMentorId],
+  );
 
   const actions = useMemo<MomentumActions>(
     () => ({
       startJourney,
       toggleFeeling,
-      setFeelingNote,
       continueFromFeeling,
       chooseLifeArea,
       continueFromLifeArea,
-      setProfessionalField,
-      submitProfessionalContext,
-      removeContextChip,
-      skipProfessionalContext,
-      goToDeepening,
+      setWorkLife,
+      continueFromWorkLife,
+      skipWorkLife,
       setAnswer,
+      appendAnswer,
       advanceDeepening,
       updateMomentCard,
       commitMomentCard,
       confirmMomentCard,
-      rejectMomentCard,
+      addToAnswers,
       setDestination,
-      appendDestinationSuggestion,
       startMatching,
       runMatching,
-      selectMentor,
-      clearSelectedMentor,
-      sendRequest,
+      openMentor,
+      askMentor,
       confirmRedaction,
+      openHelpOffer,
+      offerHelp,
+      skipHelp,
+      sendHelp,
+      openExtras,
+      previewStep,
+      previewMentorStage,
       openSignal,
       viewAnswer,
       acceptConnection,
@@ -542,7 +562,6 @@ export function MomentumProvider({ children }: PropsWithChildren) {
       confirmBooking,
       openPeople,
       goBack,
-      startMentorHandoff,
       openMentorNotification,
       openMentorInbox,
       loadChallenge,
@@ -555,42 +574,44 @@ export function MomentumProvider({ children }: PropsWithChildren) {
     }),
     [
       acceptConnection,
+      addToAnswers,
       advanceDeepening,
-      appendDestinationSuggestion,
+      appendAnswer,
+      askMentor,
       chooseAvailability,
       chooseLifeArea,
-      clearSelectedMentor,
       commitMomentCard,
       confirmBooking,
       confirmMomentCard,
       confirmRedaction,
       continueFromFeeling,
       continueFromLifeArea,
+      continueFromWorkLife,
       dismissChallenge,
       goBack,
-      goToDeepening,
       loadChallenge,
+      offerHelp,
       openBooking,
       openChat,
+      openExtras,
+      openHelpOffer,
+      openMentor,
       openMentorInbox,
       openMentorNotification,
       openPeople,
       openReply,
       openSignal,
-      rejectMomentCard,
-      removeContextChip,
+      previewMentorStage,
+      previewStep,
       resetAll,
       runMatching,
-      selectMentor,
-      sendRequest,
+      sendHelp,
       setAnswer,
       setDestination,
-      setProfessionalField,
-      skipProfessionalContext,
+      skipHelp,
+      skipWorkLife,
       startJourney,
       startMatching,
-      startMentorHandoff,
-      submitProfessionalContext,
       submitTextReply,
       submitVoiceReply,
       toggleFeeling,
@@ -604,11 +625,8 @@ export function MomentumProvider({ children }: PropsWithChildren) {
       step,
       progress,
       feelings,
-      feelingNote,
       lifeArea,
-      professionalContext,
-      contextChips,
-      isParsingContext,
+      workLife,
       deepeningIndex,
       answers,
       momentCard,
@@ -617,8 +635,9 @@ export function MomentumProvider({ children }: PropsWithChildren) {
       matches,
       isMatching,
       selectedMentorId,
-      anonymizedCard,
+      selectedMentor,
       isSending,
+      helped,
       mentorStage,
       challenge,
       isLoadingChallenge,
@@ -630,18 +649,16 @@ export function MomentumProvider({ children }: PropsWithChildren) {
     }),
     [
       actions,
-      anonymizedCard,
       answers,
+      bookedSlot,
       challenge,
-      contextChips,
       deepeningIndex,
       destination,
-      feelingNote,
       feelings,
+      helped,
       isGeneratingCard,
       isLoadingChallenge,
       isMatching,
-      isParsingContext,
       isSending,
       isSendingReply,
       lifeArea,
@@ -649,12 +666,12 @@ export function MomentumProvider({ children }: PropsWithChildren) {
       mentorStage,
       momentCard,
       offeredSlot,
-      bookedSlot,
-      professionalContext,
       progress,
       replyDurationSeconds,
+      selectedMentor,
       selectedMentorId,
       step,
+      workLife,
     ],
   );
 

@@ -35,26 +35,20 @@ export function AnonymizedCardPreview({
   ];
 
   return (
-    <View
-      className={cn(
-        'border-hairline bg-paper-raised rounded-3xl border',
-        compact ? 'p-5' : 'p-6',
-        className,
-      )}
-    >
-      <Overline className="text-terracotta">{card.label}</Overline>
+    <View className={cn('border-line-firm rounded-2xl border', compact ? 'p-5' : 'p-6', className)}>
+      <Overline className="text-plum">{card.label}</Overline>
 
       <Quote
-        className={compact ? 'mt-4 text-[19px] leading-[29px]' : 'mt-5 text-[25px] leading-[37px]'}
+        className={compact ? 'mt-3 text-[17px] leading-[24px]' : 'mt-4 text-[21px] leading-[29px]'}
       >
         “{card.quote}”
       </Quote>
 
-      <View className={compact ? 'mt-5 gap-4' : 'mt-7 gap-5'}>
+      <View className={compact ? 'mt-4 gap-3' : 'mt-5 gap-4'}>
         {rows.map((row) => (
           <View key={row.label}>
             <Overline>{row.label}</Overline>
-            <Body className="text-ink mt-2">{row.value}</Body>
+            <Body className="text-ink mt-1">{row.value}</Body>
           </View>
         ))}
       </View>

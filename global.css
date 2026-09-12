@@ -40,68 +40,98 @@
 @source './node_modules/heroui-native/lib';
 
 /*
- * Momentum theme — warm, calm, editorial.
- * paper #FAF8F5 · ink #1A1A1A · terracotta #C4643F
- * No blue, no gradients, no shadows. Hairline borders only.
+ * Momentum theme: cool paper, ink, plum for choices, moss for "it's done".
+ * No gradients, no shadows. Outlines only.
+ * Keep LIGHT / DARK in lib/theme.ts in sync for icons and native color props.
  */
 @layer theme {
   :root {
     @variant light {
-      --background: oklch(0.978 0.004 85);
-      --foreground: oklch(0.218 0 0);
-      --muted: oklch(0.53 0.008 70);
-      --border: oklch(0.905 0.012 85);
-      --separator: oklch(0.905 0.012 85);
-      --panel: oklch(0.99 0.003 85);
-      --surface: oklch(0.99 0.003 85);
-      --surface-foreground: oklch(0.218 0 0);
-      --default: oklch(0.94 0.008 85);
-      --default-foreground: oklch(0.218 0 0);
-      --accent: oklch(0.61 0.133 41);
-      --accent-foreground: oklch(0.985 0.004 85);
-      --accent-soft: oklch(0.925 0.022 45);
-      --accent-soft-foreground: oklch(0.52 0.12 41);
-      --link: oklch(0.61 0.133 41);
-      --focus: oklch(0.61 0.133 41);
-      --field: oklch(0.965 0.006 85);
-      --field-border: oklch(0.905 0.012 85);
+      --background: #fbfbfa;
+      --foreground: #1b2326;
+      --muted: #586366;
+      --border: #d6dadb;
+      --separator: #d6dadb;
+      --panel: #fbfbfa;
+      --surface: #fbfbfa;
+      --surface-foreground: #1b2326;
+      --default: #e8ebec;
+      --default-foreground: #1b2326;
+      --accent: #6e3b52;
+      --accent-foreground: #fbfbfa;
+      --accent-soft: #efe3e8;
+      --accent-soft-foreground: #6e3b52;
+      --link: #6e3b52;
+      --focus: #6e3b52;
+      --field: #fbfbfa;
+      --field-border: #b9bfc1;
+
+      --color-paper: #fbfbfa;
+      --color-paper-raised: #fbfbfa;
+      --color-stone: #e8ebec;
+      --color-stone-deep: #d6dadb;
+      --color-ink: #1b2326;
+      --color-ink-soft: #586366;
+      --color-ink-faint: #8a9295;
+      --color-hairline: #d6dadb;
+      --color-line-firm: #b9bfc1;
+      --color-plum: #6e3b52;
+      --color-plum-soft: #efe3e8;
+      --color-moss: #4a6355;
+      --color-moss-soft: #e1e9e4;
     }
 
     @variant dark {
-      --background: oklch(0.978 0.004 85);
-      --foreground: oklch(0.218 0 0);
-      --muted: oklch(0.53 0.008 70);
-      --border: oklch(0.905 0.012 85);
-      --separator: oklch(0.905 0.012 85);
-      --panel: oklch(0.99 0.003 85);
-      --surface: oklch(0.99 0.003 85);
-      --surface-foreground: oklch(0.218 0 0);
-      --default: oklch(0.94 0.008 85);
-      --default-foreground: oklch(0.218 0 0);
-      --accent: oklch(0.61 0.133 41);
-      --accent-foreground: oklch(0.985 0.004 85);
-      --accent-soft: oklch(0.925 0.022 45);
-      --accent-soft-foreground: oklch(0.52 0.12 41);
-      --link: oklch(0.61 0.133 41);
-      --focus: oklch(0.61 0.133 41);
-      --field: oklch(0.965 0.006 85);
-      --field-border: oklch(0.905 0.012 85);
+      --background: #1d2427;
+      --foreground: #e7ebec;
+      --muted: #a3adb0;
+      --border: #2c3538;
+      --separator: #2c3538;
+      --panel: #1d2427;
+      --surface: #1d2427;
+      --surface-foreground: #e7ebec;
+      --default: #14191b;
+      --default-foreground: #e7ebec;
+      --accent: #e0afc2;
+      --accent-foreground: #1d2427;
+      --accent-soft: #3a2430;
+      --accent-soft-foreground: #e0afc2;
+      --link: #e0afc2;
+      --focus: #e0afc2;
+      --field: #1d2427;
+      --field-border: #414c50;
+
+      --color-paper: #1d2427;
+      --color-paper-raised: #1d2427;
+      --color-stone: #14191b;
+      --color-stone-deep: #2c3538;
+      --color-ink: #e7ebec;
+      --color-ink-soft: #a3adb0;
+      --color-ink-faint: #798386;
+      --color-hairline: #2c3538;
+      --color-line-firm: #414c50;
+      --color-plum: #e0afc2;
+      --color-plum-soft: #3a2430;
+      --color-moss: #a8c6b4;
+      --color-moss-soft: #243329;
     }
   }
 }
 
 @theme {
-  --color-paper: oklch(0.978 0.004 85);
-  --color-paper-raised: oklch(0.992 0.003 85);
-  --color-ink: oklch(0.218 0 0);
-  --color-ink-soft: oklch(0.53 0.008 70);
-  --color-ink-faint: oklch(0.68 0.008 70);
-  --color-terracotta: oklch(0.61 0.133 41);
-  --color-terracotta-deep: oklch(0.52 0.12 41);
-  --color-terracotta-soft: oklch(0.925 0.022 45);
-  --color-hairline: oklch(0.905 0.012 85);
-  --color-stone: oklch(0.94 0.008 85);
-  --color-stone-deep: oklch(0.9 0.008 85);
+  --color-paper: #fbfbfa;
+  --color-paper-raised: #fbfbfa;
+  --color-stone: #e8ebec;
+  --color-stone-deep: #d6dadb;
+  --color-ink: #1b2326;
+  --color-ink-soft: #586366;
+  --color-ink-faint: #8a9295;
+  --color-hairline: #d6dadb;
+  --color-line-firm: #b9bfc1;
+  --color-plum: #6e3b52;
+  --color-plum-soft: #efe3e8;
+  --color-moss: #4a6355;
+  --color-moss-soft: #e1e9e4;
 }
 
 /*

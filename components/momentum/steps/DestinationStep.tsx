@@ -1,7 +1,7 @@
 import { View } from 'react-native';
 
 import { ActionButton } from '@/components/momentum/ActionButton';
-import { Caption } from '@/components/momentum/Type';
+import { Overline } from '@/components/momentum/Type';
 import { PillChip } from '@/components/momentum/PillChip';
 import { StepShell } from '@/components/momentum/StepShell';
 import { TextField } from '@/components/momentum/TextField';
@@ -16,10 +16,11 @@ export function DestinationStep() {
       transitionKey="destination"
       progress={progress}
       onBack={actions.goBack}
+      eyebrow="6 of 7"
       headline="Where do you want to go from here?"
       footer={
         <ActionButton
-          label="Find my three"
+          label="Find my people"
           disabled={destination.trim().length === 0}
           onPress={actions.startMatching}
         />
@@ -27,19 +28,20 @@ export function DestinationStep() {
     >
       <TextField
         textarea
-        className="min-h-[150px]"
+        className="min-h-[112px]"
         placeholder={DESTINATION_PLACEHOLDER}
         value={destination}
         onChangeText={actions.setDestination}
       />
 
-      <Caption className="mt-6">Or start from one of these.</Caption>
-      <View className="mt-3 flex-row flex-wrap gap-3">
+      <Overline className="mt-4">Or start from one of these</Overline>
+      <View className="mt-2 flex-row flex-wrap gap-2">
         {DESTINATION_SUGGESTIONS.map((suggestion) => (
           <PillChip
             key={suggestion}
             label={suggestion}
-            onPress={() => actions.appendDestinationSuggestion(suggestion)}
+            selected={destination === suggestion}
+            onPress={() => actions.setDestination(suggestion)}
           />
         ))}
       </View>

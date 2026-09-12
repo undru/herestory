@@ -3,9 +3,10 @@ import { View } from 'react-native';
 
 import { Body, Display } from '@/components/momentum/Type';
 import { SafeAreaView } from '@/components/ui/primitives/SafeAreaView';
-import { sans, TERRACOTTA } from '@/lib/theme';
+import { sans, usePalette } from '@/lib/theme';
 
 export default function NotFoundScreen() {
+  const palette = usePalette();
   return (
     <>
       <Stack.Screen options={{ title: 'Not found' }} />
@@ -17,7 +18,7 @@ export default function NotFoundScreen() {
             href="/"
             style={{
               fontFamily: sans.medium,
-              color: TERRACOTTA,
+              color: palette.plum,
               textDecorationLine: 'underline',
               marginTop: 32,
               fontSize: 14,

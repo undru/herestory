@@ -8,7 +8,7 @@ import { SafeAreaView } from '@/components/ui/primitives/SafeAreaView';
 import { Body, Headline, Overline } from '@/components/momentum/Type';
 import { ProgressBar } from '@/components/momentum/ProgressBar';
 import { Tappable } from '@/components/momentum/Tappable';
-import { INK_SOFT } from '@/lib/theme';
+import { usePalette } from '@/lib/theme';
 
 interface StepShellProps {
   /** 0 to 1, or null to hide the bar. */
@@ -22,7 +22,7 @@ interface StepShellProps {
   children?: ReactNode;
   /** Full-width bottom action area. */
   footer?: ReactNode;
-  /** Overlay rendered above everything, e.g. the confirmation sheet. */
+  /** Overlay rendered above everything. */
   overlay?: ReactNode;
   /** Centers content vertically for calm, single-element screens. */
   centered?: boolean;
@@ -44,6 +44,8 @@ export function StepShell({
   overlay,
   centered = false,
 }: StepShellProps) {
+  const palette = usePalette();
+
   return (
     <SafeAreaView className="bg-paper flex-1" edges={['top', 'bottom']}>
       {progress === null ? <View className="h-[2px]" /> : <ProgressBar value={progress} />}
@@ -56,7 +58,7 @@ export function StepShell({
             className="h-11 w-11 items-center justify-center rounded-full"
             onPress={onBack}
           >
-            <ArrowLeft size={20} color={INK_SOFT} strokeWidth={1.6} />
+            <ArrowLeft size={20} color={palette.inkSoft} strokeWidth={1.6} />
           </Tappable>
         ) : null}
       </View>
@@ -79,10 +81,10 @@ export function StepShell({
           showsVerticalScrollIndicator={false}
         >
           <AnimatedView key={transitionKey} entering={FadeInRight.duration(320)}>
-            {eyebrow ? <Overline className="mb-4">{eyebrow}</Overline> : null}
+            {eyebrow ? <Overline className="mb-3">{eyebrow}</Overline> : null}
             {headline ? <Headline>{headline}</Headline> : null}
-            {intro ? <Body className="mt-4">{intro}</Body> : null}
-            {children ? <View className={headline || intro ? 'mt-9' : ''}>{children}</View> : null}
+            {intro ? <Body className="mt-3">{intro}</Body> : null}
+            {children ? <View className={headline || intro ? 'mt-6' : ''}>{children}</View> : null}
           </AnimatedView>
         </ScrollView>
 
