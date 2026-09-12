@@ -3,6 +3,7 @@ import type { ConfigContext, ExpoConfig } from '@expo/config';
 type ExpoPlugins = NonNullable<ExpoConfig['plugins']>;
 
 export default ({ config }: ConfigContext): ExpoConfig => {
+  const isGitHubPagesBuild = process.env.GITHUB_PAGES === 'true';
   const nativePlugins: ExpoPlugins =
     process.env.EXPO_PLATFORM === 'native'
       ? [['expo-dev-client', { launchMode: 'most-recent' }]]
@@ -44,6 +45,9 @@ export default ({ config }: ConfigContext): ExpoConfig => {
     experiments: {
       typedRoutes: true,
       reactCompiler: true,
+      // GitHub Pages serves this repository below /herestory. Keep Bilt and
+      // local builds at their normal root URL.
+      ...(isGitHubPagesBuild ? { baseUrl: '/herestory' } : {}),
     },
   };
 };

@@ -16,8 +16,9 @@ For each selected issue:
 
 1. Confirm its scope and acceptance criteria are specific enough to test.
 2. Move it to **In progress** and create an isolated branch.
-3. Implement only that issue. Run relevant validation and test the affected UI
-   on an emulator when possible.
+3. Implement only that issue. Run relevant validation, including the web export,
+   and test the affected UI on an emulator when possible. If the build fails,
+   diagnose and fix it before proceeding.
 4. Review the diff for accidental changes, missing error states, and regressions.
 5. Commit, push, and open a pull request. Include a short test report.
 6. Move the issue to **Needs review**. Do not merge it.
@@ -27,4 +28,6 @@ reasonable attempts, needs credentials, or would change production data, mark it
 **Blocked**, explain why, and proceed to the next independent ready issue.
 
 Stop after three pull requests in one overnight run, or sooner if the queue is
-empty. Never bypass a failing check merely to finish a task.
+empty. Never bypass a failing check merely to finish a task. A merged pull
+request is built and deployed by the GitHub Pages workflow; its preview link is
+the workflow deployment URL.

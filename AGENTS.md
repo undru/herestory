@@ -16,9 +16,11 @@ pull request has been reviewed and merged.
    change dependencies without explaining why, or invent product requirements.
 4. Do not make destructive data changes, publish a release, modify secrets,
    change GitHub/Bilt settings, or merge a pull request.
-5. Before committing, run the relevant checks. At minimum run `npm run lint` and
-   `npm run format:check`; use `npx expo start` or an emulator when the issue
-   changes UI or app behavior.
+5. Before committing, run the relevant checks. At minimum run `npm run lint`,
+   `npm run lint:css`, `npm run format:check`, and `npm run export:web`; use
+   `npx expo start` or an emulator when the issue changes UI or app behavior.
+   If any check or build fails, find and fix the cause before opening the pull
+   request. Do not treat a failed build as complete work.
 6. Commit the completed work, push the branch, and open a pull request that
    links the issue. Mark the issue `agent:review` only after all required checks
    pass.
@@ -39,6 +41,7 @@ npm install
 npm run lint
 npm run lint:css
 npm run format:check
+npm run export:web
 npx expo start
 ```
 

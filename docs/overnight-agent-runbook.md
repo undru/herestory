@@ -19,9 +19,12 @@ This gives Bilt a stable branch to sync: only merged changes reach `main`.
 3. Use the **Agent task** issue template for every task intended for the agent.
    Do not add `agent:ready` until its acceptance criteria and verification steps
    are complete.
-4. Protect `main`: require pull requests and required checks; do not allow direct
-   pushes. If you use Bilt two-way sync, verify that Bilt writes through pull
-   requests or to a non-protected integration branch.
+4. Protect `main`: require pull requests and the **Verify app** status check;
+   do not allow direct pushes. If you use Bilt two-way sync, verify that Bilt
+   writes through pull requests or to a non-protected integration branch.
+5. In **Settings → Pages**, choose **GitHub Actions** as the publishing source.
+   After the first successful deployment, the shareable web preview will be
+   `https://undru.github.io/herestory/`.
 
 ## Nightly routine
 
@@ -31,15 +34,21 @@ This gives Bilt a stable branch to sync: only merged changes reach `main`.
 3. Keep it to one concurrent task. The runner should select a ready issue, then
    follow `AGENTS.md`.
 4. In the morning, review each pull request, run the app if needed, and merge
-   only the changes you approve. Remove `agent:ready` from completed issues.
+   only the changes you approve. GitHub then verifies, builds, and deploys the
+   web preview automatically. The **Deploy web preview** workflow shows the
+   deployed URL; share that link after it succeeds.
+5. If **Verify app** or **Deploy web preview** fails, do not share the preview.
+   Reopen or create an `agent:ready` bug issue with the workflow error, then let
+   the agent fix it in a new pull request.
 
 ## Prompt for an agent automation
 
 ```text
 Read AGENTS.md and WORKFLOW.md. Process up to three independent GitHub issues
 labelled agent:ready, one at a time, in priority order. For each, create a branch,
-implement only its acceptance criteria, run the required validation, review your
-diff, commit, push, and open a PR. Do not merge, deploy, alter secrets, change
+implement only its acceptance criteria, run the required validation including
+`npm run export:web`, review your diff, commit, push, and open a PR. Fix any
+build failure before opening a PR. Do not merge, deploy, alter secrets, change
 Bilt/GitHub settings, or continue past an ambiguous or blocked task. Mark blocked
 tasks clearly and then proceed only to an independent ready task.
 ```
