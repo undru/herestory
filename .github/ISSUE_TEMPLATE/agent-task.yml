@@ -1,0 +1,54 @@
+name: Agent task
+description: A small, testable task that an overnight coding agent may implement.
+title: '[Task]: '
+labels:
+  - agent:ready
+body:
+  - type: markdown
+    attributes:
+      value: |
+        Keep this small and independently reviewable. One issue should normally
+        produce one pull request.
+  - type: textarea
+    id: outcome
+    attributes:
+      label: Desired outcome
+      description: Describe the user-visible result, not only the implementation.
+      placeholder: A user can ...
+    validations:
+      required: true
+  - type: textarea
+    id: acceptance
+    attributes:
+      label: Acceptance criteria
+      description: Use checkboxes for observable requirements.
+      placeholder: |
+        - [ ] ...
+        - [ ] ...
+    validations:
+      required: true
+  - type: textarea
+    id: context
+    attributes:
+      label: Context and constraints
+      description: Include designs, relevant screens/files, API details, and what must not change.
+  - type: dropdown
+    id: priority
+    attributes:
+      label: Priority
+      options:
+        - P0 - urgent
+        - P1 - high
+        - P2 - normal
+        - P3 - low
+      default: 2
+    validations:
+      required: true
+  - type: textarea
+    id: verification
+    attributes:
+      label: Verification
+      description: State the commands and/or emulator behavior that prove this works.
+      placeholder: npm run lint; test on iOS Simulator by ...
+    validations:
+      required: true
