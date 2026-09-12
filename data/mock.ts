@@ -12,22 +12,50 @@ export const WELCOME_SUBHEAD =
 
 /* ---------------------------------------------------------------- step 1 */
 
-export interface FeelingOption {
-  id: string;
+export const FEELING_HEADLINE = 'It starts with how you feel.';
+export const FEELING_INTRO =
+  'Before we talk careers, let’s talk about you — how does work feel right now?';
+export const FEELING_HELPER = 'Choose up to 5 feelings';
+
+export type FeelingGroupId = 'difficult' | 'uncertain' | 'curious' | 'positive';
+
+export interface FeelingGroup {
+  id: FeelingGroupId;
   label: string;
 }
 
-export const MAX_FEELINGS = 2;
+export interface FeelingOption {
+  id: string;
+  label: string;
+  group: FeelingGroupId;
+}
+
+export const MAX_FEELINGS = 5;
+
+/** Display order of the feeling groups. */
+export const FEELING_GROUPS: FeelingGroup[] = [
+  { id: 'difficult', label: 'Difficult / heavy' },
+  { id: 'uncertain', label: 'Uncertain / in-between' },
+  { id: 'curious', label: 'Curious / open' },
+  { id: 'positive', label: 'Positive / forward-leaning' },
+];
 
 export const FEELING_OPTIONS: FeelingOption[] = [
-  { id: 'lost', label: 'Lost' },
-  { id: 'stuck', label: 'Stuck' },
-  { id: 'unsure', label: 'Unsure' },
-  { id: 'overlooked', label: 'Overlooked' },
-  { id: 'anxious', label: 'Anxious' },
-  { id: 'restless', label: 'Restless' },
-  { id: 'burned-out', label: 'Burned out' },
-  { id: 'ready-but-scared', label: 'Ready but scared' },
+  { id: 'not-myself', label: 'Not myself lately', group: 'difficult' },
+  { id: 'holding-together', label: 'Holding it together', group: 'difficult' },
+  { id: 'running-on-empty', label: 'Running on empty', group: 'difficult' },
+  { id: 'quietly-panicking', label: 'Quietly panicking', group: 'difficult' },
+  { id: 'done-pretending', label: 'Done pretending', group: 'difficult' },
+  { id: 'figuring-it-out', label: 'Figuring it out', group: 'uncertain' },
+  { id: 'in-between', label: 'Somewhere in between', group: 'uncertain' },
+  { id: 'waiting-for-sign', label: 'Waiting for a sign', group: 'uncertain' },
+  { id: 'starting-over', label: 'Starting over', group: 'uncertain' },
+  { id: 'curious-next', label: 'Curious what’s next', group: 'curious' },
+  { id: 'open-to-anything', label: 'Open to anything', group: 'curious' },
+  { id: 'looking-for-spark', label: 'Looking for a spark', group: 'curious' },
+  { id: 'excited-to-connect', label: 'Excited to connect', group: 'positive' },
+  { id: 'ready-for-change', label: 'Ready for a change', group: 'positive' },
+  { id: 'hopeful-again', label: 'Hopeful again', group: 'positive' },
 ];
 
 /* ---------------------------------------------------------------- step 2 */

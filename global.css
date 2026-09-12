@@ -41,6 +41,7 @@
 
 /*
  * Momentum theme: cool paper, ink, plum for choices, moss for "it's done".
+ * Heavy (red), curious (yellow) and hopeful (green) tint the feeling chips.
  * No gradients, no shadows. Outlines only.
  * Keep LIGHT / DARK in lib/theme.ts in sync for icons and native color props.
  */
@@ -79,6 +80,19 @@
       --color-plum-soft: #efe3e8;
       --color-moss: #4a6355;
       --color-moss-soft: #e1e9e4;
+
+      --color-heavy: #9a3a33;
+      --color-heavy-soft: #f5deda;
+      --color-heavy-tint: #fbf0ee;
+      --color-heavy-line: #e6bfb9;
+      --color-curious: #735410;
+      --color-curious-soft: #f4e3b5;
+      --color-curious-tint: #fbf5e4;
+      --color-curious-line: #e3cd8e;
+      --color-hopeful: #2f6841;
+      --color-hopeful-soft: #d8ebdc;
+      --color-hopeful-tint: #f0f7f1;
+      --color-hopeful-line: #b3d3bb;
     }
 
     @variant dark {
@@ -114,6 +128,19 @@
       --color-plum-soft: #3a2430;
       --color-moss: #a8c6b4;
       --color-moss-soft: #243329;
+
+      --color-heavy: #f2ada5;
+      --color-heavy-soft: #4a2b29;
+      --color-heavy-tint: #2a2426;
+      --color-heavy-line: #5e3b38;
+      --color-curious: #eacb7a;
+      --color-curious-soft: #453719;
+      --color-curious-tint: #29281f;
+      --color-curious-line: #5a4a26;
+      --color-hopeful: #9fd3ae;
+      --color-hopeful-soft: #22412c;
+      --color-hopeful-tint: #212c27;
+      --color-hopeful-line: #37523f;
     }
   }
 }
@@ -132,6 +159,19 @@
   --color-plum-soft: #efe3e8;
   --color-moss: #4a6355;
   --color-moss-soft: #e1e9e4;
+
+  --color-heavy: #9a3a33;
+  --color-heavy-soft: #f5deda;
+  --color-heavy-tint: #fbf0ee;
+  --color-heavy-line: #e6bfb9;
+  --color-curious: #735410;
+  --color-curious-soft: #f4e3b5;
+  --color-curious-tint: #fbf5e4;
+  --color-curious-line: #e3cd8e;
+  --color-hopeful: #2f6841;
+  --color-hopeful-soft: #d8ebdc;
+  --color-hopeful-tint: #f0f7f1;
+  --color-hopeful-line: #b3d3bb;
 }
 
 /*
