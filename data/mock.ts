@@ -93,28 +93,36 @@ export interface DeepeningQuestion {
 
 export const DEEPENING_QUESTIONS: DeepeningQuestion[] = [
   {
-    id: 'urgency',
-    headline: 'What changed recently that made this feel urgent?',
-    hint: 'One thing. The one you keep replaying.',
+    id: 'why-now',
+    headline: 'So tell me — what’s going on in your career right now that made you sign up today?',
+    hint: 'Whatever tipped it, big or small.',
     mockTranscript:
-      'My return date came through last week. Six weeks. And I found out my old team was split in two while I was away.',
+      "My return date came through last week. Six weeks. And my old team got split in two while I was away, so I don't really know what I'm going back to.",
     mockFollowUp: 'And nobody has asked me what I actually want to come back to.',
   },
   {
-    id: 'tried',
-    headline: 'What have you already tried?',
-    hint: 'Even the things that did not work.',
+    id: 'ask-anyone',
+    headline:
+      'If you could get advice from anyone in your field, what would you actually ask them?',
+    hint: 'The real question, not the polite one.',
     mockTranscript:
-      "I rewrote my CV. I read about negotiation and then didn't do any of it. I've drafted the email to my manager four times.",
-    mockFollowUp:
-      'I asked a friend to practise the conversation with me, and I cried halfway through.',
+      'How she walked back into a leadership role after years away without spending the first year apologising for it.',
+    mockFollowUp: 'And whether she negotiated, or just took what she was offered.',
   },
   {
-    id: 'unsaid',
-    headline: "What's the part you can't say out loud at work?",
-    hint: 'No one here knows your name.',
-    mockTranscript: "That I'm not sure I want the job I'm fighting to get back.",
-    mockFollowUp: "And part of me is relieved I've had an excuse not to decide.",
+    id: 'proud-moment',
+    headline: 'What’s a moment in your career you’re proud of, but maybe don’t talk about much?',
+    hint: 'It doesn’t have to be a big one.',
+    mockTranscript:
+      'Right before my leave, I rebuilt a team that was about to be shut down. It happened so close to leaving that I never really mention it.',
+    mockFollowUp: 'Somewhere along the way it started to feel like it belonged to someone else.',
+  },
+  {
+    id: 'five-years-ago',
+    headline: 'What do you wish someone had told you five years ago?',
+    hint: 'Whatever comes to mind first.',
+    mockTranscript: "That I didn't have to earn my place back by saying yes to everything.",
+    mockFollowUp: "And that it's fine to want something different from what I wanted before.",
   },
 ];
 
