@@ -10,7 +10,7 @@ export default ({ config }: ConfigContext): ExpoConfig => {
 
   return {
     ...config,
-    name: 'Herestory',
+    name: 'Momentum',
     slug: 'herestory',
     version: process.env.BILT_APP_VERSION ?? '1.0.0',
     orientation: 'portrait',

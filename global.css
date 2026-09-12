@@ -40,6 +40,71 @@
 @source './node_modules/heroui-native/lib';
 
 /*
+ * Momentum theme — warm, calm, editorial.
+ * paper #FAF8F5 · ink #1A1A1A · terracotta #C4643F
+ * No blue, no gradients, no shadows. Hairline borders only.
+ */
+@layer theme {
+  :root {
+    @variant light {
+      --background: oklch(0.978 0.004 85);
+      --foreground: oklch(0.218 0 0);
+      --muted: oklch(0.53 0.008 70);
+      --border: oklch(0.905 0.012 85);
+      --separator: oklch(0.905 0.012 85);
+      --panel: oklch(0.99 0.003 85);
+      --surface: oklch(0.99 0.003 85);
+      --surface-foreground: oklch(0.218 0 0);
+      --default: oklch(0.94 0.008 85);
+      --default-foreground: oklch(0.218 0 0);
+      --accent: oklch(0.61 0.133 41);
+      --accent-foreground: oklch(0.985 0.004 85);
+      --accent-soft: oklch(0.925 0.022 45);
+      --accent-soft-foreground: oklch(0.52 0.12 41);
+      --link: oklch(0.61 0.133 41);
+      --focus: oklch(0.61 0.133 41);
+      --field: oklch(0.965 0.006 85);
+      --field-border: oklch(0.905 0.012 85);
+    }
+
+    @variant dark {
+      --background: oklch(0.978 0.004 85);
+      --foreground: oklch(0.218 0 0);
+      --muted: oklch(0.53 0.008 70);
+      --border: oklch(0.905 0.012 85);
+      --separator: oklch(0.905 0.012 85);
+      --panel: oklch(0.99 0.003 85);
+      --surface: oklch(0.99 0.003 85);
+      --surface-foreground: oklch(0.218 0 0);
+      --default: oklch(0.94 0.008 85);
+      --default-foreground: oklch(0.218 0 0);
+      --accent: oklch(0.61 0.133 41);
+      --accent-foreground: oklch(0.985 0.004 85);
+      --accent-soft: oklch(0.925 0.022 45);
+      --accent-soft-foreground: oklch(0.52 0.12 41);
+      --link: oklch(0.61 0.133 41);
+      --focus: oklch(0.61 0.133 41);
+      --field: oklch(0.965 0.006 85);
+      --field-border: oklch(0.905 0.012 85);
+    }
+  }
+}
+
+@theme {
+  --color-paper: oklch(0.978 0.004 85);
+  --color-paper-raised: oklch(0.992 0.003 85);
+  --color-ink: oklch(0.218 0 0);
+  --color-ink-soft: oklch(0.53 0.008 70);
+  --color-ink-faint: oklch(0.68 0.008 70);
+  --color-terracotta: oklch(0.61 0.133 41);
+  --color-terracotta-deep: oklch(0.52 0.12 41);
+  --color-terracotta-soft: oklch(0.925 0.022 45);
+  --color-hairline: oklch(0.905 0.012 85);
+  --color-stone: oklch(0.94 0.008 85);
+  --color-stone-deep: oklch(0.9 0.008 85);
+}
+
+/*
  * Do not remove. HeroUI defines calculated theme colors with color-mix().
  * On web, useThemeColor may return that unresolved expression. Components
  * that pass an affected color through HeroUI's colorKit (including outline
@@ -49,32 +114,148 @@
  * resolve these mixes at build time, so these declarations only change web
  * behavior.
  */
-@property --color-accent-hover { syntax: '<color>'; inherits: true; initial-value: transparent; }
-@property --color-accent-soft { syntax: '<color>'; inherits: true; initial-value: transparent; }
-@property --color-accent-soft-foreground { syntax: '<color>'; inherits: true; initial-value: transparent; }
-@property --color-accent-soft-hover { syntax: '<color>'; inherits: true; initial-value: transparent; }
-@property --color-background-secondary { syntax: '<color>'; inherits: true; initial-value: transparent; }
-@property --color-background-tertiary { syntax: '<color>'; inherits: true; initial-value: transparent; }
-@property --color-border-secondary { syntax: '<color>'; inherits: true; initial-value: transparent; }
-@property --color-border-tertiary { syntax: '<color>'; inherits: true; initial-value: transparent; }
-@property --color-danger-hover { syntax: '<color>'; inherits: true; initial-value: transparent; }
-@property --color-danger-soft { syntax: '<color>'; inherits: true; initial-value: transparent; }
-@property --color-danger-soft-foreground { syntax: '<color>'; inherits: true; initial-value: transparent; }
-@property --color-danger-soft-hover { syntax: '<color>'; inherits: true; initial-value: transparent; }
-@property --color-default-hover { syntax: '<color>'; inherits: true; initial-value: transparent; }
-@property --color-default-soft { syntax: '<color>'; inherits: true; initial-value: transparent; }
-@property --color-default-soft-hover { syntax: '<color>'; inherits: true; initial-value: transparent; }
-@property --color-field-border-focus { syntax: '<color>'; inherits: true; initial-value: transparent; }
-@property --color-field-border-hover { syntax: '<color>'; inherits: true; initial-value: transparent; }
-@property --color-field-hover { syntax: '<color>'; inherits: true; initial-value: transparent; }
-@property --color-separator-secondary { syntax: '<color>'; inherits: true; initial-value: transparent; }
-@property --color-separator-tertiary { syntax: '<color>'; inherits: true; initial-value: transparent; }
-@property --color-success-hover { syntax: '<color>'; inherits: true; initial-value: transparent; }
-@property --color-success-soft { syntax: '<color>'; inherits: true; initial-value: transparent; }
-@property --color-success-soft-foreground { syntax: '<color>'; inherits: true; initial-value: transparent; }
-@property --color-success-soft-hover { syntax: '<color>'; inherits: true; initial-value: transparent; }
-@property --color-surface-hover { syntax: '<color>'; inherits: true; initial-value: transparent; }
-@property --color-warning-hover { syntax: '<color>'; inherits: true; initial-value: transparent; }
-@property --color-warning-soft { syntax: '<color>'; inherits: true; initial-value: transparent; }
-@property --color-warning-soft-foreground { syntax: '<color>'; inherits: true; initial-value: transparent; }
-@property --color-warning-soft-hover { syntax: '<color>'; inherits: true; initial-value: transparent; }
+@property --color-accent-hover {
+  syntax: '<color>';
+  inherits: true;
+  initial-value: transparent;
+}
+@property --color-accent-soft {
+  syntax: '<color>';
+  inherits: true;
+  initial-value: transparent;
+}
+@property --color-accent-soft-foreground {
+  syntax: '<color>';
+  inherits: true;
+  initial-value: transparent;
+}
+@property --color-accent-soft-hover {
+  syntax: '<color>';
+  inherits: true;
+  initial-value: transparent;
+}
+@property --color-background-secondary {
+  syntax: '<color>';
+  inherits: true;
+  initial-value: transparent;
+}
+@property --color-background-tertiary {
+  syntax: '<color>';
+  inherits: true;
+  initial-value: transparent;
+}
+@property --color-border-secondary {
+  syntax: '<color>';
+  inherits: true;
+  initial-value: transparent;
+}
+@property --color-border-tertiary {
+  syntax: '<color>';
+  inherits: true;
+  initial-value: transparent;
+}
+@property --color-danger-hover {
+  syntax: '<color>';
+  inherits: true;
+  initial-value: transparent;
+}
+@property --color-danger-soft {
+  syntax: '<color>';
+  inherits: true;
+  initial-value: transparent;
+}
+@property --color-danger-soft-foreground {
+  syntax: '<color>';
+  inherits: true;
+  initial-value: transparent;
+}
+@property --color-danger-soft-hover {
+  syntax: '<color>';
+  inherits: true;
+  initial-value: transparent;
+}
+@property --color-default-hover {
+  syntax: '<color>';
+  inherits: true;
+  initial-value: transparent;
+}
+@property --color-default-soft {
+  syntax: '<color>';
+  inherits: true;
+  initial-value: transparent;
+}
+@property --color-default-soft-hover {
+  syntax: '<color>';
+  inherits: true;
+  initial-value: transparent;
+}
+@property --color-field-border-focus {
+  syntax: '<color>';
+  inherits: true;
+  initial-value: transparent;
+}
+@property --color-field-border-hover {
+  syntax: '<color>';
+  inherits: true;
+  initial-value: transparent;
+}
+@property --color-field-hover {
+  syntax: '<color>';
+  inherits: true;
+  initial-value: transparent;
+}
+@property --color-separator-secondary {
+  syntax: '<color>';
+  inherits: true;
+  initial-value: transparent;
+}
+@property --color-separator-tertiary {
+  syntax: '<color>';
+  inherits: true;
+  initial-value: transparent;
+}
+@property --color-success-hover {
+  syntax: '<color>';
+  inherits: true;
+  initial-value: transparent;
+}
+@property --color-success-soft {
+  syntax: '<color>';
+  inherits: true;
+  initial-value: transparent;
+}
+@property --color-success-soft-foreground {
+  syntax: '<color>';
+  inherits: true;
+  initial-value: transparent;
+}
+@property --color-success-soft-hover {
+  syntax: '<color>';
+  inherits: true;
+  initial-value: transparent;
+}
+@property --color-surface-hover {
+  syntax: '<color>';
+  inherits: true;
+  initial-value: transparent;
+}
+@property --color-warning-hover {
+  syntax: '<color>';
+  inherits: true;
+  initial-value: transparent;
+}
+@property --color-warning-soft {
+  syntax: '<color>';
+  inherits: true;
+  initial-value: transparent;
+}
+@property --color-warning-soft-foreground {
+  syntax: '<color>';
+  inherits: true;
+  initial-value: transparent;
+}
+@property --color-warning-soft-hover {
+  syntax: '<color>';
+  inherits: true;
+  initial-value: transparent;
+}

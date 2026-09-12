@@ -9,11 +9,18 @@ import {
   Inter_700Bold,
   useFonts,
 } from '@expo-google-fonts/inter';
+import {
+  Lora_400Regular,
+  Lora_400Regular_Italic,
+  Lora_500Medium,
+  Lora_600SemiBold,
+} from '@expo-google-fonts/lora';
 import Constants, { ExecutionEnvironment } from 'expo-constants';
-import { Platform } from 'react-native';
+import { Platform, View } from 'react-native';
 import { useEffect } from 'react';
 import * as DevClient from 'expo-dev-client';
 import { HeroUINativeProvider } from 'heroui-native';
+import { StatusBar } from 'expo-status-bar';
 import { Uniwind } from 'uniwind';
 import {
   ErrorBoundary as ExpoErrorBoundary,
@@ -26,6 +33,8 @@ import { initPostHog } from '@/lib/posthog';
 import { registerServiceWorker } from '@/lib/registerServiceWorker';
 import { reportErrorToParent } from '@/lib/reportPreviewError';
 import { InstallPrompt } from '@/components/InstallPrompt';
+import { MomentumProvider } from '@/lib/momentum-context';
+import { PAPER } from '@/lib/theme';
 
 /**
  * Custom ErrorBoundary that reports React render errors to the parent window (Bilt preview iframe)
@@ -54,6 +63,10 @@ export default function RootLayout() {
     Inter_500Medium,
     Inter_600SemiBold,
     Inter_700Bold,
+    Lora_400Regular,
+    Lora_400Regular_Italic,
+    Lora_500Medium,
+    Lora_600SemiBold,
   });
 
   // Report uncaught JS errors and unhandled promise rejections to parent (Bilt preview iframe)
@@ -84,25 +97,20 @@ export default function RootLayout() {
   // Also register font family names as fallback if expo-font fails
   useEffect(() => {
     if (Platform.OS === 'web') {
-      // Check if link already exists
-      const existingLink = document.querySelector(
-        'link[href*="fonts.googleapis.com/css2?family=Inter"]',
-      );
+      const families = [
+        'https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap',
+        'https://fonts.googleapis.com/css2?family=Lora:ital,wght@0,400;0,500;0,600;1,400&display=swap',
+      ];
 
-      if (!existingLink) {
-        const link = document.createElement('link');
-        link.rel = 'stylesheet';
-        link.href =
-          'https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap';
-        link.crossOrigin = 'anonymous';
-        document.head.appendChild(link);
+      for (const href of families) {
+        if (!document.querySelector(`link[href="${href}"]`)) {
+          const link = document.createElement('link');
+          link.rel = 'stylesheet';
+          link.href = href;
+          link.crossOrigin = 'anonymous';
+          document.head.appendChild(link);
+        }
       }
-
-      // Note: The @import in global.css and the link tag above ensure Inter font loads
-      // expo-font will register the font family names (Inter_400Regular, etc.)
-      // If expo-font fails due to proxy issues, the fonts should still be available
-      // via the direct Google Fonts CDN link, though the specific font family names
-      // might not be registered. The app should still render with Inter font.
     }
   }, []);
 
@@ -141,9 +149,26 @@ export default function RootLayout() {
   return (
     <GestureHandlerRootView style={{ flex: 1 }}>
       <HeroUINativeProvider>
-        <Stack>
-          <Stack.Screen name="(tabs)" options={{ title: 'Habits', headerShown: false }} />
-        </Stack>
+        <MomentumProvider>
+          {/* expo-status-bar's `style` prop is a string enum ('dark' | 'light' | 'auto' | 'inverted'), not a RN style object */}
+          {/* oxlint-disable-next-line react/style-prop-object */}
+          <StatusBar style="dark" />
+          <View className="bg-stone flex-1 flex-row justify-center">
+            <View className="web:border-x web:border-hairline bg-paper max-w-[430px] flex-1">
+              <Stack
+                screenOptions={{
+                  headerShown: false,
+                  animation: 'slide_from_right',
+                  contentStyle: { backgroundColor: PAPER },
+                }}
+              >
+                <Stack.Screen name="index" />
+                <Stack.Screen name="mentor" />
+                <Stack.Screen name="reset" options={{ animation: 'fade' }} />
+              </Stack>
+            </View>
+          </View>
+        </MomentumProvider>
         <InstallPrompt />
       </HeroUINativeProvider>
     </GestureHandlerRootView>

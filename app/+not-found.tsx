@@ -1,17 +1,32 @@
 import { Link, Stack } from 'expo-router';
-import { View, Text } from 'react-native';
+import { View } from 'react-native';
+
+import { Body, Display } from '@/components/momentum/Type';
+import { SafeAreaView } from '@/components/ui/primitives/SafeAreaView';
+import { sans, TERRACOTTA } from '@/lib/theme';
 
 export default function NotFoundScreen() {
   return (
     <>
-      <Stack.Screen options={{ title: 'Oops!' }} />
-      <View>
-        <Text>This screen doesn&apos;t exist.</Text>
-
-        <Link href="/">
-          <Text>Go to home screen!</Text>
-        </Link>
-      </View>
+      <Stack.Screen options={{ title: 'Not found' }} />
+      <SafeAreaView className="bg-paper flex-1">
+        <View className="flex-1 items-center justify-center px-6">
+          <Display className="text-center">Nothing here.</Display>
+          <Body className="mt-4 text-center">This screen does not exist.</Body>
+          <Link
+            href="/"
+            style={{
+              fontFamily: sans.medium,
+              color: TERRACOTTA,
+              textDecorationLine: 'underline',
+              marginTop: 32,
+              fontSize: 14,
+            }}
+          >
+            Back to the start
+          </Link>
+        </View>
+      </SafeAreaView>
     </>
   );
 }
