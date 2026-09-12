@@ -36,6 +36,7 @@ export type MenteeStep =
   | 'feeling'
   | 'lifeArea'
   | 'context'
+  | 'conversationIntro'
   | 'deepening'
   | 'moment'
   | 'destination'
@@ -73,6 +74,7 @@ const PROGRESS_ORDER: MenteeStep[] = [
   'feeling',
   'lifeArea',
   'context',
+  'conversationIntro',
   'deepening',
   'moment',
   'destination',
@@ -98,8 +100,10 @@ function previousStep(step: MenteeStep, lifeArea: LifeAreaId | null): MenteeStep
       return 'feeling';
     case 'context':
       return 'lifeArea';
-    case 'deepening':
+    case 'conversationIntro':
       return lifeArea === 'personal' ? 'lifeArea' : 'context';
+    case 'deepening':
+      return 'conversationIntro';
     case 'moment':
       return 'deepening';
     case 'destination':
@@ -167,6 +171,8 @@ interface MomentumActions {
   setWorkLife: (value: string) => void;
   continueFromWorkLife: () => void;
   skipWorkLife: () => void;
+  /** From the conversation intro to the first question. */
+  startConversation: () => void;
   setAnswer: (questionId: string, value: string) => void;
   /** Adds a new recording to the end of what she already said. */
   appendAnswer: (questionId: string, text: string) => void;
@@ -259,15 +265,20 @@ export function MomentumProvider({ children }: PropsWithChildren) {
   }, []);
 
   const continueFromLifeArea = useCallback(() => {
-    setStep(lifeArea === 'personal' ? 'deepening' : 'context');
+    setStep(lifeArea === 'personal' ? 'conversationIntro' : 'context');
   }, [lifeArea]);
 
   const continueFromWorkLife = useCallback(() => {
-    setStep('deepening');
+    setStep('conversationIntro');
   }, []);
 
   const skipWorkLife = useCallback(() => {
     setWorkLife('');
+    setStep('conversationIntro');
+  }, []);
+
+  const startConversation = useCallback(() => {
+    setDeepeningIndex(0);
     setStep('deepening');
   }, []);
 
@@ -534,6 +545,7 @@ export function MomentumProvider({ children }: PropsWithChildren) {
       setWorkLife,
       continueFromWorkLife,
       skipWorkLife,
+      startConversation,
       setAnswer,
       appendAnswer,
       advanceDeepening,
@@ -610,6 +622,7 @@ export function MomentumProvider({ children }: PropsWithChildren) {
       setDestination,
       skipHelp,
       skipWorkLife,
+      startConversation,
       startJourney,
       startMatching,
       submitTextReply,

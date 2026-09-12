@@ -11,6 +11,7 @@ import {
   SignalStep,
 } from '@/components/momentum/steps/ContinuationSteps';
 import { ContextStep } from '@/components/momentum/steps/ContextStep';
+import { ConversationIntroStep } from '@/components/momentum/steps/ConversationIntroStep';
 import { DeepeningStep } from '@/components/momentum/steps/DeepeningStep';
 import { DestinationStep } from '@/components/momentum/steps/DestinationStep';
 import { ExtrasStep } from '@/components/momentum/steps/ExtrasStep';
@@ -35,6 +36,8 @@ function StepScreen({ step }: { step: MenteeStep }) {
       return <LifeAreaStep />;
     case 'context':
       return <ContextStep />;
+    case 'conversationIntro':
+      return <ConversationIntroStep />;
     case 'deepening':
       return <DeepeningStep />;
     case 'moment':
