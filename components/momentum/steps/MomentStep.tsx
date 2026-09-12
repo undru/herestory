@@ -1,19 +1,46 @@
-import { View } from 'react-native';
+import { ActivityIndicator, View } from 'react-native';
 
 import { ActionButton, TextLink } from '@/components/momentum/ActionButton';
-import { Body, Caption, Overline } from '@/components/momentum/Type';
+import { Body, Caption, Overline, Title } from '@/components/momentum/Type';
 import { EditableChip, EditableField } from '@/components/momentum/EditableField';
 import { StepShell } from '@/components/momentum/StepShell';
 import { useMomentum } from '@/lib/momentum-context';
+import { usePalette } from '@/lib/theme';
 
 export function MomentStep() {
-  const { momentCard, isGeneratingCard, progress, actions } = useMomentum();
+  const { momentCard, isGeneratingCard, cardError, progress, actions } = useMomentum();
+  const palette = usePalette();
 
-  if (!momentCard || isGeneratingCard) {
+  // The closing line stays up only while the card is really being built.
+  if (isGeneratingCard || (!momentCard && !cardError)) {
     return (
       <StepShell transitionKey="moment-loading" progress={progress} centered>
-        <View className="items-center">
-          <Body className="text-ink text-center">Putting it into words.</Body>
+        <View role="status" accessibilityLiveRegion="polite" className="items-center">
+          <Title className="text-center">
+            Thanks for being open with me. Give us a moment to put this together.
+          </Title>
+          <View className="mt-6" accessibilityElementsHidden importantForAccessibility="no">
+            <ActivityIndicator size="small" color={palette.inkFaint} />
+          </View>
+        </View>
+      </StepShell>
+    );
+  }
+
+  if (cardError || !momentCard) {
+    return (
+      <StepShell
+        transitionKey="moment-error"
+        progress={progress}
+        onBack={actions.goBack}
+        centered
+        footer={<ActionButton label="Try again" onPress={() => void actions.retryMomentCard()} />}
+      >
+        <View role="alert" accessibilityLiveRegion="assertive" className="items-center">
+          <Title className="text-center">We couldn’t put this together just now.</Title>
+          <Body className="mt-3 text-center">
+            Your answers are still here. Try again, or go back to change them.
+          </Body>
         </View>
       </StepShell>
     );

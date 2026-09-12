@@ -143,6 +143,8 @@ interface MomentumState {
   answers: Record<string, string>;
   momentCard: MomentCardData | null;
   isGeneratingCard: boolean;
+  /** Card generation failed; the answers are kept for a retry. */
+  cardError: boolean;
   destination: string;
   matches: Mentor[];
   isMatching: boolean;
@@ -182,6 +184,8 @@ interface MomentumActions {
   confirmMomentCard: () => void;
   /** "Not quite": back to the questions with every answer kept. */
   addToAnswers: () => void;
+  /** Builds the moment card again from the same answers after a failure. */
+  retryMomentCard: () => Promise<void>;
   setDestination: (value: string) => void;
   startMatching: () => void;
   runMatching: () => Promise<void>;
@@ -229,6 +233,7 @@ export function MomentumProvider({ children }: PropsWithChildren) {
   /** The answers the current moment card was built from. */
   const [cardAnswers, setCardAnswers] = useState<Record<string, string> | null>(null);
   const [isGeneratingCard, setIsGeneratingCard] = useState(false);
+  const [cardError, setCardError] = useState(false);
   const [destination, setDestinationValue] = useState('');
   const [matches, setMatches] = useState<Mentor[]>([]);
   const [isMatching, setIsMatching] = useState(false);
@@ -296,6 +301,7 @@ export function MomentumProvider({ children }: PropsWithChildren) {
   const buildCard = useCallback(
     async (currentAnswers: Record<string, string>) => {
       setIsGeneratingCard(true);
+      setCardError(false);
       try {
         const card = await generateMomentCard({
           feelings,
@@ -305,6 +311,8 @@ export function MomentumProvider({ children }: PropsWithChildren) {
         });
         setMomentCard(card);
         setCardAnswers(currentAnswers);
+      } catch {
+        setCardError(true);
       } finally {
         setIsGeneratingCard(false);
       }
@@ -319,7 +327,10 @@ export function MomentumProvider({ children }: PropsWithChildren) {
     }
     setStep('moment');
     // Nothing new was added: keep the card, including any edits she made on it.
-    if (momentCard && cardAnswers && sameAnswers(cardAnswers, answers)) return;
+    if (momentCard && cardAnswers && sameAnswers(cardAnswers, answers)) {
+      setCardError(false);
+      return;
+    }
     await buildCard(answers);
   }, [answers, buildCard, cardAnswers, deepeningIndex, momentCard]);
 
@@ -340,6 +351,10 @@ export function MomentumProvider({ children }: PropsWithChildren) {
     setDeepeningIndex(0);
     setStep('deepening');
   }, []);
+
+  const retryMomentCard = useCallback(async () => {
+    await buildCard(answers);
+  }, [answers, buildCard]);
 
   const setDestination = useCallback((value: string) => {
     setDestinationValue(value);
@@ -508,6 +523,7 @@ export function MomentumProvider({ children }: PropsWithChildren) {
     setAnswers({});
     setMomentCard(null);
     setCardAnswers(null);
+    setCardError(false);
     setDestinationValue('');
     setMatches([]);
     setSelectedMentorId(null);
@@ -553,6 +569,7 @@ export function MomentumProvider({ children }: PropsWithChildren) {
       commitMomentCard,
       confirmMomentCard,
       addToAnswers,
+      retryMomentCard,
       setDestination,
       startMatching,
       runMatching,
@@ -616,6 +633,7 @@ export function MomentumProvider({ children }: PropsWithChildren) {
       previewMentorStage,
       previewStep,
       resetAll,
+      retryMomentCard,
       runMatching,
       sendHelp,
       setAnswer,
@@ -644,6 +662,7 @@ export function MomentumProvider({ children }: PropsWithChildren) {
       answers,
       momentCard,
       isGeneratingCard,
+      cardError,
       destination,
       matches,
       isMatching,
@@ -664,6 +683,7 @@ export function MomentumProvider({ children }: PropsWithChildren) {
       actions,
       answers,
       bookedSlot,
+      cardError,
       challenge,
       deepeningIndex,
       destination,
