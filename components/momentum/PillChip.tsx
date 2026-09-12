@@ -62,7 +62,7 @@ export function PillChip({
 
   return (
     // Dim on a wrapper: Tappable's animated press opacity overrides an opacity class on itself.
-    <View className={cn(disabled && !selected && tone === 'select' && 'opacity-40')}>
+    <View className={cn('max-w-full', disabled && !selected && tone === 'select' && 'opacity-40')}>
       <Tappable
         accessibilityRole="button"
         accessibilityState={{ selected, disabled }}
@@ -78,7 +78,7 @@ export function PillChip({
       >
         <Text
           style={{ fontFamily: sans.regular }}
-          className={cn('text-[14px]', isChosen ? colors.chosenText : 'text-ink')}
+          className={cn('shrink text-[14px]', isChosen ? colors.chosenText : 'text-ink')}
         >
           {label}
         </Text>

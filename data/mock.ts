@@ -77,6 +77,42 @@ export const CV_MIME_TYPES = [
   'text/plain',
 ];
 
+export const LOCATION_HEADLINE = 'Where are you based?';
+export const LOCATION_SUBHEAD =
+  'This helps us connect you with women in similar time zones and markets.';
+export const LOCATION_PLACEHOLDER = 'e.g. Berlin, Germany';
+
+export const ORIGIN_HEADLINE = 'Where are you from, originally?';
+export const ORIGIN_SUBHEAD =
+  'Shared background often means shared context — we’ll use this to find common ground, not to categorize you.';
+export const ORIGIN_PLACEHOLDER = 'e.g. Accra, Ghana or Ghanaian';
+
+export const LANGUAGES_HEADLINE = 'What languages do you speak?';
+export const LANGUAGES_SUBHEAD =
+  'So conversations can happen in whatever language feels most natural.';
+
+/** Starting language chips, alphabetised. "Other" adds anything not listed. */
+export const LANGUAGE_OPTIONS = [
+  'Arabic',
+  'Bengali',
+  'Dutch',
+  'English',
+  'French',
+  'German',
+  'Hindi',
+  'Italian',
+  'Japanese',
+  'Korean',
+  'Mandarin Chinese',
+  'Polish',
+  'Portuguese',
+  'Russian',
+  'Spanish',
+  'Swahili',
+  'Turkish',
+  'Ukrainian',
+];
+
 /* ---------------------------------------------------------------- step 3 */
 
 export interface DeepeningQuestion {

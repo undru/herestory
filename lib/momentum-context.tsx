@@ -34,6 +34,9 @@ export type MenteeStep =
   | 'welcome'
   | 'feeling'
   | 'context'
+  | 'location'
+  | 'origin'
+  | 'languages'
   | 'conversationIntro'
   | 'deepening'
   | 'moment'
@@ -71,6 +74,9 @@ const PROGRESS_ORDER: MenteeStep[] = [
   'welcome',
   'feeling',
   'context',
+  'location',
+  'origin',
+  'languages',
   'conversationIntro',
   'deepening',
   'moment',
@@ -80,6 +86,13 @@ const PROGRESS_ORDER: MenteeStep[] = [
 ];
 
 const AFTER_MATCHES: MenteeStep[] = ['redaction', 'sent', 'helpOffer', 'helpAnswer', 'finish'];
+
+/** The profile-detail mini-flow after profile context, in order. */
+const NEXT_PROFILE_DETAIL: Partial<Record<MenteeStep, MenteeStep>> = {
+  location: 'origin',
+  origin: 'languages',
+  languages: 'conversationIntro',
+};
 
 export type MentorStage =
   | 'handoff'
@@ -95,8 +108,14 @@ function previousStep(step: MenteeStep): MenteeStep | null {
   switch (step) {
     case 'context':
       return 'feeling';
-    case 'conversationIntro':
+    case 'location':
       return 'context';
+    case 'origin':
+      return 'location';
+    case 'languages':
+      return 'origin';
+    case 'conversationIntro':
+      return 'languages';
     case 'deepening':
       return 'conversationIntro';
     case 'moment':
@@ -135,6 +154,10 @@ interface MomentumState {
   workLife: string;
   /** Name of the CV she picked this session. The file itself is never uploaded or read. */
   cvFileName: string | null;
+  /* Private, in-session profile details. Not shown publicly or used for matching yet. */
+  location: string;
+  origin: string;
+  languages: string[];
   deepeningIndex: number;
   answers: Record<string, string>;
   momentCard: MomentCardData | null;
@@ -169,6 +192,13 @@ interface MomentumActions {
   /** Moves on without a CV or work-life answer. */
   skipWorkLife: () => void;
   setCvFileName: (name: string | null) => void;
+  setLocation: (value: string) => void;
+  setOrigin: (value: string) => void;
+  setLanguages: (labels: string[]) => void;
+  /** Location, background and languages: on to the next screen. */
+  continueProfileDetail: () => void;
+  /** Clears the current profile-detail answer and moves on. */
+  skipProfileDetail: () => void;
   /** From the conversation intro to the first question. */
   startConversation: () => void;
   setAnswer: (questionId: string, value: string) => void;
@@ -223,6 +253,9 @@ export function MomentumProvider({ children }: PropsWithChildren) {
   const [feelings, setFeelings] = useState<string[]>([]);
   const [workLife, setWorkLife] = useState('');
   const [cvFileName, setCvFileName] = useState<string | null>(null);
+  const [location, setLocation] = useState('');
+  const [origin, setOrigin] = useState('');
+  const [languages, setLanguages] = useState<string[]>([]);
   const [deepeningIndex, setDeepeningIndex] = useState(0);
   const [answers, setAnswers] = useState<Record<string, string>>({});
   const [momentCard, setMomentCard] = useState<MomentCardData | null>(null);
@@ -262,19 +295,32 @@ export function MomentumProvider({ children }: PropsWithChildren) {
   }, []);
 
   const continueFromWorkLife = useCallback(() => {
-    setStep('conversationIntro');
+    setStep('location');
   }, []);
 
   const skipWorkLife = useCallback(() => {
     setWorkLife('');
     setCvFileName(null);
-    setStep('conversationIntro');
+    setStep('location');
   }, []);
 
   const startConversation = useCallback(() => {
     setDeepeningIndex(0);
     setStep('deepening');
   }, []);
+
+  const continueProfileDetail = useCallback(() => {
+    const next = NEXT_PROFILE_DETAIL[step];
+    if (next) setStep(next);
+  }, [step]);
+
+  const skipProfileDetail = useCallback(() => {
+    if (step === 'location') setLocation('');
+    if (step === 'origin') setOrigin('');
+    if (step === 'languages') setLanguages([]);
+    const next = NEXT_PROFILE_DETAIL[step];
+    if (next) setStep(next);
+  }, [step]);
 
   const setAnswer = useCallback((questionId: string, value: string) => {
     setAnswers((current) => ({ ...current, [questionId]: value }));
@@ -507,6 +553,9 @@ export function MomentumProvider({ children }: PropsWithChildren) {
     setFeelings([]);
     setWorkLife('');
     setCvFileName(null);
+    setLocation('');
+    setOrigin('');
+    setLanguages([]);
     setDeepeningIndex(0);
     setAnswers({});
     setMomentCard(null);
@@ -548,6 +597,11 @@ export function MomentumProvider({ children }: PropsWithChildren) {
       continueFromWorkLife,
       skipWorkLife,
       setCvFileName,
+      setLocation,
+      setOrigin,
+      setLanguages,
+      continueProfileDetail,
+      skipProfileDetail,
       startConversation,
       setAnswer,
       appendAnswer,
@@ -601,6 +655,7 @@ export function MomentumProvider({ children }: PropsWithChildren) {
       confirmRedaction,
       continueFromFeeling,
       continueFromWorkLife,
+      continueProfileDetail,
       dismissChallenge,
       goBack,
       loadChallenge,
@@ -624,6 +679,7 @@ export function MomentumProvider({ children }: PropsWithChildren) {
       setAnswer,
       setDestination,
       skipHelp,
+      skipProfileDetail,
       skipWorkLife,
       startConversation,
       startJourney,
@@ -643,6 +699,9 @@ export function MomentumProvider({ children }: PropsWithChildren) {
       feelings,
       workLife,
       cvFileName,
+      location,
+      origin,
+      languages,
       deepeningIndex,
       answers,
       momentCard,
@@ -680,10 +739,13 @@ export function MomentumProvider({ children }: PropsWithChildren) {
       isMatching,
       isSending,
       isSendingReply,
+      languages,
+      location,
       matches,
       mentorStage,
       momentCard,
       offeredSlot,
+      origin,
       progress,
       replyDurationSeconds,
       selectedMentor,

@@ -20,6 +20,11 @@ import { FinishStep, HelpAnswerStep, HelpOfferStep } from '@/components/momentum
 import { MatchesStep } from '@/components/momentum/steps/MatchesStep';
 import { MatchingStep } from '@/components/momentum/steps/MatchingStep';
 import { MomentStep } from '@/components/momentum/steps/MomentStep';
+import {
+  LanguagesStep,
+  LocationStep,
+  OriginStep,
+} from '@/components/momentum/steps/ProfileDetailSteps';
 import { RedactionStep } from '@/components/momentum/steps/RedactionStep';
 import { SentStep } from '@/components/momentum/steps/SentStep';
 import { WelcomeStep } from '@/components/momentum/steps/WelcomeStep';
@@ -33,6 +38,12 @@ function StepScreen({ step }: { step: MenteeStep }) {
       return <FeelingStep />;
     case 'context':
       return <ContextStep />;
+    case 'location':
+      return <LocationStep />;
+    case 'origin':
+      return <OriginStep />;
+    case 'languages':
+      return <LanguagesStep />;
     case 'conversationIntro':
       return <ConversationIntroStep />;
     case 'deepening':
