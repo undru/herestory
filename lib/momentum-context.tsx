@@ -133,6 +133,8 @@ interface MomentumState {
   progress: number;
   feelings: string[];
   workLife: string;
+  /** Name of the CV she picked this session. The file itself is never uploaded or read. */
+  cvFileName: string | null;
   deepeningIndex: number;
   answers: Record<string, string>;
   momentCard: MomentCardData | null;
@@ -164,7 +166,9 @@ interface MomentumActions {
   continueFromFeeling: () => void;
   setWorkLife: (value: string) => void;
   continueFromWorkLife: () => void;
+  /** Moves on without a CV or work-life answer. */
   skipWorkLife: () => void;
+  setCvFileName: (name: string | null) => void;
   /** From the conversation intro to the first question. */
   startConversation: () => void;
   setAnswer: (questionId: string, value: string) => void;
@@ -218,6 +222,7 @@ export function MomentumProvider({ children }: PropsWithChildren) {
   const [step, setStep] = useState<MenteeStep>('welcome');
   const [feelings, setFeelings] = useState<string[]>([]);
   const [workLife, setWorkLife] = useState('');
+  const [cvFileName, setCvFileName] = useState<string | null>(null);
   const [deepeningIndex, setDeepeningIndex] = useState(0);
   const [answers, setAnswers] = useState<Record<string, string>>({});
   const [momentCard, setMomentCard] = useState<MomentCardData | null>(null);
@@ -262,6 +267,7 @@ export function MomentumProvider({ children }: PropsWithChildren) {
 
   const skipWorkLife = useCallback(() => {
     setWorkLife('');
+    setCvFileName(null);
     setStep('conversationIntro');
   }, []);
 
@@ -500,6 +506,7 @@ export function MomentumProvider({ children }: PropsWithChildren) {
     setStep('welcome');
     setFeelings([]);
     setWorkLife('');
+    setCvFileName(null);
     setDeepeningIndex(0);
     setAnswers({});
     setMomentCard(null);
@@ -540,6 +547,7 @@ export function MomentumProvider({ children }: PropsWithChildren) {
       setWorkLife,
       continueFromWorkLife,
       skipWorkLife,
+      setCvFileName,
       startConversation,
       setAnswer,
       appendAnswer,
@@ -634,6 +642,7 @@ export function MomentumProvider({ children }: PropsWithChildren) {
       progress,
       feelings,
       workLife,
+      cvFileName,
       deepeningIndex,
       answers,
       momentCard,
@@ -661,6 +670,7 @@ export function MomentumProvider({ children }: PropsWithChildren) {
       bookedSlot,
       cardError,
       challenge,
+      cvFileName,
       deepeningIndex,
       destination,
       feelings,

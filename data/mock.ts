@@ -60,7 +60,22 @@ export const FEELING_OPTIONS: FeelingOption[] = [
 
 /* ---------------------------------------------------------------- step 2 */
 
-export const WORK_LIFE_PLACEHOLDER = 'Your role, how long, what you were known for';
+export const PROFILE_CONTEXT_HEADLINE = 'Let’s understand your world.';
+export const PROFILE_CONTEXT_SUBHEAD =
+  'Upload your CV or LinkedIn so we can match you with someone who’s actually walked your path.';
+export const PROFILE_CONTEXT_TRUST =
+  'This shapes your matches — it’s never shown publicly without your permission.';
+export const LINKEDIN_COMING_SOON =
+  'Connecting LinkedIn is coming soon. For now, upload your CV or skip for now.';
+export const CV_PICK_FAILED = 'We couldn’t open your files. Try again, or skip for now.';
+
+/** CV formats the picker accepts: PDF, DOC, DOCX and plain text. */
+export const CV_MIME_TYPES = [
+  'application/pdf',
+  'application/msword',
+  'application/vnd.openxmlformats-officedocument.wordprocessingml.document',
+  'text/plain',
+];
 
 /* ---------------------------------------------------------------- step 3 */
 
