@@ -9,7 +9,12 @@ import { useMomentum } from '@/lib/momentum-context';
 
 export function SentStep() {
   const router = useRouter();
-  const { progress } = useMomentum();
+  const { progress, actions } = useMomentum();
+
+  const seeMentorView = () => {
+    actions.startMentorHandoff();
+    router.push('/mentor');
+  };
 
   return (
     <StepShell transitionKey="sent" progress={progress} centered>
@@ -19,11 +24,7 @@ export function SentStep() {
         <Body className="mt-5 max-w-[300px] text-center">
           She hears your card as a voice note first. You will get one back before the day is out.
         </Body>
-        <TextLink
-          className="mt-9"
-          label="See what she sees"
-          onPress={() => router.push('/mentor')}
-        />
+        <TextLink className="mt-9" label="See what she sees" onPress={seeMentorView} />
       </View>
     </StepShell>
   );

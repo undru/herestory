@@ -19,19 +19,23 @@ import {
 import {
   acceptChallenge,
   buildAnonymizedCard,
+  confirmConversationTime,
   declineChallenge,
   fetchMentorChallenge,
   findMatches,
   generateMomentCard,
+  offerAvailability,
   parseProfessionalContext,
   saveMomentCard,
   sendMentorRequest,
+  sendTextReply,
   sendVoiceReply,
   type ProfessionalContextInput,
   type RecordingResult,
 } from '@/lib/api';
 
 export type MenteeStep =
+  | 'welcome'
   | 'feeling'
   | 'lifeArea'
   | 'context'
@@ -40,7 +44,15 @@ export type MenteeStep =
   | 'destination'
   | 'matching'
   | 'matches'
-  | 'sent';
+  | 'redaction'
+  | 'sent'
+  | 'signal'
+  | 'answer'
+  | 'connected'
+  | 'chat'
+  | 'book'
+  | 'booked'
+  | 'people';
 
 /** Progress bar positions. 'sent' sits at the end of the flow. */
 export const STEP_ORDER: MenteeStep[] = [
@@ -54,7 +66,14 @@ export const STEP_ORDER: MenteeStep[] = [
   'matches',
 ];
 
-export type MentorStage = 'inbox' | 'reply' | 'sent' | 'declined';
+export type MentorStage =
+  | 'handoff'
+  | 'notification'
+  | 'inbox'
+  | 'reply'
+  | 'offer'
+  | 'done'
+  | 'declined';
 
 interface MomentumState {
   /* mentee flow */
@@ -82,9 +101,12 @@ interface MomentumState {
   isLoadingChallenge: boolean;
   isSendingReply: boolean;
   replyDurationSeconds: number;
+  offeredSlot: string | null;
+  bookedSlot: string | null;
 }
 
 interface MomentumActions {
+  startJourney: () => void;
   toggleFeeling: (id: string) => void;
   setFeelingNote: (value: string) => void;
   continueFromFeeling: () => void;
@@ -111,11 +133,24 @@ interface MomentumActions {
   selectMentor: (mentorId: string) => Promise<void>;
   clearSelectedMentor: () => void;
   sendRequest: () => Promise<void>;
+  confirmRedaction: () => Promise<void>;
+  openSignal: () => void;
+  viewAnswer: () => void;
+  acceptConnection: () => void;
+  openChat: () => void;
+  openBooking: () => void;
+  confirmBooking: (slot: string) => Promise<void>;
+  openPeople: () => void;
   goBack: () => void;
+  startMentorHandoff: () => void;
+  openMentorNotification: () => void;
+  openMentorInbox: () => void;
   loadChallenge: () => Promise<void>;
   openReply: () => Promise<void>;
   dismissChallenge: () => Promise<void>;
   submitVoiceReply: (recording: RecordingResult) => Promise<void>;
+  submitTextReply: (text: string) => Promise<void>;
+  chooseAvailability: (slot: string | null) => Promise<void>;
   resetAll: () => void;
 }
 
@@ -130,7 +165,7 @@ const EMPTY_PROFESSIONAL_CONTEXT: ProfessionalContextInput = {
 const MomentumContext = createContext<MomentumContextValue | null>(null);
 
 export function MomentumProvider({ children }: PropsWithChildren) {
-  const [step, setStep] = useState<MenteeStep>('feeling');
+  const [step, setStep] = useState<MenteeStep>('welcome');
   const [feelings, setFeelings] = useState<string[]>([]);
   const [feelingNote, setFeelingNote] = useState('');
   const [lifeArea, setLifeArea] = useState<LifeAreaId | null>(null);
@@ -150,11 +185,17 @@ export function MomentumProvider({ children }: PropsWithChildren) {
   const [anonymizedCard, setAnonymizedCard] = useState<AnonymizedCard | null>(null);
   const [isSending, setIsSending] = useState(false);
 
-  const [mentorStage, setMentorStage] = useState<MentorStage>('inbox');
+  const [mentorStage, setMentorStage] = useState<MentorStage>('handoff');
   const [challenge, setChallenge] = useState<MentorChallenge | null>(null);
   const [isLoadingChallenge, setIsLoadingChallenge] = useState(false);
   const [isSendingReply, setIsSendingReply] = useState(false);
   const [replyDurationSeconds, setReplyDurationSeconds] = useState(0);
+  const [offeredSlot, setOfferedSlot] = useState<string | null>(null);
+  const [bookedSlot, setBookedSlot] = useState<string | null>(null);
+
+  const startJourney = useCallback(() => {
+    setStep('feeling');
+  }, []);
 
   const toggleFeeling = useCallback((id: string) => {
     setFeelings((current) => {
@@ -303,6 +344,11 @@ export function MomentumProvider({ children }: PropsWithChildren) {
 
   const sendRequest = useCallback(async () => {
     if (!selectedMentorId || !anonymizedCard) return;
+    setStep('redaction');
+  }, [anonymizedCard, selectedMentorId]);
+
+  const confirmRedaction = useCallback(async () => {
+    if (!selectedMentorId || !anonymizedCard) return;
     setIsSending(true);
     try {
       await sendMentorRequest(selectedMentorId, anonymizedCard);
@@ -312,6 +358,21 @@ export function MomentumProvider({ children }: PropsWithChildren) {
       setIsSending(false);
     }
   }, [anonymizedCard, selectedMentorId]);
+  const openSignal = useCallback(() => setStep('signal'), []);
+  const viewAnswer = useCallback(() => setStep('answer'), []);
+  const acceptConnection = useCallback(() => setStep('connected'), []);
+  const openChat = useCallback(() => setStep('chat'), []);
+  const openBooking = useCallback(() => setStep('book'), []);
+  const confirmBooking = useCallback(async (slot: string) => {
+    await confirmConversationTime(slot);
+    setBookedSlot(slot);
+    setStep('booked');
+  }, []);
+  const openPeople = useCallback(() => setStep('people'), []);
+
+  const startMentorHandoff = useCallback(() => setMentorStage('handoff'), []);
+  const openMentorNotification = useCallback(() => setMentorStage('notification'), []);
+  const openMentorInbox = useCallback(() => setMentorStage('inbox'), []);
 
   const goBack = useCallback(() => {
     setStep((current) => {
@@ -332,6 +393,16 @@ export function MomentumProvider({ children }: PropsWithChildren) {
           return 'moment';
         case 'matches':
           return 'destination';
+        case 'redaction':
+          return 'matches';
+        case 'answer':
+          return 'signal';
+        case 'chat':
+          return 'connected';
+        case 'book':
+          return 'chat';
+        case 'people':
+          return 'booked';
         default:
           return current;
       }
@@ -368,7 +439,35 @@ export function MomentumProvider({ children }: PropsWithChildren) {
       try {
         const receipt = await sendVoiceReply(challenge?.id ?? 'challenge-1', recording);
         setReplyDurationSeconds(receipt.durationSeconds);
-        setMentorStage('sent');
+        setMentorStage('offer');
+      } finally {
+        setIsSendingReply(false);
+      }
+    },
+    [challenge?.id],
+  );
+
+  const submitTextReply = useCallback(
+    async (text: string) => {
+      if (!text.trim()) return;
+      setIsSendingReply(true);
+      try {
+        await sendTextReply(challenge?.id ?? 'challenge-1', text.trim());
+        setMentorStage('offer');
+      } finally {
+        setIsSendingReply(false);
+      }
+    },
+    [challenge?.id],
+  );
+
+  const chooseAvailability = useCallback(
+    async (slot: string | null) => {
+      setIsSendingReply(true);
+      try {
+        const receipt = await offerAvailability(challenge?.id ?? 'challenge-1', slot);
+        setOfferedSlot(receipt.slot);
+        setMentorStage('done');
       } finally {
         setIsSendingReply(false);
       }
@@ -377,7 +476,7 @@ export function MomentumProvider({ children }: PropsWithChildren) {
   );
 
   const resetAll = useCallback(() => {
-    setStep('feeling');
+    setStep('welcome');
     setFeelings([]);
     setFeelingNote('');
     setLifeArea(null);
@@ -390,9 +489,11 @@ export function MomentumProvider({ children }: PropsWithChildren) {
     setMatches([]);
     setSelectedMentorId(null);
     setAnonymizedCard(null);
-    setMentorStage('inbox');
+    setMentorStage('handoff');
     setChallenge(null);
     setReplyDurationSeconds(0);
+    setOfferedSlot(null);
+    setBookedSlot(null);
   }, []);
 
   const progress = useMemo(() => {
@@ -408,6 +509,7 @@ export function MomentumProvider({ children }: PropsWithChildren) {
 
   const actions = useMemo<MomentumActions>(
     () => ({
+      startJourney,
       toggleFeeling,
       setFeelingNote,
       continueFromFeeling,
@@ -431,27 +533,50 @@ export function MomentumProvider({ children }: PropsWithChildren) {
       selectMentor,
       clearSelectedMentor,
       sendRequest,
+      confirmRedaction,
+      openSignal,
+      viewAnswer,
+      acceptConnection,
+      openChat,
+      openBooking,
+      confirmBooking,
+      openPeople,
       goBack,
+      startMentorHandoff,
+      openMentorNotification,
+      openMentorInbox,
       loadChallenge,
       openReply,
       dismissChallenge,
       submitVoiceReply,
+      submitTextReply,
+      chooseAvailability,
       resetAll,
     }),
     [
+      acceptConnection,
       advanceDeepening,
       appendDestinationSuggestion,
+      chooseAvailability,
       chooseLifeArea,
       clearSelectedMentor,
       commitMomentCard,
+      confirmBooking,
       confirmMomentCard,
+      confirmRedaction,
       continueFromFeeling,
       continueFromLifeArea,
       dismissChallenge,
       goBack,
       goToDeepening,
       loadChallenge,
+      openBooking,
+      openChat,
+      openMentorInbox,
+      openMentorNotification,
+      openPeople,
       openReply,
+      openSignal,
       rejectMomentCard,
       removeContextChip,
       resetAll,
@@ -462,11 +587,15 @@ export function MomentumProvider({ children }: PropsWithChildren) {
       setDestination,
       setProfessionalField,
       skipProfessionalContext,
+      startJourney,
       startMatching,
+      startMentorHandoff,
       submitProfessionalContext,
+      submitTextReply,
       submitVoiceReply,
       toggleFeeling,
       updateMomentCard,
+      viewAnswer,
     ],
   );
 
@@ -495,6 +624,8 @@ export function MomentumProvider({ children }: PropsWithChildren) {
       isLoadingChallenge,
       isSendingReply,
       replyDurationSeconds,
+      offeredSlot,
+      bookedSlot,
       actions,
     }),
     [
@@ -517,6 +648,8 @@ export function MomentumProvider({ children }: PropsWithChildren) {
       matches,
       mentorStage,
       momentCard,
+      offeredSlot,
+      bookedSlot,
       professionalContext,
       progress,
       replyDurationSeconds,

@@ -245,3 +245,78 @@ export const MENTOR_REPLY_MOCK_TRANSCRIPT =
   'Hi. I read your card twice, because the first line was mine four years ago. Here is what I wish someone had told me before I walked into that meeting.';
 
 export const MENTOR_SENT_LINE = "She'll hear this in a few minutes.";
+
+/* -------------------------------------------- reference continuation */
+
+export const WELCOME_HEADLINE =
+  'Somewhere out there is a woman who has already been where you are.';
+export const WELCOME_SUBHEAD = 'Tell us where that is. Two minutes, and nobody sees your name.';
+
+export const REDACTION_ORIGINAL =
+  'I go back to Otto in six weeks, to the forty-person team I used to run, and Stefan already gave half of it to someone else.';
+export const REDACTION_SAFE_PARTS = [
+  'I go back to ',
+  'my employer',
+  ' in six weeks, to the ',
+  'large team',
+  ' I used to run, and ',
+  'my manager',
+  ' already gave half of it to someone else.',
+] as const;
+
+export const MENTOR_TEXT_REPLY =
+  "You don't know me, but what you wrote took me straight back to my own first week. Six weeks is more time than it feels like. Write down the version of the job you'd actually say yes to before you talk to anyone. You've got this more than you think.";
+
+export const AVAILABILITY_SLOTS = [
+  'Thursday, 12:30 · 30 min',
+  'Thursday, 20:00 · 30 min',
+  'Saturday, 09:00 · 30 min',
+] as const;
+
+export interface ConversationMessage {
+  id: string;
+  from: 'mentor' | 'mentee';
+  text: string;
+}
+
+export const CONVERSATION_MESSAGES: ConversationMessage[] = [
+  {
+    id: 'm1',
+    from: 'mentor',
+    text: "Hi Lena. I'm really glad you accepted. Reading what you wrote took me straight back.",
+  },
+  {
+    id: 'm2',
+    from: 'mentor',
+    text: "I sat in the car outside the office on my first day back and couldn't make myself go in. Nobody tells you about that bit.",
+  },
+  {
+    id: 'm3',
+    from: 'mentee',
+    text: "Thank you for writing to me. I've read your message about four times.",
+  },
+  {
+    id: 'm4',
+    from: 'mentor',
+    text: "Bring the messy version on Thursday. That's the useful one.",
+  },
+];
+
+export const PEOPLE = [
+  {
+    name: 'Adaeze Mensah',
+    context: 'about going back after leave',
+    status: 'Talking Thursday, 12:30',
+  },
+  {
+    name: 'Priya Shah',
+    context: 'about starting something of your own',
+    status: 'New answer, unread',
+  },
+  {
+    name: 'A woman six weeks behind you',
+    context: 'about her first week back',
+    status: 'You helped · she wrote back yesterday',
+  },
+  { name: 'Marta Vogel', context: 'about changing industry', status: 'Quiet since March' },
+] as const;

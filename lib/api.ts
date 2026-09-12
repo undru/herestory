@@ -182,3 +182,33 @@ export async function sendVoiceReply(
     durationSeconds: recording.durationSeconds,
   };
 }
+
+export async function sendTextReply(
+  challengeId: string,
+  text: string,
+): Promise<{ replyId: string; challengeId: string; text: string }> {
+  await wait();
+  return { replyId: `reply-${challengeId}-${Date.now()}`, challengeId, text };
+}
+
+export async function offerAvailability(
+  challengeId: string,
+  slot: string | null,
+): Promise<{ challengeId: string; slot: string | null }> {
+  await wait();
+  return { challengeId, slot };
+}
+
+export async function sendConversationMessage(
+  text: string,
+): Promise<{ messageId: string; text: string }> {
+  await wait(300);
+  return { messageId: `message-${Date.now()}`, text };
+}
+
+export async function confirmConversationTime(
+  slot: string,
+): Promise<{ slot: string; confirmedAt: number }> {
+  await wait();
+  return { slot, confirmedAt: Date.now() };
+}
