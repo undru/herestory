@@ -52,6 +52,8 @@ and any follow-up needed.
 
 ## Project commands
 
+Use Node 22 or newer; `npm run lint:css` fails on Node 20.
+
 ```sh
 npm ci
 npm run lint

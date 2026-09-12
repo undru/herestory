@@ -20,7 +20,8 @@ jobs:
       - name: Set up Node
         uses: actions/setup-node@v6
         with:
-          node-version: 20.19.4
+          # scripts/lint-css.mjs uses fs.globSync (Node 22+).
+          node-version: 22
           cache: npm
 
       - name: Install dependencies
