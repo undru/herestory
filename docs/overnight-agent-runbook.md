@@ -49,8 +49,9 @@ Read AGENTS.md and WORKFLOW.md, then follow WORKFLOW.md exactly: process the
 GitHub issues labelled agent:ready one at a time in priority order, commit each
 finished issue directly to main, push, wait for the Verify app and Deploy web
 preview workflows to pass, and comment on the issue with the commit SHA and the
-link https://undru.github.io/herestory/ . Block unclear issues instead of guessing. Never
-force-push, change settings or secrets, or discard changes you did not make.
+link https://undru.github.io/herestory/ . Block unclear issues instead of
+guessing. Never force-push, change settings or secrets, or discard changes you
+did not make.
 ```
 
 ## Seeing the changes
