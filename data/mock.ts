@@ -2,6 +2,7 @@
  * All mock content for Momentum lives here so copy can be changed in one place.
  * Nothing in this file talks to a network — see lib/api.ts for the async layer.
  */
+import michelleObamaPhoto from '@/assets/images/michelle-obama.jpg';
 
 /* ---------------------------------------------------------------- welcome */
 
@@ -349,7 +350,8 @@ export const MENTOR_FIRST_REPLY = {
 /** Who she is matched with on the last screen of the flow. */
 export const MATCHED_MENTOR = {
   name: 'Michelle Obama',
-  initials: 'MO',
+  /** Official White House portrait, cropped square. Public domain. */
+  photo: michelleObamaPhoto,
   description: 'Lawyer, author of Becoming, and former First Lady of the United States.',
 };
 
