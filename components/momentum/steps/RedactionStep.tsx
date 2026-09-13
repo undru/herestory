@@ -2,6 +2,7 @@ import { useState } from 'react';
 import { Text, View } from 'react-native';
 
 import { ActionButton, TextLink } from '@/components/momentum/ActionButton';
+import { ProfileHistoryButton } from '@/components/momentum/ProfileHistoryButton';
 import { StepShell } from '@/components/momentum/StepShell';
 import { Body, Caption, Overline } from '@/components/momentum/Type';
 import { REDACTION_PARTS } from '@/data/mock';
@@ -35,6 +36,7 @@ export function RedactionStep() {
       transitionKey="redaction"
       progress={progress}
       onBack={actions.goBack}
+      headerAction={<ProfileHistoryButton />}
       eyebrow="Before it goes"
       headline={`This is what ${name} will read.`}
       footer={

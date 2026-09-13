@@ -1,6 +1,7 @@
 import { View } from 'react-native';
 
 import { ActionButton } from '@/components/momentum/ActionButton';
+import { ProfileHistoryButton } from '@/components/momentum/ProfileHistoryButton';
 import { Seal } from '@/components/momentum/Seal';
 import { StepShell } from '@/components/momentum/StepShell';
 import { Body, Headline } from '@/components/momentum/Type';
@@ -14,6 +15,7 @@ export function SentStep() {
     <StepShell
       transitionKey="sent"
       progress={progress}
+      headerAction={<ProfileHistoryButton />}
       centered
       footer={
         <View className="border-hairline border-t pt-4">

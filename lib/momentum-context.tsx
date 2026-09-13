@@ -2,7 +2,9 @@ import {
   createContext,
   useCallback,
   useContext,
+  useEffect,
   useMemo,
+  useRef,
   useState,
   type PropsWithChildren,
 } from 'react';
@@ -29,6 +31,15 @@ import {
   sendVoiceReply,
   type RecordingResult,
 } from '@/lib/api';
+import {
+  EMPTY_HISTORY,
+  historyRepository,
+  mergeHistories,
+  withConversation,
+  withMatchBatch,
+  type LocalHistory,
+  type ProfileSnapshot,
+} from '@/lib/history-repository';
 
 export type MenteeStep =
   | 'welcome'
@@ -173,6 +184,9 @@ interface MomentumState {
   isSending: boolean;
   /** Whether she answered the woman one step behind, or skipped. */
   helped: boolean;
+  /** Profile & history saved on this device. Empty until loaded. */
+  history: LocalHistory;
+  isHistoryLoaded: boolean;
   /* mentor inbox */
   mentorStage: MentorStage;
   challenge: MentorChallenge | null;
@@ -242,6 +256,8 @@ interface MomentumActions {
   submitTextReply: (text: string) => Promise<void>;
   chooseAvailability: (slot: string | null) => Promise<void>;
   resetAll: () => void;
+  /** Deletes the Profile & history saved on this device. */
+  clearHistory: () => Promise<void>;
 }
 
 type MomentumContextValue = MomentumState & { actions: MomentumActions };
@@ -269,6 +285,37 @@ export function MomentumProvider({ children }: PropsWithChildren) {
   const [selectedMentorId, setSelectedMentorId] = useState<string | null>(null);
   const [isSending, setIsSending] = useState(false);
   const [helped, setHelped] = useState(false);
+  const [history, setHistory] = useState<LocalHistory>(EMPTY_HISTORY);
+  const [isHistoryLoaded, setIsHistoryLoaded] = useState(false);
+  /** Latest history, so saves in quick succession build on each other. */
+  const historyRef = useRef<LocalHistory>(EMPTY_HISTORY);
+  /** One conversation entry per run: confirming the card again replaces it. */
+  const runIdRef = useRef<string | null>(null);
+
+  useEffect(() => {
+    let active = true;
+    void historyRepository
+      .load()
+      .catch(() => EMPTY_HISTORY)
+      .then((stored) => {
+        if (!active) return;
+        const merged = mergeHistories(stored, historyRef.current);
+        historyRef.current = merged;
+        setHistory(merged);
+        setIsHistoryLoaded(true);
+      });
+    return () => {
+      active = false;
+    };
+  }, []);
+
+  const updateHistory = useCallback((update: (current: LocalHistory) => LocalHistory) => {
+    const next = update(historyRef.current);
+    historyRef.current = next;
+    setHistory(next);
+    // If the device refuses the write, the history still shows for this session.
+    void historyRepository.save(next).catch(() => undefined);
+  }, []);
 
   const [mentorStage, setMentorStage] = useState<MentorStage>('handoff');
   const [challenge, setChallenge] = useState<MentorChallenge | null>(null);
@@ -279,6 +326,7 @@ export function MomentumProvider({ children }: PropsWithChildren) {
   const [bookedSlot, setBookedSlot] = useState<string | null>(null);
 
   const startJourney = useCallback(() => {
+    runIdRef.current = `run-${Date.now()}`;
     setStep('feeling');
   }, []);
 
@@ -377,9 +425,26 @@ export function MomentumProvider({ children }: PropsWithChildren) {
     await saveMomentCard(momentCard);
   }, [momentCard]);
 
+  const profileSnapshot = useMemo<ProfileSnapshot>(
+    () => ({ location, origin, languages, feelings, destination, cvFileName }),
+    [cvFileName, destination, feelings, languages, location, origin],
+  );
+
+  /** "That's me": the conversation is complete, so it is saved to her history. */
   const confirmMomentCard = useCallback(() => {
+    runIdRef.current ??= `run-${Date.now()}`;
+    const conversationId = `conversation-${runIdRef.current}`;
+    updateHistory((current) =>
+      withConversation(current, profileSnapshot, {
+        id: conversationId,
+        completedAt: Date.now(),
+        answers: Object.fromEntries(
+          DEEPENING_QUESTIONS.map((question) => [question.id, (answers[question.id] ?? '').trim()]),
+        ),
+      }),
+    );
     setStep('destination');
-  }, []);
+  }, [answers, profileSnapshot, updateHistory]);
 
   const addToAnswers = useCallback(() => {
     setDeepeningIndex(0);
@@ -413,11 +478,31 @@ export function MomentumProvider({ children }: PropsWithChildren) {
       });
       setMatches(found);
       setSelectedMentorId(found[0]?.id ?? null);
+      if (found.length > 0) {
+        const matchedAt = Date.now();
+        updateHistory((current) =>
+          withMatchBatch(current, profileSnapshot, {
+            id: `matches-${matchedAt}`,
+            matchedAt,
+            results: found.map((match) => ({ profileId: match.id, reason: match.reason })),
+          }),
+        );
+      }
       setStep('matches');
     } finally {
       setIsMatching(false);
     }
-  }, [answers, destination, feelings, languages, location, momentCard, origin]);
+  }, [
+    answers,
+    destination,
+    feelings,
+    languages,
+    location,
+    momentCard,
+    origin,
+    profileSnapshot,
+    updateHistory,
+  ]);
 
   const openMentor = useCallback((mentorId: string) => {
     setSelectedMentorId(mentorId);
@@ -556,7 +641,19 @@ export function MomentumProvider({ children }: PropsWithChildren) {
     [challenge?.id],
   );
 
+  const clearHistory = useCallback(async () => {
+    historyRef.current = EMPTY_HISTORY;
+    setHistory(EMPTY_HISTORY);
+    try {
+      await historyRepository.clear();
+    } catch {
+      // Already cleared on screen; the next successful save overwrites storage.
+    }
+  }, []);
+
+  /** Clears this run's answers. Saved history is kept unless clearHistory is called. */
   const resetAll = useCallback(() => {
+    runIdRef.current = null;
     setStep('welcome');
     setFeelings([]);
     setWorkLife('');
@@ -649,6 +746,7 @@ export function MomentumProvider({ children }: PropsWithChildren) {
       submitTextReply,
       chooseAvailability,
       resetAll,
+      clearHistory,
     }),
     [
       acceptConnection,
@@ -657,6 +755,7 @@ export function MomentumProvider({ children }: PropsWithChildren) {
       appendAnswer,
       askMentor,
       chooseAvailability,
+      clearHistory,
       commitMomentCard,
       confirmBooking,
       confirmMomentCard,
@@ -722,6 +821,8 @@ export function MomentumProvider({ children }: PropsWithChildren) {
       selectedMentor,
       isSending,
       helped,
+      history,
+      isHistoryLoaded,
       mentorStage,
       challenge,
       isLoadingChallenge,
@@ -742,7 +843,9 @@ export function MomentumProvider({ children }: PropsWithChildren) {
       destination,
       feelings,
       helped,
+      history,
       isGeneratingCard,
+      isHistoryLoaded,
       isLoadingChallenge,
       isMatching,
       isSending,

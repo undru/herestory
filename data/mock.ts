@@ -265,6 +265,14 @@ export interface ProfileMatch extends SampleProfile {
 
 export const MATCHES_DEMO_NOTE = 'These are sample profiles for this demo.';
 
+/* ------------------------------------------------------ profile & history */
+
+export const PROFILE_HISTORY_TITLE = 'Profile & history';
+export const PROFILE_PRIVACY_NOTE = 'Private to you — never shown on your public profile.';
+export const PROFILE_NOT_ADDED = 'Not added yet';
+export const PROFILE_HISTORY_EMPTY =
+  'Your profile, conversations and matches will appear here after your first match.';
+
 /* ------------------------------------------------------------ before it goes */
 
 export interface RedactedDetail {

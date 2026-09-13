@@ -3,7 +3,9 @@ import { View } from 'react-native';
 
 import { ActionButton, TextLink } from '@/components/momentum/ActionButton';
 import { Avatar } from '@/components/momentum/Avatar';
+import { ProfileHistoryButton } from '@/components/momentum/ProfileHistoryButton';
 import { Seal } from '@/components/momentum/Seal';
+import { StartAgainSheet } from '@/components/momentum/StartAgainSheet';
 import { StepShell } from '@/components/momentum/StepShell';
 import { TextField } from '@/components/momentum/TextField';
 import {
@@ -31,6 +33,7 @@ export function HelpOfferStep() {
     <StepShell
       transitionKey="help-offer"
       progress={progress}
+      headerAction={<ProfileHistoryButton />}
       eyebrow="One woman. Not a list."
       headline="Someone is three years behind you."
       intro="You don't have to be through it to be ahead of someone."
@@ -64,6 +67,7 @@ export function HelpAnswerStep() {
       transitionKey="help-answer"
       progress={progress}
       onBack={actions.goBack}
+      headerAction={<ProfileHistoryButton />}
       eyebrow="Your answer"
       headline="Tell her the one thing you know."
       intro="Three sentences is plenty. You're not solving her life."
@@ -93,8 +97,16 @@ export function HelpAnswerStep() {
 
 /** The close of the flow, with the first reply from the mentor she asked. */
 export function FinishStep() {
-  const { feelings, helped, selectedMentor, progress, actions } = useMomentum();
+  const { feelings, helped, history, selectedMentor, progress, actions } = useMomentum();
+  const [confirmingRestart, setConfirmingRestart] = useState(false);
   const name = selectedMentor?.firstName ?? 'She';
+  const hasHistory = history.conversations.length > 0 || history.matchBatches.length > 0;
+
+  // With saved history, ask whether to keep it. With nothing saved, there is nothing to ask.
+  const startAgain = () => {
+    if (hasHistory) setConfirmingRestart(true);
+    else actions.resetAll();
+  };
   const feeling =
     FEELING_OPTIONS.find((option) => option.id === feelings[0])?.label.toLowerCase() ?? 'stuck';
 
@@ -103,9 +115,25 @@ export function FinishStep() {
       transitionKey="finish"
       progress={progress}
       centered
+      headerAction={<ProfileHistoryButton />}
+      overlay={
+        <StartAgainSheet
+          visible={confirmingRestart}
+          onKeep={() => {
+            setConfirmingRestart(false);
+            actions.resetAll();
+          }}
+          onClear={() => {
+            setConfirmingRestart(false);
+            void actions.clearHistory();
+            actions.resetAll();
+          }}
+          onCancel={() => setConfirmingRestart(false)}
+        />
+      }
       footer={
         <View>
-          <ActionButton label="Start again" onPress={actions.resetAll} />
+          <ActionButton label="Start again" onPress={startAgain} />
           <TextLink
             className="mt-1"
             label="Preview other screens"

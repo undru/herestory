@@ -14,6 +14,8 @@ interface StepShellProps {
   /** 0 to 1, or null to hide the bar. */
   progress?: number | null;
   onBack?: () => void;
+  /** Top-right control, across from the back arrow. */
+  headerAction?: ReactNode;
   /** Changing this replays the slide transition. */
   transitionKey: string;
   eyebrow?: string;
@@ -35,6 +37,7 @@ interface StepShellProps {
 export function StepShell({
   progress = null,
   onBack,
+  headerAction,
   transitionKey,
   eyebrow,
   headline,
@@ -61,6 +64,7 @@ export function StepShell({
             <ArrowLeft size={20} color={palette.inkSoft} strokeWidth={1.6} />
           </Tappable>
         ) : null}
+        {headerAction ? <View className="ml-auto">{headerAction}</View> : null}
       </View>
 
       <KeyboardAvoidingView
