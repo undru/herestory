@@ -61,6 +61,47 @@ export const DARK: Palette = {
 export const GRADIENT_START = { x: 0, y: 0 } as const;
 export const GRADIENT_END = { x: 1, y: 0 } as const;
 
+/** Emotional color families for the feeling bubbles. Cues only, never the brand gradient. */
+export type FeelingFamily = 'heavy' | 'uncertain' | 'curious' | 'hopeful';
+
+interface FeelingBubbleColors {
+  /** Top-to-bottom fill of the front circle. */
+  gradient: readonly [string, string];
+  /** Deeper, offset circle layered behind it. */
+  shadow: string;
+  /** Soft inner sheen on the front circle. */
+  highlight: string;
+}
+
+/**
+ * Heavy reads red, uncertain blue, curious yellow, hopeful green. The bubbles
+ * stay bright in both themes, so their labels always use FEELING_BUBBLE_TEXT.
+ */
+export const FEELING_BUBBLES: Record<FeelingFamily, FeelingBubbleColors> = {
+  heavy: {
+    gradient: ['#FF7A45', '#EE3E68'],
+    shadow: '#B83A3F',
+    highlight: 'rgba(255, 255, 255, 0.12)',
+  },
+  uncertain: {
+    gradient: ['#7DB8F8', '#6E7DF9'],
+    shadow: '#5563CF',
+    highlight: 'rgba(255, 255, 255, 0.12)',
+  },
+  curious: {
+    gradient: ['#F8E06C', '#F8B425'],
+    shadow: '#B59127',
+    highlight: 'rgba(255, 255, 255, 0.16)',
+  },
+  hopeful: {
+    gradient: ['#8AEBA6', '#3FD08F'],
+    shadow: '#2F9A64',
+    highlight: 'rgba(255, 255, 255, 0.14)',
+  },
+};
+
+export const FEELING_BUBBLE_TEXT = '#1C1B22';
+
 /** Colors for the active light or dark theme. */
 export function usePalette(): Palette {
   const { theme } = useUniwind();

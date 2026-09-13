@@ -43,7 +43,8 @@
  * Conversational theme: white canvas, lavender-quiet surfaces, soft lilac
  * bubbles, charcoal ink, cobalt for icons, links and focus. The cobalt-to-magenta
  * gradient (gradient-start / gradient-end) is for primary emphasis only.
- * Heavy (red), curious (yellow) and hopeful (green) tint the feeling chips.
+ * Heavy (red), curious (yellow) and hopeful (green) tint the feeling chips;
+ * the feeling bubbles (with in-between blue) live in lib/theme.ts.
  * No heavy shadows. Keep LIGHT / DARK in lib/theme.ts in sync for icons,
  * gradients and native color props.
  */
