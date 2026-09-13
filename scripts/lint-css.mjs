@@ -16,7 +16,11 @@ const report = (msg) => {
   console.error(msg);
 };
 
-for (const file of globSync('**/*.css', { exclude: ['**/node_modules/**'] })) {
+// dist/ and .expo/ hold compiled CSS, which css-tree's strict parser rejects;
+// linting it would fail every run that follows a local `npm run export:web`.
+const IGNORED = ['**/node_modules/**', 'dist/**', '.expo/**'];
+
+for (const file of globSync('**/*.css', { exclude: IGNORED })) {
   const code = readFileSync(file);
 
   try {
