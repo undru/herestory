@@ -89,12 +89,12 @@ export const ORIGIN_SUBHEAD =
 export const ORIGIN_PLACEHOLDER = 'e.g. Accra, Ghana or Ghanaian';
 
 /**
- * Inserted by the demo mic on location, origin and destination. Aura runs
- * operations at Nordfracht, a German freight company. No audio is recorded.
+ * Inserted by the demo mic on location, origin and destination. Matches Aura's
+ * CV in test-fixtures/cvs/aura-the-plateau-cv.pdf. No audio is recorded.
  */
 export const PROFILE_MOCK_TRANSCRIPTS: Record<string, string> = {
   location: 'Hamburg, Germany',
-  origin: 'Tartu, Estonia',
+  origin: 'German',
   destination:
     'In a year from now, I want to be on a real path to Director, with leadership seeing the strategic value of what my team delivers, not just a calm operations person keeping things running.',
 };
@@ -147,9 +147,9 @@ export const DEEPENING_QUESTIONS: DeepeningQuestion[] = [
     headline: 'So tell me — what’s going on in your career right now that made you sign up today?',
     hint: 'Whatever tipped it, big or small.',
     mockTranscript:
-      "Honestly? I watched someone five years younger than me get the promotion I thought was mine. And I didn't even fight for it — I just... accepted it, the way I always do. I told myself I was being professional. But driving home that day, I realized I've been doing that for years. Just absorbing things instead of asking for what I want. I think I signed up because I'm tired of finding out later how I actually feel.",
+      "Honestly? I watched someone five years younger than me get the Director role I thought was mine. And I didn't even fight for it — I just... accepted it, the way I always do. I told myself I was being professional. But driving home that day, I realized I've been doing that for years. Just absorbing things instead of asking for what I want. I think I signed up because I'm tired of finding out later how I actually feel.",
     mockFollowUp:
-      "My reviews are fine and my salary is fine, so it feels silly to call it a problem. But there's this low hum of: is this it?",
+      "On paper everything is fine. My site hits its targets and my reviews are good. That's what makes it so hard to say out loud that something is wrong.",
   },
   {
     id: 'ask-anyone',
@@ -157,18 +157,18 @@ export const DEEPENING_QUESTIONS: DeepeningQuestion[] = [
       'If you could get advice from anyone in your field, what would you actually ask them?',
     hint: 'The real question, not the polite one.',
     mockTranscript:
-      "I wouldn't ask them how to do the job better — I already know how to do the job. I'd ask them how they got people above them to actually notice. Like, did you ask for it? Did you just get lucky? Because I don't even know if that's a skill you can learn at 40, or if I missed the window.",
+      "I wouldn't ask them how to do the job better — I've run a 240-person site for six years, I know how to do the job. I'd ask them how they got people above them to actually notice. Like, did you ask for it? Did you just get lucky? Because I don't even know if that's a skill you can learn at 40, or if I missed the window.",
     mockFollowUp:
-      "I've been a Senior Operations Manager for six years and in operations for fourteen. I rose fast in my thirties because I got things done, so nobody ever taught me how to make a case for myself upward.",
+      'I never went to university. I did my Ausbildung, started as a logistics coordinator, and got promoted fast because I fixed things. Nobody ever taught me how to make a case for myself upward.',
   },
   {
     id: 'proud-moment',
     headline: 'What’s a moment in your career you’re proud of, but maybe don’t talk about much?',
     hint: 'It doesn’t have to be a big one.',
     mockTranscript:
-      "There was a stretch, maybe two years ago, where we lost half our warehouse staff to another company practically overnight. Everyone assumed we'd miss shipments — even I assumed that. But I rebuilt the whole shift structure in about a week and we didn't miss a single one. Nobody outside my team really knows that happened. I never told anyone above me, because it felt like just... doing my job. But looking back, I think that was the best work I've ever done.",
+      "There was a stretch during the labour shortages, a couple of years ago, when a new distribution centre opened nearby and we lost almost a third of our floor staff in a few weeks. Everyone assumed we'd miss dispatches for our clients — even I assumed that. But I rebuilt the whole shift structure and cross-trained people across functions in about a week, and we didn't miss a single one. Nobody outside my team really knows how close it was. I never told anyone above me, because it felt like just... doing my job. But looking back, I think that was the best work I've ever done.",
     mockFollowUp:
-      'When leadership sees it, they see a calm operations person. They do not see someone they should sponsor into a bigger role.',
+      'Same with the warehouse move in 2021 and the ERP migration. Leadership remembers them as things that went smoothly, not as things I made go smoothly. They see a calm operations person, not someone to sponsor into a bigger role.',
   },
   {
     id: 'five-years-ago',
@@ -177,7 +177,7 @@ export const DEEPENING_QUESTIONS: DeepeningQuestion[] = [
     mockTranscript:
       "That being good at your job isn't the same as being seen for it. I really believed if I just kept delivering, someone would eventually notice and hand me the next step. Nobody tells you that you're supposed to ask. I wish someone had just said it plainly: it's not enough to do the work quietly — you have to say what you did, out loud, to the right people. I spent five years not knowing that was even a gap.",
     mockFollowUp:
-      "But the harder truth is that I don't know how to make my work legible to leadership. I want a Director path, and I don't know how to turn what I've done into a strategic story for it.",
+      "The funny thing is, at my last job I built the KPI dashboard that let leadership see the site's numbers every day. I never once thought about whether they could see me. I still want a Director role; I just don't know how to tell the story of what I've done.",
   },
 ];
 
@@ -322,7 +322,7 @@ export const REDACTION_PARTS: RedactionPart[] = [
   { original: 'the 2021 warehouse relocation', safe: 'a site move' },
   ' and a systems migration, with ',
   { original: '240 people', safe: 'a large team' },
-  ' depending on it. Two younger colleagues made Director before me, and I still don’t know how to make my work visible to leadership.',
+  ' depending on it. Someone five years younger got the Director role I thought was mine, and I still don’t know how to make my work visible to leadership.',
 ];
 
 /* ------------------------------------------------------- one step ahead */
