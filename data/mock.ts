@@ -8,7 +8,7 @@
 export const WELCOME_HEADLINE =
   'Somewhere out there is a woman who has already been where you are.';
 export const WELCOME_SUBHEAD =
-  'Tell me where that is. It takes about two minutes, and nobody sees your name.';
+  'Find your professional network of women and help raise other women up.';
 
 /* ---------------------------------------------------------------- step 1 */
 
