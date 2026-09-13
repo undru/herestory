@@ -47,6 +47,7 @@ export const FEELING_OPTIONS: FeelingOption[] = [
   { id: 'quietly-panicking', label: 'Quietly panicking', group: 'difficult' },
   { id: 'done-pretending', label: 'Done pretending', group: 'difficult' },
   { id: 'figuring-it-out', label: 'Figuring it out', group: 'uncertain' },
+  { id: 'doing-well-stuck', label: 'Doing well, but stuck', group: 'uncertain' },
   { id: 'in-between', label: 'Somewhere in between', group: 'uncertain' },
   { id: 'waiting-for-sign', label: 'Waiting for a sign', group: 'uncertain' },
   { id: 'starting-over', label: 'Starting over', group: 'uncertain' },
@@ -132,8 +133,9 @@ export const DEEPENING_QUESTIONS: DeepeningQuestion[] = [
     headline: 'So tell me — what’s going on in your career right now that made you sign up today?',
     hint: 'Whatever tipped it, big or small.',
     mockTranscript:
-      "My return date came through last week. Six weeks. And my old team got split in two while I was away, so I don't really know what I'm going back to.",
-    mockFollowUp: 'And nobody has asked me what I actually want to come back to.',
+      "I don't know. I'm fine, honestly. I just feel like I've been doing the same job for years and I don't feel excited about it anymore. Maybe I need a new challenge? Or maybe I'm just tired.",
+    mockFollowUp:
+      "My reviews are fine and my salary is fine, so it feels silly to call it a problem. But there's this low hum of: is this it?",
   },
   {
     id: 'ask-anyone',
@@ -141,23 +143,27 @@ export const DEEPENING_QUESTIONS: DeepeningQuestion[] = [
       'If you could get advice from anyone in your field, what would you actually ask them?',
     hint: 'The real question, not the polite one.',
     mockTranscript:
-      'How she walked back into a leadership role after years away without spending the first year apologising for it.',
-    mockFollowUp: 'And whether she negotiated, or just took what she was offered.',
+      'How did she learn to advocate for herself with senior leaders when competence used to be enough? How did she do it without feeling like she was pretending to be someone else?',
+    mockFollowUp:
+      "I've been a Senior Operations Manager for six years and in operations for fourteen. I rose fast in my thirties because I got things done, so nobody ever taught me how to make a case for myself upward.",
   },
   {
     id: 'proud-moment',
     headline: 'What’s a moment in your career you’re proud of, but maybe don’t talk about much?',
     hint: 'It doesn’t have to be a big one.',
     mockTranscript:
-      'Right before my leave, I rebuilt a team that was about to be shut down. It happened so close to leaving that I never really mention it.',
-    mockFollowUp: 'Somewhere along the way it started to feel like it belonged to someone else.',
+      'I led a warehouse relocation, a systems migration, and two years of staff shortages without letting the team fall apart. I am proud of that, but I talk about it as if I was just doing my job.',
+    mockFollowUp:
+      'When leadership sees it, they see a calm operations person. They do not see someone they should sponsor into a bigger role.',
   },
   {
     id: 'five-years-ago',
     headline: 'What do you wish someone had told you five years ago?',
     hint: 'Whatever comes to mind first.',
-    mockTranscript: "That I didn't have to earn my place back by saying yes to everything.",
-    mockFollowUp: "And that it's fine to want something different from what I wanted before.",
+    mockTranscript:
+      "That being good at the work would not be enough forever. I've watched two younger colleagues become Directors, and I keep telling myself it's political.",
+    mockFollowUp:
+      "But the harder truth is that I don't know how to make my work legible to leadership. I want a Director path, and I don't know how to turn what I've done into a strategic story for it.",
   },
 ];
 
@@ -172,10 +178,11 @@ export interface MomentCardData {
 
 /** The moment card the fake model "hears" from the answers above. */
 export const MOMENT_CARD_DRAFT: MomentCardData = {
-  quote: 'I want to go back to work without going back to the woman I was.',
-  whereYouAre: 'Returning to leadership after three years away',
-  inTheWay: ['Confidence', 'Negotiation', 'Who you are now'],
-  whatYouBring: ['Curiosity', 'Resilience', 'Eight years of it'],
+  quote:
+    "I've hit a ceiling that has nothing to do with my competence and everything to do with visibility — I don't know how to advocate for myself to leadership, and I've never had to before.",
+  whereYouAre: 'Six years as a Senior Operations Manager, and plateaued',
+  inTheWay: ['Visibility', 'Self-advocacy', 'Strategic narrative'],
+  whatYouBring: ['14 years in operations', 'Calm through disruption', 'A team that stayed'],
 };
 
 /* ---------------------------------------------------------------- step 5 */
@@ -183,6 +190,7 @@ export const MOMENT_CARD_DRAFT: MomentCardData = {
 export const DESTINATION_PLACEHOLDER = 'In a year from now, I want to…';
 
 export const DESTINATION_SUGGESTIONS: string[] = [
+  'Make my work visible to leadership',
   'Back into leadership, on my terms',
   'Out of this industry',
   'Something of my own',
@@ -199,7 +207,7 @@ export const MATCHING_LINES: string[] = [
 
 /* ---------------------------------------------------------------- step 6 */
 
-export type SampleProfileId = 'petra' | 'renate' | 'sabine' | 'annemarie';
+export type SampleProfileId = 'mara' | 'petra' | 'renate' | 'sabine' | 'annemarie';
 
 /** A sample profile for the demo. Not a real person, and never shown as available. */
 export interface SampleProfile {
@@ -214,6 +222,15 @@ export interface SampleProfile {
 }
 
 export const SAMPLE_PROFILES: SampleProfile[] = [
+  {
+    id: 'mara',
+    firstName: 'Mara',
+    age: 47,
+    title: 'The Visibility Shift',
+    story:
+      'I was promoted quickly because I was the person who could fix things. Then I hit the point where strong work stayed invisible, and had to learn how to turn it into a strategic story, find sponsors, and ask for the room I wanted.',
+    themes: ['visibility', 'sponsorship', 'self-advocacy', 'strategic narrative', 'advancement'],
+  },
   {
     id: 'petra',
     firstName: 'Petra',
@@ -284,21 +301,22 @@ export type RedactionPart = string | RedactedDetail;
 
 /** What she wrote, split so each identifying detail can be swapped out or put back. */
 export const REDACTION_PARTS: RedactionPart[] = [
-  'I go back to ',
-  { original: 'Otto', safe: 'my employer' },
-  ' in six weeks, to the ',
-  { original: 'forty-person team', safe: 'large team' },
-  ' I used to run, and ',
-  { original: 'Stefan', safe: 'my manager' },
-  ' already gave half of it to someone else.',
+  'I have run operations at ',
+  { original: 'Nordfracht', safe: 'my company' },
+  ' for six years, through ',
+  { original: 'the 2021 warehouse relocation', safe: 'a site move' },
+  ' and a systems migration, with ',
+  { original: '240 people', safe: 'a large team' },
+  ' depending on it. Two younger colleagues made Director before me, and I still don’t know how to make my work visible to leadership.',
 ];
 
 /* ------------------------------------------------------- one step ahead */
 
 /** The one woman shown after sending: someone a little further behind. */
 export const HELP_REQUEST = {
-  quote: "I go back in six weeks and I've told nobody I'm terrified.",
-  whatSheNeeds: 'Someone one step ahead, not ten.',
+  quote:
+    "We're moving the warehouse while a new system is rolling out, and I feel like I'm the only one who doesn't know what she's doing.",
+  whatSheNeeds: 'Someone who has kept a team steady through operational change.',
 };
 
 export const HELP_ANSWER_PLACEHOLDER = 'What helped you, even a little?';
@@ -306,7 +324,7 @@ export const HELP_ANSWER_PLACEHOLDER = 'What helped you, even a little?';
 /** A scripted first reply on the closing screen. Sample copy: no scheduling or availability. */
 export const MENTOR_FIRST_REPLY = {
   delay: 'Sample reply',
-  text: 'What you wrote sounded familiar. Before anything else, write down what you actually want to ask for. The rest gets easier from there.',
+  text: 'What you wrote sounded familiar. Start by writing down the three outcomes leadership should know you made possible. That is not boasting; it is the beginning of your strategic story.',
 };
 
 /* ------------------------------------------------------------ /mentor */
@@ -328,11 +346,14 @@ export interface MentorChallenge extends AnonymizedCard {
 export const MENTOR_CHALLENGE: MentorChallenge = {
   id: 'challenge-1',
   label: 'Her challenge, not her name',
-  quote: MOMENT_CARD_DRAFT.quote,
-  herChallenge: 'Going back to leadership after three years away, and half her old team is gone.',
-  whatSheNeeds: 'One honest conversation before her first day back.',
-  whatSheBrings: 'Eight years of leading people, and a clearer idea of who she is now.',
-  whyYou: 'You came back after a long break once, and asked for the role out loud.',
+  quote:
+    "We're moving the warehouse while a new system is rolling out, and I feel like I'm letting everyone down.",
+  herChallenge:
+    'Managing a team through a warehouse move, a systems migration, and a staffing gap.',
+  whatSheNeeds: 'One honest conversation with someone who has led through operational chaos.',
+  whatSheBrings: 'She is asking clear questions before the pressure turns into isolation.',
+  whyYou:
+    'You have navigated three simultaneous crises — a relocation, a systems migration, and prolonged staffing disruption — without losing your team. That is rare and teachable.',
   timeAsk: 'She asked for 30 minutes this week.',
 };
 
@@ -341,12 +362,12 @@ export const MENTOR_REPLY_PROMPT = 'Say hello. 30 seconds is enough.';
 export const MENTOR_REPLY_SECONDS = 30;
 
 export const MENTOR_REPLY_MOCK_TRANSCRIPT =
-  'Hi. I read your card twice, because the first line was mine four years ago. Here is what I wish someone had told me before I walked into that meeting.';
+  "Hi. I have been through the kind of changes you're carrying. You do not have to hold every answer alone; let’s work out what your team needs first.";
 
 /* -------------------------------------- other screens (outside the mockup) */
 
 export const MENTOR_TEXT_REPLY =
-  "You don't know me, but what you wrote took me straight back to my own first week. Six weeks is more time than it feels like. Write down the version of the job you'd actually say yes to before you talk to anyone. You've got this more than you think.";
+  "You don't know me, but what you wrote took me straight back to the point where I realised my work was not speaking for itself. Write down the three outcomes only you made possible, then decide what you want leadership to see next. You have more of a case than it feels like.";
 
 export const AVAILABILITY_SLOTS = [
   'Thursday, 12:30 · 30 min',
@@ -364,12 +385,12 @@ export const CONVERSATION_MESSAGES: ConversationMessage[] = [
   {
     id: 'm1',
     from: 'mentor',
-    text: "Hi Lena. I'm really glad you accepted. Reading what you wrote took me straight back.",
+    text: "Hi Aura. I'm really glad you accepted. Reading what you wrote took me straight back.",
   },
   {
     id: 'm2',
     from: 'mentor',
-    text: "I sat in the car outside the office on my first day back and couldn't make myself go in. Nobody tells you about that bit.",
+    text: 'I used to think strong delivery would speak for itself. Learning to name its strategic value changed what became possible.',
   },
   {
     id: 'm3',
@@ -385,8 +406,8 @@ export const CONVERSATION_MESSAGES: ConversationMessage[] = [
 
 export const PEOPLE = [
   {
-    name: 'Katrin Weber',
-    context: 'about going back after leave',
+    name: 'Mara Keller',
+    context: 'about making work visible to leadership',
     status: 'Talking Thursday, 12:30',
   },
   {
@@ -395,8 +416,8 @@ export const PEOPLE = [
     status: 'New answer, unread',
   },
   {
-    name: 'A woman six weeks behind you',
-    context: 'about her first week back',
+    name: 'A woman three years behind you',
+    context: 'about leading through operational change',
     status: 'You helped · she wrote back yesterday',
   },
   { name: 'Miriam Vogel', context: 'about changing industry', status: 'Quiet since March' },

@@ -11,7 +11,13 @@
  */
 import type { MatchResponse } from '@/lib/matching';
 
-export type DemoScenarioId = 'leadership' | 'return' | 'burnout' | 'confidence' | 'default';
+export type DemoScenarioId =
+  | 'visibility'
+  | 'leadership'
+  | 'return'
+  | 'burnout'
+  | 'confidence'
+  | 'default';
 
 export type SignalScenarioId = Exclude<DemoScenarioId, 'default'>;
 
@@ -26,6 +32,7 @@ export interface DemoScenarioSignals {
 
 /** When scenarios score the same, the earlier one wins. */
 export const DEMO_SCENARIO_TIE_ORDER: SignalScenarioId[] = [
+  'visibility',
   'confidence',
   'leadership',
   'return',
@@ -33,6 +40,33 @@ export const DEMO_SCENARIO_TIE_ORDER: SignalScenarioId[] = [
 ];
 
 export const DEMO_SCENARIO_SIGNALS: Record<SignalScenarioId, DemoScenarioSignals> = {
+  /* Aura first: excellent at delivery, stalled on being seen and sponsored. */
+  visibility: {
+    feelings: ['doing-well-stuck', 'looking-for-spark'],
+    destinations: ['Make my work visible to leadership'],
+    keywords: [
+      'visibility',
+      'visible',
+      'upward communication',
+      'executive stakeholder',
+      'executive stakeholders',
+      'sponsor',
+      'sponsorship',
+      'self-advocacy',
+      'self advocacy',
+      'strategic narrative',
+      'director',
+      'make my work visible',
+      'make my work legible',
+      'legible to leadership',
+      'advocate for myself',
+      'seat at the table',
+      'passed over',
+      'promoted past me',
+      'plateau',
+      'plateaued',
+    ],
+  },
   /* Petra first: leadership, advancement, visibility, workplace bias. */
   leadership: {
     feelings: ['ready-for-change', 'curious-next'],
@@ -125,6 +159,25 @@ export const DEMO_SCENARIO_SIGNALS: Record<SignalScenarioId, DemoScenarioSignals
 
 /** The ordered top three for each scenario, with the reason shown on each card. */
 export const DEMO_MATCH_RESPONSES: Record<DemoScenarioId, MatchResponse> = {
+  visibility: {
+    results: [
+      {
+        profileId: 'mara',
+        reason:
+          'She made the same transition: promoted for being excellent at delivery, then learning to make her work visible, find sponsors, and build a case for the next role.',
+      },
+      {
+        profileId: 'petra',
+        reason:
+          'Her story is about putting herself forward after years of proving herself, and staying in the conversation when the room gets uncomfortable.',
+      },
+      {
+        profileId: 'annemarie',
+        reason:
+          'She knows the self-advocacy work beneath a visibility problem: taking up space before someone else decides your work is smaller than it is.',
+      },
+    ],
+  },
   leadership: {
     results: [
       {

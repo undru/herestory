@@ -39,11 +39,11 @@ export function SignalStep() {
       footer={<ActionButton label="Read her answer" onPress={actions.viewAnswer} />}
     >
       <View className="items-center">
-        <Initial label="A" />
+        <Initial label="M" />
         <Overline className="text-brand mt-7">A woman answered</Overline>
         <Display className="mt-4 text-center">She has been where you are.</Display>
         <Body className="mt-5 max-w-[300px] text-center">
-          Katrin read your challenge and left you a private note.
+          Mara read your challenge and left you a private note.
         </Body>
       </View>
     </StepShell>
@@ -57,17 +57,17 @@ export function AnswerStep() {
     <StepShell
       transitionKey="answer"
       onBack={actions.goBack}
-      eyebrow="Katrin answered"
+      eyebrow="Mara answered"
       headline="Her first note to you"
-      footer={<ActionButton label="Let Katrin know who I am" onPress={actions.acceptConnection} />}
+      footer={<ActionButton label="Let Mara know who I am" onPress={actions.acceptConnection} />}
     >
       <View className="border-hairline rounded-3xl border p-6">
         <Quote>“{MENTOR_TEXT_REPLY}”</Quote>
         <View className="border-hairline mt-6 flex-row items-center gap-3 border-t pt-5">
-          <Initial label="A" />
+          <Initial label="M" />
           <View className="flex-1">
-            <BodyStrong>Katrin, 48</BodyStrong>
-            <Caption>Back to leadership after two kids</Caption>
+            <BodyStrong>Mara, 47</BodyStrong>
+            <Caption>Made her work visible to leadership</Caption>
           </View>
         </View>
       </View>
@@ -89,9 +89,9 @@ export function ConnectedStep() {
     >
       <View className="items-center">
         <View className="flex-row items-center">
-          <Initial label="L" muted />
+          <Initial label="A" muted />
           <View className="-ml-2">
-            <Initial label="A" />
+            <Initial label="M" />
           </View>
         </View>
         <Display className="mt-8 text-center">You can see each other now.</Display>
@@ -118,7 +118,7 @@ export function ChatStep() {
     <StepShell
       transitionKey="chat"
       onBack={actions.goBack}
-      eyebrow="Katrin"
+      eyebrow="Mara"
       headline="A private conversation"
       footer={
         <View className="gap-3">
