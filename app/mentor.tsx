@@ -31,10 +31,10 @@ function HandoffStage() {
       footer={<ActionButton label="Open the invitation" onPress={actions.openMentorNotification} />}
     >
       <View className="items-center">
-        <View className="bg-plum-soft h-20 w-20 items-center justify-center rounded-full">
-          <MessageCircle color={palette.plum} size={30} strokeWidth={1.5} />
+        <View className="bg-brand-soft h-20 w-20 items-center justify-center rounded-full">
+          <MessageCircle color={palette.brand} size={30} strokeWidth={1.5} />
         </View>
-        <Overline className="text-plum mt-8">Momentum</Overline>
+        <Overline className="text-brand mt-8">Momentum</Overline>
         <Display className="mt-4 text-center">
           Someone needs the version of you who has been here.
         </Display>
@@ -57,8 +57,8 @@ function NotificationStage() {
     >
       <View className="border-line-firm w-full rounded-3xl border p-5">
         <View className="flex-row items-center gap-4">
-          <View className="bg-plum-soft h-12 w-12 items-center justify-center rounded-2xl">
-            <Bell color={palette.plum} size={22} />
+          <View className="bg-brand-soft h-12 w-12 items-center justify-center rounded-2xl">
+            <Bell color={palette.brand} size={22} />
           </View>
           <View className="flex-1">
             <BodyStrong>One woman needs you this week.</BodyStrong>
@@ -176,10 +176,10 @@ function OfferStage() {
               accessibilityRole="radio"
               accessibilityState={{ selected }}
               onPress={() => setSlot(item)}
-              className={`min-h-[66px] flex-row items-center justify-between rounded-2xl border px-5 ${selected ? 'border-plum bg-plum-soft' : 'border-line-firm'}`}
+              className={`min-h-[66px] flex-row items-center justify-between rounded-[20px] border px-5 ${selected ? 'border-brand bg-brand-soft' : 'border-line-firm'}`}
             >
               <BodyStrong>{item}</BodyStrong>
-              {selected ? <Check color={palette.plum} size={19} /> : null}
+              {selected ? <Check color={palette.brand} size={19} /> : null}
             </Tappable>
           );
         })}
@@ -271,7 +271,7 @@ function InboxStage() {
         extraRows={[{ label: 'Why you might be her person', value: challenge.whyYou }]}
       />
       <View className="mt-5 flex-row items-center gap-2">
-        <View className="bg-plum h-[6px] w-[6px] rounded-full" />
+        <View className="bg-brand h-[6px] w-[6px] rounded-full" />
         <Body>{challenge.timeAsk}</Body>
       </View>
       <Caption className="mt-4">

@@ -6,6 +6,7 @@ import { ActionButton, TextLink } from '@/components/momentum/ActionButton';
 import { StepShell } from '@/components/momentum/StepShell';
 import { Tappable } from '@/components/momentum/Tappable';
 import { TextField } from '@/components/momentum/TextField';
+import { LinearGradient } from '@/components/ui/primitives/LinearGradient';
 import {
   Body,
   BodyStrong,
@@ -17,14 +18,14 @@ import {
 } from '@/components/momentum/Type';
 import { AVAILABILITY_SLOTS, CONVERSATION_MESSAGES, MENTOR_TEXT_REPLY, PEOPLE } from '@/data/mock';
 import { useMomentum } from '@/lib/momentum-context';
-import { usePalette } from '@/lib/theme';
+import { GRADIENT_END, GRADIENT_START, usePalette } from '@/lib/theme';
 
 function Initial({ label, muted = false }: { label: string; muted?: boolean }) {
   return (
     <View
-      className={`h-12 w-12 items-center justify-center rounded-full ${muted ? 'bg-stone' : 'bg-plum-soft'}`}
+      className={`h-12 w-12 items-center justify-center rounded-full ${muted ? 'bg-bubble' : 'bg-brand-soft'}`}
     >
-      <Title className={muted ? 'text-ink-soft' : 'text-plum'}>{label}</Title>
+      <Title className={muted ? 'text-ink-soft' : 'text-brand'}>{label}</Title>
     </View>
   );
 }
@@ -39,7 +40,7 @@ export function SignalStep() {
     >
       <View className="items-center">
         <Initial label="A" />
-        <Overline className="text-plum mt-7">A woman answered</Overline>
+        <Overline className="text-brand mt-7">A woman answered</Overline>
         <Display className="mt-4 text-center">She has been where you are.</Display>
         <Body className="mt-5 max-w-[300px] text-center">
           Katrin read your challenge and left you a private note.
@@ -128,23 +129,37 @@ export function ChatStep() {
               accessibilityRole="button"
               accessibilityLabel="Choose a time"
               onPress={actions.openBooking}
-              className="border-hairline h-[54px] w-[54px] items-center justify-center rounded-full border"
+              className="border-line-firm bg-paper h-16 w-16 items-center justify-center rounded-full border"
             >
-              <CalendarDays color={palette.plum} size={21} />
+              <CalendarDays color={palette.brand} size={21} />
             </Tappable>
           </View>
         </View>
       }
     >
       <View className="gap-3">
-        {messages.map((message) => (
-          <View
-            key={message.id}
-            className={`max-w-[88%] rounded-3xl px-4 py-3 ${message.from === 'mentee' ? 'bg-plum-soft ml-auto' : 'bg-stone'}`}
-          >
-            <BodyStrong>{message.text}</BodyStrong>
-          </View>
-        ))}
+        {messages.map((message) =>
+          message.from === 'mentee' ? (
+            <LinearGradient
+              key={message.id}
+              colors={palette.gradient}
+              start={GRADIENT_START}
+              end={GRADIENT_END}
+              className="ml-auto max-w-[88%] overflow-hidden rounded-[24px] px-5 py-3.5"
+            >
+              <BodyStrong className="text-on-brand text-[18px] leading-[26px]">
+                {message.text}
+              </BodyStrong>
+            </LinearGradient>
+          ) : (
+            <View
+              key={message.id}
+              className="bg-bubble mr-auto max-w-[88%] rounded-[24px] px-5 py-3.5"
+            >
+              <BodyStrong className="text-[18px] leading-[26px]">{message.text}</BodyStrong>
+            </View>
+          ),
+        )}
         <TextLink label="Find a time to talk" onPress={actions.openBooking} />
       </View>
     </StepShell>
@@ -178,10 +193,10 @@ export function BookStep() {
               accessibilityRole="radio"
               accessibilityState={{ selected }}
               onPress={() => setSlot(item)}
-              className={`min-h-[68px] flex-row items-center justify-between rounded-2xl border px-5 ${selected ? 'border-plum bg-plum-soft' : 'border-hairline'}`}
+              className={`min-h-[68px] flex-row items-center justify-between rounded-[20px] border px-5 ${selected ? 'border-brand bg-brand-soft' : 'border-hairline'}`}
             >
               <BodyStrong>{item}</BodyStrong>
-              {selected ? <Check color={palette.plum} size={19} /> : null}
+              {selected ? <Check color={palette.brand} size={19} /> : null}
             </Tappable>
           );
         })}
@@ -200,8 +215,8 @@ export function BookedStep() {
       footer={<ActionButton label="See my people" onPress={actions.openPeople} />}
     >
       <View className="items-center">
-        <View className="bg-plum-soft h-20 w-20 items-center justify-center rounded-full">
-          <CalendarDays color={palette.plum} size={30} strokeWidth={1.5} />
+        <View className="bg-brand-soft h-20 w-20 items-center justify-center rounded-full">
+          <CalendarDays color={palette.brand} size={30} strokeWidth={1.5} />
         </View>
         <Display className="mt-8 text-center">It’s in the diary.</Display>
         <BodyStrong className="mt-5 text-center">{bookedSlot}</BodyStrong>
@@ -233,7 +248,7 @@ export function PeopleStep() {
             <View className="flex-1">
               <BodyStrong>{person.name}</BodyStrong>
               <Caption className="mt-0.5">{person.context}</Caption>
-              <Caption className="text-plum mt-2">{person.status}</Caption>
+              <Caption className="text-brand mt-2">{person.status}</Caption>
             </View>
           </View>
         ))}

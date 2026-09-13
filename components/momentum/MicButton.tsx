@@ -85,12 +85,12 @@ export function MicButton({
       <View className="items-center justify-center" style={{ width: size, height: size }}>
         <AnimatedView
           pointerEvents="none"
-          className="bg-plum absolute rounded-full"
+          className="bg-brand absolute rounded-full"
           style={[{ width: size, height: size }, firstRing]}
         />
         <AnimatedView
           pointerEvents="none"
-          className="bg-plum absolute rounded-full"
+          className="bg-brand absolute rounded-full"
           style={[{ width: size, height: size }, secondRing]}
         />
         <Tappable
@@ -102,15 +102,15 @@ export function MicButton({
           pressScale={0.95}
           className={cn(
             'items-center justify-center rounded-full border',
-            isRecording ? 'border-plum bg-plum' : 'border-plum bg-paper-raised',
-            state === 'transcribing' && 'border-hairline bg-stone',
+            isRecording ? 'border-brand bg-brand' : 'border-brand bg-paper-raised',
+            state === 'transcribing' && 'border-hairline bg-bubble',
           )}
           style={{ width: size, height: size }}
         >
           {isRecording ? (
             <Square size={size * 0.24} color={palette.paper} fill={palette.paper} strokeWidth={1} />
           ) : (
-            <Mic size={size * 0.3} color={palette.plum} strokeWidth={1.4} />
+            <Mic size={size * 0.3} color={palette.brand} strokeWidth={1.4} />
           )}
         </Tappable>
       </View>

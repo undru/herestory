@@ -3,50 +3,63 @@ import { useUniwind } from 'uniwind';
 
 /**
  * Raw color values for props that React Native must parse itself
- * (navigation, status bar, SVG, icon colors). The Uniwind tokens in
- * global.css hold the same values for className usage.
+ * (navigation, status bar, SVG, icon and gradient colors). The Uniwind tokens
+ * in global.css hold the same values for className usage.
  */
 export interface Palette {
+  /** App canvas and primary surface. */
   paper: string;
+  /** Quiet page or secondary surface. */
   stone: string;
+  /** Assistant / conversation bubble fill. */
+  bubble: string;
   ink: string;
   inkSoft: string;
   inkFaint: string;
   hairline: string;
   lineFirm: string;
-  plum: string;
-  plumSoft: string;
-  moss: string;
-  mossSoft: string;
+  /** Cobalt for icons, links, focus and selected states. */
+  brand: string;
+  brandSoft: string;
+  /** Text and icons on the brand gradient. */
+  onBrand: string;
+  /** Horizontal cobalt-to-magenta gradient for primary emphasis only. */
+  gradient: readonly [string, string];
 }
 
 export const LIGHT: Palette = {
-  paper: '#FBFBFA',
-  stone: '#E8EBEC',
-  ink: '#1B2326',
-  inkSoft: '#586366',
-  inkFaint: '#8A9295',
-  hairline: '#D6DADB',
-  lineFirm: '#B9BFC1',
-  plum: '#6E3B52',
-  plumSoft: '#EFE3E8',
-  moss: '#4A6355',
-  mossSoft: '#E1E9E4',
+  paper: '#FFFFFF',
+  stone: '#FAF9FF',
+  bubble: '#F5F4FA',
+  ink: '#202126',
+  inkSoft: '#6F7180',
+  inkFaint: '#737584',
+  hairline: '#D9DAE5',
+  lineFirm: '#C8CADA',
+  brand: '#3557FF',
+  brandSoft: '#ECEFFF',
+  onBrand: '#FFFFFF',
+  gradient: ['#3557FF', '#DD32CF'],
 };
 
 export const DARK: Palette = {
-  paper: '#1D2427',
-  stone: '#14191B',
-  ink: '#E7EBEC',
-  inkSoft: '#A3ADB0',
-  inkFaint: '#798386',
-  hairline: '#2C3538',
-  lineFirm: '#414C50',
-  plum: '#E0AFC2',
-  plumSoft: '#3A2430',
-  moss: '#A8C6B4',
-  mossSoft: '#243329',
+  paper: '#16161B',
+  stone: '#0F0F13',
+  bubble: '#23232B',
+  ink: '#EDEDF3',
+  inkSoft: '#A7A9B8',
+  inkFaint: '#9597A8',
+  hairline: '#2D2E38',
+  lineFirm: '#454759',
+  brand: '#8C9EFF',
+  brandSoft: '#262A4A',
+  onBrand: '#FFFFFF',
+  gradient: ['#3557FF', '#DD32CF'],
 };
+
+/** Start and end points for the horizontal brand gradient. */
+export const GRADIENT_START = { x: 0, y: 0 } as const;
+export const GRADIENT_END = { x: 1, y: 0 } as const;
 
 /** Colors for the active light or dark theme. */
 export function usePalette(): Palette {
@@ -57,14 +70,7 @@ export function usePalette(): Palette {
 const webFallback = (stack: string, family: string) =>
   Platform.OS === 'web' ? `${family}, ${stack}` : family;
 
-/** Editorial serif (Newsreader, light) for headlines, quotes and moment cards. */
-export const serif = {
-  light: webFallback('Georgia, serif', 'Newsreader_300Light'),
-  lightItalic: webFallback('Georgia, serif', 'Newsreader_300Light_Italic'),
-  regular: webFallback('Georgia, serif', 'Newsreader_400Regular'),
-} as const;
-
-/** Clean sans (Inter) for body copy, labels and buttons. */
+/** Inter, the app-wide typeface for headlines, quotes, body copy, chips and buttons. */
 export const sans = {
   regular: webFallback('system-ui, sans-serif', 'Inter_400Regular'),
   medium: webFallback('system-ui, sans-serif', 'Inter_500Medium'),

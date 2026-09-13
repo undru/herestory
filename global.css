@@ -40,46 +40,50 @@
 @source './node_modules/heroui-native/lib';
 
 /*
- * Momentum theme: cool paper, ink, plum for choices, moss for "it's done".
+ * Conversational theme: white canvas, lavender-quiet surfaces, soft lilac
+ * bubbles, charcoal ink, cobalt for icons, links and focus. The cobalt-to-magenta
+ * gradient (gradient-start / gradient-end) is for primary emphasis only.
  * Heavy (red), curious (yellow) and hopeful (green) tint the feeling chips.
- * No gradients, no shadows. Outlines only.
- * Keep LIGHT / DARK in lib/theme.ts in sync for icons and native color props.
+ * No heavy shadows. Keep LIGHT / DARK in lib/theme.ts in sync for icons,
+ * gradients and native color props.
  */
 @layer theme {
   :root {
     @variant light {
-      --background: #fbfbfa;
-      --foreground: #1b2326;
-      --muted: #586366;
-      --border: #d6dadb;
-      --separator: #d6dadb;
-      --panel: #fbfbfa;
-      --surface: #fbfbfa;
-      --surface-foreground: #1b2326;
-      --default: #e8ebec;
-      --default-foreground: #1b2326;
-      --accent: #6e3b52;
-      --accent-foreground: #fbfbfa;
-      --accent-soft: #efe3e8;
-      --accent-soft-foreground: #6e3b52;
-      --link: #6e3b52;
-      --focus: #6e3b52;
-      --field: #fbfbfa;
-      --field-border: #b9bfc1;
+      --background: #ffffff;
+      --foreground: #202126;
+      --muted: #6f7180;
+      --border: #d9dae5;
+      --separator: #d9dae5;
+      --panel: #ffffff;
+      --surface: #ffffff;
+      --surface-foreground: #202126;
+      --default: #faf9ff;
+      --default-foreground: #202126;
+      --accent: #3557ff;
+      --accent-foreground: #ffffff;
+      --accent-soft: #ecefff;
+      --accent-soft-foreground: #3557ff;
+      --link: #3557ff;
+      --focus: #3557ff;
+      --field: #ffffff;
+      --field-border: #c8cada;
 
-      --color-paper: #fbfbfa;
-      --color-paper-raised: #fbfbfa;
-      --color-stone: #e8ebec;
-      --color-stone-deep: #d6dadb;
-      --color-ink: #1b2326;
-      --color-ink-soft: #586366;
-      --color-ink-faint: #8a9295;
-      --color-hairline: #d6dadb;
-      --color-line-firm: #b9bfc1;
-      --color-plum: #6e3b52;
-      --color-plum-soft: #efe3e8;
-      --color-moss: #4a6355;
-      --color-moss-soft: #e1e9e4;
+      --color-paper: #ffffff;
+      --color-paper-raised: #ffffff;
+      --color-stone: #faf9ff;
+      --color-stone-deep: #d9dae5;
+      --color-bubble: #f5f4fa;
+      --color-ink: #202126;
+      --color-ink-soft: #6f7180;
+      --color-ink-faint: #737584;
+      --color-hairline: #d9dae5;
+      --color-line-firm: #c8cada;
+      --color-brand: #3557ff;
+      --color-brand-soft: #ecefff;
+      --color-on-brand: #ffffff;
+      --color-gradient-start: #3557ff;
+      --color-gradient-end: #dd32cf;
 
       --color-heavy: #9a3a33;
       --color-heavy-soft: #f5deda;
@@ -96,38 +100,40 @@
     }
 
     @variant dark {
-      --background: #1d2427;
-      --foreground: #e7ebec;
-      --muted: #a3adb0;
-      --border: #2c3538;
-      --separator: #2c3538;
-      --panel: #1d2427;
-      --surface: #1d2427;
-      --surface-foreground: #e7ebec;
-      --default: #14191b;
-      --default-foreground: #e7ebec;
-      --accent: #e0afc2;
-      --accent-foreground: #1d2427;
-      --accent-soft: #3a2430;
-      --accent-soft-foreground: #e0afc2;
-      --link: #e0afc2;
-      --focus: #e0afc2;
-      --field: #1d2427;
-      --field-border: #414c50;
+      --background: #16161b;
+      --foreground: #ededf3;
+      --muted: #a7a9b8;
+      --border: #2d2e38;
+      --separator: #2d2e38;
+      --panel: #16161b;
+      --surface: #16161b;
+      --surface-foreground: #ededf3;
+      --default: #0f0f13;
+      --default-foreground: #ededf3;
+      --accent: #8c9eff;
+      --accent-foreground: #16161b;
+      --accent-soft: #262a4a;
+      --accent-soft-foreground: #8c9eff;
+      --link: #8c9eff;
+      --focus: #8c9eff;
+      --field: #16161b;
+      --field-border: #454759;
 
-      --color-paper: #1d2427;
-      --color-paper-raised: #1d2427;
-      --color-stone: #14191b;
-      --color-stone-deep: #2c3538;
-      --color-ink: #e7ebec;
-      --color-ink-soft: #a3adb0;
-      --color-ink-faint: #798386;
-      --color-hairline: #2c3538;
-      --color-line-firm: #414c50;
-      --color-plum: #e0afc2;
-      --color-plum-soft: #3a2430;
-      --color-moss: #a8c6b4;
-      --color-moss-soft: #243329;
+      --color-paper: #16161b;
+      --color-paper-raised: #16161b;
+      --color-stone: #0f0f13;
+      --color-stone-deep: #2d2e38;
+      --color-bubble: #23232b;
+      --color-ink: #ededf3;
+      --color-ink-soft: #a7a9b8;
+      --color-ink-faint: #9597a8;
+      --color-hairline: #2d2e38;
+      --color-line-firm: #454759;
+      --color-brand: #8c9eff;
+      --color-brand-soft: #262a4a;
+      --color-on-brand: #ffffff;
+      --color-gradient-start: #3557ff;
+      --color-gradient-end: #dd32cf;
 
       --color-heavy: #f2ada5;
       --color-heavy-soft: #4a2b29;
@@ -146,19 +152,21 @@
 }
 
 @theme {
-  --color-paper: #fbfbfa;
-  --color-paper-raised: #fbfbfa;
-  --color-stone: #e8ebec;
-  --color-stone-deep: #d6dadb;
-  --color-ink: #1b2326;
-  --color-ink-soft: #586366;
-  --color-ink-faint: #8a9295;
-  --color-hairline: #d6dadb;
-  --color-line-firm: #b9bfc1;
-  --color-plum: #6e3b52;
-  --color-plum-soft: #efe3e8;
-  --color-moss: #4a6355;
-  --color-moss-soft: #e1e9e4;
+  --color-paper: #ffffff;
+  --color-paper-raised: #ffffff;
+  --color-stone: #faf9ff;
+  --color-stone-deep: #d9dae5;
+  --color-bubble: #f5f4fa;
+  --color-ink: #202126;
+  --color-ink-soft: #6f7180;
+  --color-ink-faint: #737584;
+  --color-hairline: #d9dae5;
+  --color-line-firm: #c8cada;
+  --color-brand: #3557ff;
+  --color-brand-soft: #ecefff;
+  --color-on-brand: #ffffff;
+  --color-gradient-start: #3557ff;
+  --color-gradient-end: #dd32cf;
 
   --color-heavy: #9a3a33;
   --color-heavy-soft: #f5deda;

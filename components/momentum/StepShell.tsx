@@ -48,7 +48,7 @@ export function StepShell({
 
   return (
     <SafeAreaView className="bg-paper flex-1" edges={['top', 'bottom']}>
-      {progress === null ? <View className="h-[2px]" /> : <ProgressBar value={progress} />}
+      {progress === null ? <View className="h-[3px]" /> : <ProgressBar value={progress} />}
 
       <View className="h-12 flex-row items-center px-3">
         {onBack ? (

@@ -87,7 +87,7 @@ export function ContextStep() {
         {cvFileName ? (
           <View>
             <Overline>Your CV</Overline>
-            <View className="border-line-firm mt-2 flex-row items-center gap-3 rounded-2xl border py-1 pr-1 pl-4">
+            <View className="border-line-firm mt-2 flex-row items-center gap-3 rounded-[20px] border py-1 pr-1 pl-4">
               <FileText size={18} color={palette.inkSoft} strokeWidth={1.6} />
               <Text
                 numberOfLines={1}
@@ -106,7 +106,7 @@ export function ContextStep() {
           <View
             role="alert"
             accessibilityLiveRegion="polite"
-            className="border-line-firm rounded-2xl border px-4 py-3"
+            className="border-line-firm rounded-[20px] border px-4 py-3"
           >
             <Body className="text-ink">{LINKEDIN_COMING_SOON}</Body>
           </View>
@@ -116,7 +116,7 @@ export function ContextStep() {
           <View
             role="alert"
             accessibilityLiveRegion="polite"
-            className="border-line-firm rounded-2xl border px-4 py-3"
+            className="border-line-firm rounded-[20px] border px-4 py-3"
           >
             <Body className="text-ink">{CV_PICK_FAILED}</Body>
           </View>

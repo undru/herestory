@@ -70,7 +70,7 @@ export function CountdownRing({
           cx={size / 2}
           cy={size / 2}
           r={radius}
-          stroke={palette.plum}
+          stroke={palette.brand}
           strokeWidth={strokeWidth}
           strokeLinecap="round"
           fill="none"

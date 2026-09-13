@@ -1,7 +1,8 @@
 import { Text } from 'react-native';
 
 import { Tappable } from '@/components/momentum/Tappable';
-import { sans } from '@/lib/theme';
+import { LinearGradient } from '@/components/ui/primitives/LinearGradient';
+import { GRADIENT_END, GRADIENT_START, sans, usePalette } from '@/lib/theme';
 import { cn } from '@/lib/utils';
 
 type Variant = 'primary' | 'secondary';
@@ -16,7 +17,10 @@ interface ActionButtonProps {
   className?: string;
 }
 
-/** Full-width bottom action. Ink for primary, firm outline for secondary. */
+/**
+ * Full-width bottom action. Gradient pill for primary, white with a fine
+ * lilac-gray outline for secondary. Disabled primaries drop the gradient.
+ */
 export function ActionButton({
   label,
   onPress,
@@ -26,6 +30,7 @@ export function ActionButton({
   loadingLabel,
   className,
 }: ActionButtonProps) {
+  const palette = usePalette();
   const isBlocked = disabled || loading;
   const isPrimary = variant === 'primary';
 
@@ -38,19 +43,28 @@ export function ActionButton({
       onPress={onPress}
       pressScale={0.99}
       className={cn(
-        'h-[52px] w-full items-center justify-center rounded-[14px] border',
-        isPrimary ? 'border-ink bg-ink' : 'border-line-firm bg-transparent',
-        isBlocked && isPrimary && 'border-hairline bg-hairline',
-        isBlocked && !isPrimary && 'border-hairline',
+        'h-16 w-full items-center justify-center overflow-hidden border',
+        isPrimary ? 'rounded-full border-transparent' : 'border-line-firm bg-paper rounded-[22px]',
+        isBlocked && 'border-hairline',
+        isBlocked && isPrimary && 'bg-bubble',
         className,
       )}
     >
+      {isPrimary && !isBlocked ? (
+        <LinearGradient
+          pointerEvents="none"
+          colors={palette.gradient}
+          start={GRADIENT_START}
+          end={GRADIENT_END}
+          className="absolute inset-0"
+        />
+      ) : null}
       <Text
-        style={{ fontFamily: sans.medium, letterSpacing: 0.1 }}
+        style={{ fontFamily: sans.semibold }}
         className={cn(
-          'text-[15px]',
-          isPrimary ? 'text-paper' : 'text-ink',
-          isBlocked && 'text-ink-faint',
+          'text-[17px] leading-[22px]',
+          isPrimary ? 'text-on-brand' : 'text-ink',
+          isBlocked && 'text-ink-soft',
         )}
       >
         {loading ? (loadingLabel ?? label) : label}
@@ -77,8 +91,8 @@ export function TextLink({ label, onPress, tone = 'accent', className }: TextLin
       className={cn('min-h-11 items-center justify-center px-2', className)}
     >
       <Text
-        style={{ fontFamily: sans.regular }}
-        className={cn('text-[14px]', tone === 'accent' ? 'text-plum' : 'text-ink-faint')}
+        style={{ fontFamily: sans.medium }}
+        className={cn('text-[15px]', tone === 'accent' ? 'text-brand' : 'text-ink-faint')}
       >
         {label}
       </Text>

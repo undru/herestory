@@ -5,14 +5,14 @@ import { Tappable } from '@/components/momentum/Tappable';
 import { sans, usePalette } from '@/lib/theme';
 import { cn } from '@/lib/utils';
 
-/** Color family for selectable chips. 'plum' is the neutral default. */
-export type ChipFamily = 'plum' | 'heavy' | 'curious' | 'hopeful';
+/** Color family for selectable chips. 'brand' is the neutral default. */
+export type ChipFamily = 'brand' | 'heavy' | 'curious' | 'hopeful';
 
 const FAMILY_CLASSES: Record<ChipFamily, { idle: string; chosen: string; chosenText: string }> = {
-  plum: {
-    idle: 'border-line-firm bg-transparent',
-    chosen: 'border-plum bg-plum-soft',
-    chosenText: 'text-plum',
+  brand: {
+    idle: 'border-line-firm bg-paper',
+    chosen: 'border-brand bg-brand-soft',
+    chosenText: 'text-brand',
   },
   heavy: {
     idle: 'border-heavy-line bg-heavy-tint',
@@ -53,12 +53,12 @@ export function PillChip({
   onRemove,
   disabled = false,
   tone = 'select',
-  family = 'plum',
+  family = 'brand',
   className,
 }: PillChipProps) {
   const palette = usePalette();
   const isChosen = tone === 'select' && selected;
-  const colors = FAMILY_CLASSES[tone === 'select' ? family : 'plum'];
+  const colors = FAMILY_CLASSES[tone === 'select' ? family : 'brand'];
 
   return (
     // Dim on a wrapper: Tappable's animated press opacity overrides an opacity class on itself.
@@ -77,8 +77,8 @@ export function PillChip({
         )}
       >
         <Text
-          style={{ fontFamily: sans.regular }}
-          className={cn('shrink text-[14px]', isChosen ? colors.chosenText : 'text-ink')}
+          style={{ fontFamily: isChosen ? sans.medium : sans.regular }}
+          className={cn('shrink text-[15px]', isChosen ? colors.chosenText : 'text-ink')}
         >
           {label}
         </Text>

@@ -22,9 +22,9 @@ export function ConversationIntroStep() {
       intro="A short voice conversation — think of it as a coffee chat, not an interview. We'll ask a few real questions to understand what you're looking for and what you have to offer."
       footer={<ActionButton label="Start the conversation" onPress={actions.startConversation} />}
     >
-      <View className="border-line-firm flex-row gap-3 rounded-2xl border px-4 py-4">
+      <View className="border-line-firm flex-row gap-3 rounded-[20px] border px-4 py-4">
         <View accessible accessibilityRole="image" accessibilityLabel="Privacy protected">
-          <ShieldCheck size={20} color={palette.moss} strokeWidth={1.6} />
+          <ShieldCheck size={20} color={palette.brand} strokeWidth={1.6} />
         </View>
         <Body className="text-ink flex-1">
           {

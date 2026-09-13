@@ -9,11 +9,6 @@ import {
   Inter_700Bold,
   useFonts,
 } from '@expo-google-fonts/inter';
-import {
-  Newsreader_300Light,
-  Newsreader_300Light_Italic,
-  Newsreader_400Regular,
-} from '@expo-google-fonts/newsreader';
 import Constants, { ExecutionEnvironment } from 'expo-constants';
 import { Platform, View } from 'react-native';
 import { useEffect } from 'react';
@@ -63,9 +58,6 @@ export default function RootLayout() {
     Inter_500Medium,
     Inter_600SemiBold,
     Inter_700Bold,
-    Newsreader_300Light,
-    Newsreader_300Light_Italic,
-    Newsreader_400Regular,
   });
 
   // Report uncaught JS errors and unhandled promise rejections to parent (Bilt preview iframe)
@@ -98,7 +90,6 @@ export default function RootLayout() {
     if (Platform.OS === 'web') {
       const families = [
         'https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap',
-        'https://fonts.googleapis.com/css2?family=Newsreader:ital,wght@0,300;0,400;1,300&display=swap',
       ];
 
       for (const href of families) {

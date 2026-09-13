@@ -28,7 +28,7 @@ export function MentorCard({ mentor, expanded, onOpen, onAsk }: MentorCardProps)
         accessibilityLabel={`${name}. ${mentor.transition}. Tap to open.`}
         onPress={onOpen}
         pressScale={0.99}
-        className="border-hairline flex-row items-center gap-3 rounded-2xl border p-[14px]"
+        className="border-hairline flex-row items-center gap-3 rounded-[20px] border p-[14px]"
       >
         <Avatar name={mentor.firstName} />
         <View className="flex-1">
@@ -43,13 +43,13 @@ export function MentorCard({ mentor, expanded, onOpen, onAsk }: MentorCardProps)
     <AnimatedView
       entering={FadeIn.duration(220)}
       accessibilityState={{ expanded: true }}
-      className="border-line-firm rounded-2xl border p-[14px]"
+      className="border-line-firm rounded-[20px] border p-[14px]"
     >
       <View className="flex-row items-center gap-3">
         <Avatar name={mentor.firstName} />
         <View className="flex-1">
           <BodyStrong>{name}</BodyStrong>
-          <Caption className="text-moss mt-0.5">{mentor.availability}</Caption>
+          <Caption className="text-brand mt-0.5">{mentor.availability}</Caption>
         </View>
       </View>
 

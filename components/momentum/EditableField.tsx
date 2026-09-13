@@ -3,7 +3,7 @@ import { TextInput } from 'react-native';
 
 import { Body, Quote } from '@/components/momentum/Type';
 import { Tappable } from '@/components/momentum/Tappable';
-import { sans, serif, usePalette } from '@/lib/theme';
+import { sans, usePalette } from '@/lib/theme';
 import { cn } from '@/lib/utils';
 
 interface EditableFieldProps {
@@ -11,7 +11,7 @@ interface EditableFieldProps {
   onChange: (value: string) => void;
   accessibilityLabel: string;
   placeholder?: string;
-  /** 'quote' is the serif italic line, 'line' is body copy. */
+  /** 'quote' is her own words at conversation size, 'line' is body copy. */
   variant?: 'quote' | 'line';
 }
 
@@ -38,14 +38,10 @@ export function EditableField({
         placeholder={placeholder}
         placeholderTextColor={palette.inkFaint}
         accessibilityLabel={accessibilityLabel}
-        style={
-          isQuote
-            ? { fontFamily: serif.lightItalic, fontStyle: 'italic' }
-            : { fontFamily: sans.regular }
-        }
+        style={{ fontFamily: sans.regular }}
         className={cn(
-          'border-plum text-ink -mx-2 rounded-lg border bg-transparent px-2 py-1',
-          isQuote ? 'text-[18px] leading-[25px]' : 'text-[14px] leading-[21px]',
+          'border-brand text-ink -mx-2 rounded-lg border bg-transparent px-2 py-1',
+          isQuote ? 'text-[18px] leading-[27px]' : 'text-[16px] leading-[24px]',
         )}
       />
     );
@@ -62,7 +58,7 @@ export function EditableField({
       {isQuote ? (
         <Quote>{value ? `“${value}”` : placeholder}</Quote>
       ) : (
-        <Body className="text-ink leading-[21px]">{value || placeholder}</Body>
+        <Body className="text-ink">{value || placeholder}</Body>
       )}
     </Tappable>
   );
@@ -90,7 +86,7 @@ export function EditableChip({ value, onChange, accessibilityLabel }: EditableCh
         accessibilityLabel={accessibilityLabel}
         placeholderTextColor={palette.inkFaint}
         style={{ fontFamily: sans.regular, minWidth: 96 }}
-        className="border-plum text-ink min-h-10 rounded-full border bg-transparent px-[14px] text-[14px]"
+        className="border-brand text-ink min-h-10 rounded-full border bg-transparent px-[14px] text-[14px]"
       />
     );
   }
@@ -103,7 +99,7 @@ export function EditableChip({ value, onChange, accessibilityLabel }: EditableCh
       pressScale={0.97}
       className="border-line-firm min-h-10 justify-center rounded-full border px-[14px] py-[8px]"
     >
-      <Body className="text-ink leading-[20px]">{value}</Body>
+      <Body className="text-ink text-[14px] leading-[20px]">{value}</Body>
     </Tappable>
   );
 }

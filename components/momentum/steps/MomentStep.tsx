@@ -77,7 +77,7 @@ export function MomentStep() {
         </View>
       }
     >
-      <View className="border-line-firm rounded-2xl border p-4">
+      <View className="border-line-firm rounded-[20px] border p-4">
         <EditableField
           variant="quote"
           value={momentCard.quote}

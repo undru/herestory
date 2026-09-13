@@ -18,7 +18,7 @@ export default function NotFoundScreen() {
             href="/"
             style={{
               fontFamily: sans.medium,
-              color: palette.plum,
+              color: palette.brand,
               textDecorationLine: 'underline',
               marginTop: 32,
               fontSize: 14,

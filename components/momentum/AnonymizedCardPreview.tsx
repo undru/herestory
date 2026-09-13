@@ -35,8 +35,10 @@ export function AnonymizedCardPreview({
   ];
 
   return (
-    <View className={cn('border-line-firm rounded-2xl border', compact ? 'p-5' : 'p-6', className)}>
-      <Overline className="text-plum">{card.label}</Overline>
+    <View
+      className={cn('border-line-firm rounded-[20px] border', compact ? 'p-5' : 'p-6', className)}
+    >
+      <Overline className="text-brand">{card.label}</Overline>
 
       <Quote
         className={compact ? 'mt-3 text-[17px] leading-[24px]' : 'mt-4 text-[21px] leading-[29px]'}

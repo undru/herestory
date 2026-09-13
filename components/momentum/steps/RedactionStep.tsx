@@ -50,12 +50,12 @@ export function RedactionStep() {
       }
     >
       <Overline>You wrote</Overline>
-      <View className="border-hairline mt-1.5 rounded-2xl border p-4">
+      <View className="border-hairline mt-1.5 rounded-[20px] border p-4">
         <Body>{written}</Body>
       </View>
 
       <Overline className="mt-4">She receives</Overline>
-      <View className="border-line-firm mt-1.5 rounded-2xl border p-4">
+      <View className="border-line-firm mt-1.5 rounded-[20px] border p-4">
         <Body className="text-ink leading-[24px]">
           {REDACTION_PARTS.map((part) => {
             if (typeof part === 'string') return part;
@@ -71,7 +71,7 @@ export function RedactionStep() {
                 }
                 onPress={() => toggle(part.original)}
                 style={{ fontFamily: sans.medium }}
-                className={isRestored ? 'text-ink underline' : 'bg-plum-soft text-plum'}
+                className={isRestored ? 'text-ink underline' : 'bg-brand-soft text-brand'}
               >
                 {isRestored ? part.original : ` ${part.safe} `}
               </Text>

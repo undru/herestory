@@ -22,7 +22,7 @@ export function Waveform({ className }: WaveformProps) {
       {BARS.map((bar) => (
         <View
           key={bar.key}
-          className={cn('w-[3px] rounded-full', bar.height > 34 ? 'bg-plum' : 'bg-plum-soft')}
+          className={cn('w-[3px] rounded-full', bar.height > 34 ? 'bg-brand' : 'bg-brand-soft')}
           style={{ height: bar.height }}
         />
       ))}

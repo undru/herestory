@@ -83,11 +83,11 @@ function ScreenRow({ title, description, onPress }: ScreenRowProps) {
       accessibilityLabel={`${title}. ${description}`}
       onPress={onPress}
       pressScale={0.99}
-      className="border-hairline flex-row items-center gap-3 rounded-2xl border px-4 py-3"
+      className="border-hairline flex-row items-center gap-3 rounded-[20px] border px-4 py-3"
     >
       <View className="flex-1">
         <BodyStrong>{title}</BodyStrong>
-        <Body className="mt-0.5 text-[13px] leading-[19px]">{description}</Body>
+        <Body className="mt-0.5 text-[14px] leading-[20px]">{description}</Body>
       </View>
       <ChevronRight size={16} color={palette.inkFaint} strokeWidth={1.6} />
     </Tappable>

@@ -44,7 +44,7 @@ export function HelpOfferStep() {
         </View>
       }
     >
-      <View className="border-line-firm rounded-2xl border p-4">
+      <View className="border-line-firm rounded-[20px] border p-4">
         <Overline>Her challenge, not her name</Overline>
         <Quote className="mt-2">“{HELP_REQUEST.quote}”</Quote>
         <Overline className="mt-4">What she needs</Overline>
@@ -123,12 +123,12 @@ export function FinishStep() {
           : `Not every story is yours to answer. You came here ${feeling}, and someone already wrote back.`}
       </Body>
 
-      <View className="border-line-firm mt-6 rounded-2xl border p-4">
+      <View className="border-line-firm mt-6 rounded-[20px] border p-4">
         <View className="flex-row items-center gap-3">
           <Avatar name={name} />
           <View className="flex-1">
             <BodyStrong>{`${name} replied`}</BodyStrong>
-            <Caption className="text-moss mt-0.5">{MENTOR_FIRST_REPLY.delay}</Caption>
+            <Caption className="text-brand mt-0.5">{MENTOR_FIRST_REPLY.delay}</Caption>
           </View>
         </View>
         <Quote className="mt-3 text-[16px] leading-[23px]">“{MENTOR_FIRST_REPLY.text}”</Quote>

@@ -16,10 +16,10 @@ import {
 import { useMomentum } from '@/lib/momentum-context';
 import { sans } from '@/lib/theme';
 
-/** Heavy feelings read red, curious yellow, positive green; in-between stays plum. */
+/** Heavy feelings read red, curious yellow, positive green; in-between stays neutral brand. */
 const GROUP_FAMILY: Record<FeelingGroupId, ChipFamily> = {
   difficult: 'heavy',
-  uncertain: 'plum',
+  uncertain: 'brand',
   curious: 'curious',
   positive: 'hopeful',
 };
