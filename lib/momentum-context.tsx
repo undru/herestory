@@ -34,7 +34,6 @@ import {
 import {
   EMPTY_HISTORY,
   historyRepository,
-  mergeHistories,
   withConversation,
   withMatchBatch,
   type LocalHistory,
@@ -302,17 +301,15 @@ export function MomentumProvider({ children }: PropsWithChildren) {
   /** One conversation entry per run: confirming the card again replaces it. */
   const runIdRef = useRef<string | null>(null);
 
+  // Every app start begins with an empty history: whatever an earlier session
+  // saved is deleted. History from this session still shows until the next start.
   useEffect(() => {
     let active = true;
     void historyRepository
-      .load()
-      .catch(() => EMPTY_HISTORY)
-      .then((stored) => {
-        if (!active) return;
-        const merged = mergeHistories(stored, historyRef.current);
-        historyRef.current = merged;
-        setHistory(merged);
-        setIsHistoryLoaded(true);
+      .clear()
+      .catch(() => undefined)
+      .then(() => {
+        if (active) setIsHistoryLoaded(true);
       });
     return () => {
       active = false;
