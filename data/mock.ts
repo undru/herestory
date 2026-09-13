@@ -199,49 +199,71 @@ export const MATCHING_LINES: string[] = [
 
 /* ---------------------------------------------------------------- step 6 */
 
-export interface Mentor {
-  id: string;
+export type SampleProfileId = 'petra' | 'renate' | 'sabine' | 'annemarie';
+
+/** A sample profile for the demo. Not a real person, and never shown as available. */
+export interface SampleProfile {
+  id: SampleProfileId;
   firstName: string;
   age: number;
-  /** One line about her lived transition. Never a company or job title. */
-  transition: string;
-  quote: string;
-  whyHer: string;
-  availability: string;
+  /** A short title for her story. Never a company or job title. */
+  title: string;
+  story: string;
+  /** Broad themes for future matching. Never shown. */
+  themes: string[];
 }
 
-export const MENTORS: Mentor[] = [
+export const SAMPLE_PROFILES: SampleProfile[] = [
   {
-    id: 'katrin',
-    firstName: 'Katrin',
-    age: 48,
-    transition: 'Back to leadership after two kids',
-    quote: 'I rebuilt my career after two kids, and I did not go back to who I was.',
-    whyHer: 'She re-entered leadership after a three-year break, and negotiated the title back.',
-    availability: 'Has 30 minutes this week',
+    id: 'petra',
+    firstName: 'Petra',
+    age: 38,
+    title: 'The Ceiling',
+    story:
+      'After 15 years proving myself in a boys’ club, I finally put my hand up for the leadership role — and watched my mentor go cold and my colleagues go silent, like I’d asked for too much.',
+    themes: ['leadership', 'advancement', 'workplace bias', 'visibility', 'self-advocacy'],
   },
   {
-    id: 'miriam',
-    firstName: 'Miriam',
-    age: 52,
-    transition: 'Changed industry at 42',
-    quote:
-      'At forty-two I stopped explaining my CV and started explaining what I could actually do.',
-    whyHer:
-      'She came back from a long break into a different field, without starting over at the bottom.',
-    availability: 'Has 30 minutes next week',
-  },
-  {
-    id: 'sofia',
-    firstName: 'Sofia',
+    id: 'renate',
+    firstName: 'Renate',
     age: 44,
-    transition: 'Left corporate, started her own thing',
-    quote: 'I was the safest pair of hands on the floor, so I went and put myself in charge.',
-    whyHer:
-      'She asked herself whether she wanted the old job back or something of her own, and can tell you what she found.',
-    availability: 'Has 30 minutes this week',
+    title: 'The Return',
+    story:
+      'I fought to get my career back after having kids, and now I’m burning 12 hours a day on work that isn’t mine — wondering if this is really what I came back for.',
+    themes: ['return to work', 'parenting', 'burnout', 'boundaries', 'workload'],
+  },
+  {
+    id: 'sabine',
+    firstName: 'Sabine',
+    age: 34,
+    title: 'The Checklist',
+    story:
+      'Good grades, good job, good mom, good home — I did everything right, so why does it feel like I’m disappearing or burning out?',
+    themes: ['burnout', 'identity', 'parenting', 'work-life pressure', 'belonging'],
+  },
+  {
+    id: 'annemarie',
+    firstName: 'Annemarie',
+    age: 29,
+    title: 'The Shrinking',
+    story:
+      'My manager tells me I’m not capable and not doing enough, and I was raised to never take up space — so instead of pushing back, I’ve started to believe him.',
+    themes: [
+      'confidence',
+      'manager relationship',
+      'self-advocacy',
+      'visibility',
+      'workplace pressure',
+    ],
   },
 ];
+
+/** A sample profile as matched for her, with the reason from the match response. */
+export interface ProfileMatch extends SampleProfile {
+  reason: string;
+}
+
+export const MATCHES_DEMO_NOTE = 'These are sample profiles for this demo.';
 
 /* ------------------------------------------------------------ before it goes */
 
@@ -273,9 +295,10 @@ export const HELP_REQUEST = {
 
 export const HELP_ANSWER_PLACEHOLDER = 'What helped you, even a little?';
 
+/** A scripted first reply on the closing screen. Sample copy: no scheduling or availability. */
 export const MENTOR_FIRST_REPLY = {
-  delay: '2 hours later',
-  text: "Six weeks is enough time. Call me Thursday and we'll write down what you're actually asking for.",
+  delay: 'Sample reply',
+  text: 'What you wrote sounded familiar. Before anything else, write down what you actually want to ask for. The rest gets easier from there.',
 };
 
 /* ------------------------------------------------------------ /mentor */

@@ -10,9 +10,9 @@ import {
 import {
   DEEPENING_QUESTIONS,
   MAX_FEELINGS,
-  type Mentor,
   type MentorChallenge,
   type MomentCardData,
+  type ProfileMatch,
 } from '@/data/mock';
 import {
   acceptChallenge,
@@ -154,7 +154,7 @@ interface MomentumState {
   workLife: string;
   /** Name of the CV she picked this session. The file itself is never uploaded or read. */
   cvFileName: string | null;
-  /* Private, in-session profile details. Not shown publicly or used for matching yet. */
+  /* Private, in-session profile details. Never shown publicly; sent to matching. */
   location: string;
   origin: string;
   languages: string[];
@@ -165,11 +165,11 @@ interface MomentumState {
   /** Card generation failed; the answers are kept for a retry. */
   cardError: boolean;
   destination: string;
-  matches: Mentor[];
+  matches: ProfileMatch[];
   isMatching: boolean;
   /** The open mentor card, and later the mentor she asked. */
   selectedMentorId: string | null;
-  selectedMentor: Mentor | null;
+  selectedMentor: ProfileMatch | null;
   isSending: boolean;
   /** Whether she answered the woman one step behind, or skipped. */
   helped: boolean;
@@ -264,7 +264,7 @@ export function MomentumProvider({ children }: PropsWithChildren) {
   const [isGeneratingCard, setIsGeneratingCard] = useState(false);
   const [cardError, setCardError] = useState(false);
   const [destination, setDestinationValue] = useState('');
-  const [matches, setMatches] = useState<Mentor[]>([]);
+  const [matches, setMatches] = useState<ProfileMatch[]>([]);
   const [isMatching, setIsMatching] = useState(false);
   const [selectedMentorId, setSelectedMentorId] = useState<string | null>(null);
   const [isSending, setIsSending] = useState(false);
@@ -402,14 +402,22 @@ export function MomentumProvider({ children }: PropsWithChildren) {
     if (!momentCard) return;
     setIsMatching(true);
     try {
-      const found = await findMatches({ card: momentCard, destination });
+      const found = await findMatches({
+        feelings,
+        location,
+        origin,
+        languages,
+        answers,
+        momentCard,
+        destination,
+      });
       setMatches(found);
       setSelectedMentorId(found[0]?.id ?? null);
       setStep('matches');
     } finally {
       setIsMatching(false);
     }
-  }, [destination, momentCard]);
+  }, [answers, destination, feelings, languages, location, momentCard, origin]);
 
   const openMentor = useCallback((mentorId: string) => {
     setSelectedMentorId(mentorId);

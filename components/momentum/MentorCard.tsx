@@ -6,17 +6,17 @@ import { Avatar } from '@/components/momentum/Avatar';
 import { Tappable } from '@/components/momentum/Tappable';
 import { Body, BodyStrong, Caption, Overline, Quote } from '@/components/momentum/Type';
 import { AnimatedView } from '@/components/ui/primitives/AnimatedView';
-import type { Mentor } from '@/data/mock';
+import type { ProfileMatch } from '@/data/mock';
 
 interface MentorCardProps {
-  mentor: Mentor;
+  mentor: ProfileMatch;
   /** Only one card is open at a time; the rest collapse to a single line. */
   expanded: boolean;
   onOpen: () => void;
   onAsk: () => void;
 }
 
-/** A matched mentor: first name and age, and when open, her words and why she fits. */
+/** A matched sample profile: name, age and title, and when open, her story and why she fits. */
 export function MentorCard({ mentor, expanded, onOpen, onAsk }: MentorCardProps) {
   const name = `${mentor.firstName}, ${mentor.age}`;
 
@@ -25,7 +25,7 @@ export function MentorCard({ mentor, expanded, onOpen, onAsk }: MentorCardProps)
       <Tappable
         accessibilityRole="button"
         accessibilityState={{ expanded: false }}
-        accessibilityLabel={`${name}. ${mentor.transition}. Tap to open.`}
+        accessibilityLabel={`${name}. ${mentor.title}. Tap to open.`}
         onPress={onOpen}
         pressScale={0.99}
         className="border-hairline flex-row items-center gap-3 rounded-[20px] border p-[14px]"
@@ -33,7 +33,7 @@ export function MentorCard({ mentor, expanded, onOpen, onAsk }: MentorCardProps)
         <Avatar name={mentor.firstName} />
         <View className="flex-1">
           <BodyStrong>{name}</BodyStrong>
-          <Caption className="text-ink-soft mt-0.5">{mentor.transition}</Caption>
+          <Caption className="text-ink-soft mt-0.5">{mentor.title}</Caption>
         </View>
       </Tappable>
     );
@@ -49,14 +49,14 @@ export function MentorCard({ mentor, expanded, onOpen, onAsk }: MentorCardProps)
         <Avatar name={mentor.firstName} />
         <View className="flex-1">
           <BodyStrong>{name}</BodyStrong>
-          <Caption className="text-brand mt-0.5">{mentor.availability}</Caption>
+          <Caption className="text-ink-soft mt-0.5">{mentor.title}</Caption>
         </View>
       </View>
 
-      <Quote className="mt-3 text-[16px] leading-[23px]">“{mentor.quote}”</Quote>
+      <Quote className="mt-3 text-[16px] leading-[23px]">“{mentor.story}”</Quote>
 
       <Overline className="mt-4">Why her, for you</Overline>
-      <Body className="text-ink mt-1">{mentor.whyHer}</Body>
+      <Body className="text-ink mt-1">{mentor.reason}</Body>
 
       <ActionButton className="mt-4" label={`Ask ${mentor.firstName}`} onPress={onAsk} />
     </AnimatedView>

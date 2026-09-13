@@ -9,12 +9,13 @@ import {
   DEEPENING_QUESTIONS,
   MENTOR_CHALLENGE,
   MENTOR_REPLY_MOCK_TRANSCRIPT,
-  MENTORS,
   MOMENT_CARD_DRAFT,
-  type Mentor,
+  SAMPLE_PROFILES,
   type MentorChallenge,
   type MomentCardData,
+  type ProfileMatch,
 } from '@/data/mock';
+import { matchingProvider, type MatchRequest } from '@/lib/matching';
 
 export const FAKE_LATENCY_MS = 900;
 
@@ -97,15 +98,17 @@ export async function saveMomentCard(card: MomentCardData): Promise<MomentCardDa
 
 /* ------------------------------------------------------------------ matching */
 
-export interface MatchInput {
-  card: MomentCardData;
-  destination: string;
-}
-
-/** Matching: returns the three mentors shown in step 6. */
-export async function findMatches(_input: MatchInput): Promise<Mentor[]> {
-  await wait();
-  return MENTORS;
+/**
+ * Matching: asks the matching provider (lib/matching.ts) for her top three and
+ * pairs each returned profile id with its sample profile. The provider owns the
+ * latency; unknown ids are dropped.
+ */
+export async function findMatches(request: MatchRequest): Promise<ProfileMatch[]> {
+  const response = await matchingProvider.findMatches(request);
+  return response.results.flatMap((result) => {
+    const profile = SAMPLE_PROFILES.find((item) => item.id === result.profileId);
+    return profile ? [{ ...profile, reason: result.reason }] : [];
+  });
 }
 
 /* ------------------------------------------------------------------- request */

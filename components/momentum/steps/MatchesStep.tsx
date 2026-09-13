@@ -2,6 +2,7 @@ import { View } from 'react-native';
 
 import { MentorCard } from '@/components/momentum/MentorCard';
 import { StepShell } from '@/components/momentum/StepShell';
+import { MATCHES_DEMO_NOTE } from '@/data/mock';
 import { useMomentum } from '@/lib/momentum-context';
 
 export function MatchesStep() {
@@ -14,6 +15,7 @@ export function MatchesStep() {
       onBack={actions.goBack}
       eyebrow="6 of 6"
       headline="Three women who have been where you are."
+      intro={MATCHES_DEMO_NOTE}
     >
       <View className="gap-2.5">
         {matches.map((mentor) => (

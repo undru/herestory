@@ -94,7 +94,7 @@ export function HelpAnswerStep() {
 /** The close of the flow, with the first reply from the mentor she asked. */
 export function FinishStep() {
   const { feelings, helped, selectedMentor, progress, actions } = useMomentum();
-  const name = selectedMentor?.firstName ?? 'Katrin';
+  const name = selectedMentor?.firstName ?? 'She';
   const feeling =
     FEELING_OPTIONS.find((option) => option.id === feelings[0])?.label.toLowerCase() ?? 'stuck';
 
