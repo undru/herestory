@@ -88,6 +88,17 @@ export const ORIGIN_SUBHEAD =
   'Shared background often means shared context — we’ll use this to find common ground, not to categorize you.';
 export const ORIGIN_PLACEHOLDER = 'e.g. Accra, Ghana or Ghanaian';
 
+/**
+ * Inserted by the demo mic on location, origin and destination. Aura runs
+ * operations at Nordfracht, a German freight company. No audio is recorded.
+ */
+export const PROFILE_MOCK_TRANSCRIPTS: Record<string, string> = {
+  location: 'Hamburg, Germany',
+  origin: 'Tartu, Estonia',
+  destination:
+    'In a year from now, I want to be on a real path to Director, with leadership seeing the strategic value of what my team delivers, not just a calm operations person keeping things running.',
+};
+
 /** Posted in the chat thread when she skips a profile detail. */
 export const PROFILE_DETAIL_SKIPPED = 'Skipped';
 
@@ -136,7 +147,7 @@ export const DEEPENING_QUESTIONS: DeepeningQuestion[] = [
     headline: 'So tell me — what’s going on in your career right now that made you sign up today?',
     hint: 'Whatever tipped it, big or small.',
     mockTranscript:
-      "I don't know. I'm fine, honestly. I just feel like I've been doing the same job for years and I don't feel excited about it anymore. Maybe I need a new challenge? Or maybe I'm just tired.",
+      "Honestly? I watched someone five years younger than me get the promotion I thought was mine. And I didn't even fight for it — I just... accepted it, the way I always do. I told myself I was being professional. But driving home that day, I realized I've been doing that for years. Just absorbing things instead of asking for what I want. I think I signed up because I'm tired of finding out later how I actually feel.",
     mockFollowUp:
       "My reviews are fine and my salary is fine, so it feels silly to call it a problem. But there's this low hum of: is this it?",
   },
@@ -146,7 +157,7 @@ export const DEEPENING_QUESTIONS: DeepeningQuestion[] = [
       'If you could get advice from anyone in your field, what would you actually ask them?',
     hint: 'The real question, not the polite one.',
     mockTranscript:
-      'How did she learn to advocate for herself with senior leaders when competence used to be enough? How did she do it without feeling like she was pretending to be someone else?',
+      "I wouldn't ask them how to do the job better — I already know how to do the job. I'd ask them how they got people above them to actually notice. Like, did you ask for it? Did you just get lucky? Because I don't even know if that's a skill you can learn at 40, or if I missed the window.",
     mockFollowUp:
       "I've been a Senior Operations Manager for six years and in operations for fourteen. I rose fast in my thirties because I got things done, so nobody ever taught me how to make a case for myself upward.",
   },
@@ -155,7 +166,7 @@ export const DEEPENING_QUESTIONS: DeepeningQuestion[] = [
     headline: 'What’s a moment in your career you’re proud of, but maybe don’t talk about much?',
     hint: 'It doesn’t have to be a big one.',
     mockTranscript:
-      'I led a warehouse relocation, a systems migration, and two years of staff shortages without letting the team fall apart. I am proud of that, but I talk about it as if I was just doing my job.',
+      "There was a stretch, maybe two years ago, where we lost half our warehouse staff to another company practically overnight. Everyone assumed we'd miss shipments — even I assumed that. But I rebuilt the whole shift structure in about a week and we didn't miss a single one. Nobody outside my team really knows that happened. I never told anyone above me, because it felt like just... doing my job. But looking back, I think that was the best work I've ever done.",
     mockFollowUp:
       'When leadership sees it, they see a calm operations person. They do not see someone they should sponsor into a bigger role.',
   },
@@ -164,7 +175,7 @@ export const DEEPENING_QUESTIONS: DeepeningQuestion[] = [
     headline: 'What do you wish someone had told you five years ago?',
     hint: 'Whatever comes to mind first.',
     mockTranscript:
-      "That being good at the work would not be enough forever. I've watched two younger colleagues become Directors, and I keep telling myself it's political.",
+      "That being good at your job isn't the same as being seen for it. I really believed if I just kept delivering, someone would eventually notice and hand me the next step. Nobody tells you that you're supposed to ask. I wish someone had just said it plainly: it's not enough to do the work quietly — you have to say what you did, out loud, to the right people. I spent five years not knowing that was even a gap.",
     mockFollowUp:
       "But the harder truth is that I don't know how to make my work legible to leadership. I want a Director path, and I don't know how to turn what I've done into a strategic story for it.",
   },
@@ -198,6 +209,7 @@ export const DESTINATION_SUGGESTIONS: string[] = [
   'Out of this industry',
   'Something of my own',
   'Same job, different me',
+  "I don't know",
 ];
 
 /* ---------------------------------------------------------------- matching */
@@ -332,6 +344,13 @@ export const HELP_ANSWER_MOCK_TRANSCRIPT =
 export const MENTOR_FIRST_REPLY = {
   delay: 'Sample reply',
   text: 'What you wrote sounded familiar. Start by writing down the three outcomes leadership should know you made possible. That is not boasting; it is the beginning of your strategic story.',
+};
+
+/** Who she is matched with on the last screen of the flow. */
+export const MATCHED_MENTOR = {
+  name: 'Michelle Obama',
+  initials: 'MO',
+  description: 'Lawyer, author of Becoming, and former First Lady of the United States.',
 };
 
 /* ------------------------------------------------------------ /mentor */

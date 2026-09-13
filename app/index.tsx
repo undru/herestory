@@ -16,6 +16,7 @@ import { ExtrasStep } from '@/components/momentum/steps/ExtrasStep';
 import { FeelingStep } from '@/components/momentum/steps/FeelingStep';
 import { GuideThreadStep } from '@/components/momentum/steps/GuideThreadStep';
 import { FinishStep, HelpAnswerStep, HelpOfferStep } from '@/components/momentum/steps/HelpSteps';
+import { MatchedStep } from '@/components/momentum/steps/MatchedStep';
 import { MatchesStep } from '@/components/momentum/steps/MatchesStep';
 import { MatchingStep } from '@/components/momentum/steps/MatchingStep';
 import { MomentStep } from '@/components/momentum/steps/MomentStep';
@@ -57,6 +58,8 @@ function StepScreen({ step }: { step: MenteeStep }) {
       return <HelpAnswerStep />;
     case 'finish':
       return <FinishStep />;
+    case 'matched':
+      return <MatchedStep />;
     case 'extras':
       return <ExtrasStep />;
     case 'signal':

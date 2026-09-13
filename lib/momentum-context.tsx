@@ -59,6 +59,7 @@ export type MenteeStep =
   | 'helpOffer'
   | 'helpAnswer'
   | 'finish'
+  | 'matched'
   /* Screens outside the mockup flow, opened from the "Other screens" list. */
   | 'extras'
   | 'signal'
@@ -96,7 +97,14 @@ const PROGRESS_ORDER: MenteeStep[] = [
   'matches',
 ];
 
-const AFTER_MATCHES: MenteeStep[] = ['redaction', 'sent', 'helpOffer', 'helpAnswer', 'finish'];
+const AFTER_MATCHES: MenteeStep[] = [
+  'redaction',
+  'sent',
+  'helpOffer',
+  'helpAnswer',
+  'finish',
+  'matched',
+];
 
 /** The profile-detail mini-flow after profile context, in order. */
 const NEXT_PROFILE_DETAIL: Partial<Record<MenteeStep, MenteeStep>> = {
@@ -138,7 +146,7 @@ function previousStep(step: MenteeStep): MenteeStep | null {
     case 'helpAnswer':
       return 'helpOffer';
     case 'extras':
-      return 'finish';
+      return 'matched';
     case 'answer':
       return 'signal';
     case 'chat':
@@ -236,6 +244,8 @@ interface MomentumActions {
   offerHelp: () => void;
   skipHelp: () => void;
   sendHelp: (text: string) => Promise<void>;
+  /** From the closing screen to the last one: who she is matched with. */
+  openMatched: () => void;
   openExtras: () => void;
   previewStep: (step: MenteeStep) => void;
   previewMentorStage: (stage: MentorStage) => void;
@@ -552,6 +562,7 @@ export function MomentumProvider({ children }: PropsWithChildren) {
     }
   }, []);
 
+  const openMatched = useCallback(() => setStep('matched'), []);
   const openExtras = useCallback(() => setStep('extras'), []);
   const previewStep = useCallback((next: MenteeStep) => setStep(next), []);
   const previewMentorStage = useCallback((stage: MentorStage) => setMentorStage(stage), []);
@@ -728,6 +739,7 @@ export function MomentumProvider({ children }: PropsWithChildren) {
       offerHelp,
       skipHelp,
       sendHelp,
+      openMatched,
       openExtras,
       previewStep,
       previewMentorStage,
@@ -774,6 +786,7 @@ export function MomentumProvider({ children }: PropsWithChildren) {
       openChat,
       openExtras,
       openHelpOffer,
+      openMatched,
       openMentor,
       openMentorInbox,
       openMentorNotification,

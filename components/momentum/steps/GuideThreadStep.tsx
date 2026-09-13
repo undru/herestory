@@ -120,21 +120,32 @@ function buildThread(
 const recorderStatus = (state: RecorderState, seconds: number) =>
   state === 'recording' ? formatDuration(seconds) : 'Writing it down';
 
-/** Location or origin: typed, never detected. Sending saves it and moves on. */
+/** Location or origin: typed or spoken, never detected. Sending saves it and moves on. */
 function DetailComposer({ detail }: { detail: 'location' | 'origin' }) {
   const { location, origin, actions } = useMomentum();
   const isLocation = detail === 'location';
   const value = isLocation ? location : origin;
+  const setValue = isLocation ? actions.setLocation : actions.setOrigin;
+
+  const recorder = useMockRecorder(detail, {
+    onResult: (result) => setValue(result.transcript),
+  });
+  const isBusy = recorder.state === 'recording' || recorder.state === 'transcribing';
 
   return (
     <Composer
       value={value}
-      onChangeText={isLocation ? actions.setLocation : actions.setOrigin}
+      onChangeText={setValue}
       placeholder={isLocation ? LOCATION_PLACEHOLDER : ORIGIN_PLACEHOLDER}
       accessibilityLabel={isLocation ? 'City and country' : 'Origin or nationality, optional'}
       autoCorrect={false}
-      canSend={value.trim().length > 0}
+      canSend={value.trim().length > 0 && !isBusy}
       onSend={actions.continueProfileDetail}
+      recorder={{
+        state: recorder.state,
+        status: recorderStatus(recorder.state, recorder.seconds),
+        onToggle: recorder.toggle,
+      }}
     />
   );
 }
@@ -308,14 +319,25 @@ function AddToComposer({ question, onSent }: { question: DeepeningQuestion; onSe
 
 function DestinationComposer() {
   const { destination, actions } = useMomentum();
+  // Speaking replaces a picked suggestion rather than adding to it.
+  const recorder = useMockRecorder('destination', {
+    onResult: (result) => actions.setDestination(result.transcript),
+  });
+  const isBusy = recorder.state === 'recording' || recorder.state === 'transcribing';
+
   return (
     <Composer
       multiline
       value={destination}
       onChangeText={actions.setDestination}
       placeholder={DESTINATION_PLACEHOLDER}
-      canSend={destination.trim().length > 0}
+      canSend={destination.trim().length > 0 && !isBusy}
       onSend={actions.startMatching}
+      recorder={{
+        state: recorder.state,
+        status: recorderStatus(recorder.state, recorder.seconds),
+        onToggle: recorder.toggle,
+      }}
     />
   );
 }

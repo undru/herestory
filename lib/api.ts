@@ -10,6 +10,7 @@ import {
   MENTOR_CHALLENGE,
   MENTOR_REPLY_MOCK_TRANSCRIPT,
   MOMENT_CARD_DRAFT,
+  PROFILE_MOCK_TRANSCRIPTS,
   SAMPLE_PROFILES,
   type MentorChallenge,
   type MomentCardData,
@@ -28,7 +29,7 @@ const wait = (ms: number = FAKE_LATENCY_MS) =>
 
 export interface RecordingSession {
   id: string;
-  /** Deepening question id, or 'mentor-reply' for the mentor voice note. */
+  /** Deepening question id, 'location', 'origin', 'destination', or 'mentor-reply'. */
   promptId: string;
   /** True when she is adding to an answer she already gave. */
   continuing: boolean;
@@ -63,7 +64,7 @@ export async function stopRecording(session: RecordingSession): Promise<Recordin
     ? session.continuing
       ? question.mockFollowUp
       : question.mockTranscript
-    : MENTOR_REPLY_MOCK_TRANSCRIPT;
+    : (PROFILE_MOCK_TRANSCRIPTS[session.promptId] ?? MENTOR_REPLY_MOCK_TRANSCRIPT);
   return {
     session,
     durationSeconds: Math.max(1, Math.round((Date.now() - session.startedAt) / 1000)),
