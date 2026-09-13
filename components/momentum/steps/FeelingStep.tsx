@@ -21,7 +21,7 @@ import { useMomentum } from '@/lib/momentum-context';
 import { FEELING_BUBBLES, sans, usePalette, type FeelingFamily } from '@/lib/theme';
 import { cn } from '@/lib/utils';
 
-/** Heavy feelings read red, in-between blue, curious yellow, positive green. */
+/** Maps each feeling group to its Soft Orbit color family. */
 const GROUP_FAMILY: Record<FeelingGroupId, FeelingFamily> = {
   difficult: 'heavy',
   uncertain: 'uncertain',
@@ -61,7 +61,7 @@ function FeelingSummary() {
               <View
                 className="h-2.5 w-2.5 rounded-full"
                 style={{
-                  backgroundColor: FEELING_BUBBLES[GROUP_FAMILY[latest.group]].gradient[0],
+                  backgroundColor: FEELING_BUBBLES[GROUP_FAMILY[latest.group]].deep,
                 }}
               />
               <Text

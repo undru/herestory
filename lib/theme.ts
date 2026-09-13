@@ -65,42 +65,36 @@ export const GRADIENT_END = { x: 1, y: 0 } as const;
 export type FeelingFamily = 'heavy' | 'uncertain' | 'curious' | 'hopeful';
 
 interface FeelingBubbleColors {
-  /** Top-to-bottom fill of the front circle. */
-  gradient: readonly [string, string];
-  /** Deeper, offset circle layered behind it. */
-  shadow: string;
-  /** Soft inner sheen on the front circle. */
-  highlight: string;
+  /** Lightest tone, used at the start of each bubble fill. */
+  light: string;
+  /** Deepest tone, used at the end of each bubble fill and for the back circle. */
+  deep: string;
 }
 
 /**
- * Heavy reads red, uncertain blue, curious yellow, hopeful green. The bubbles
- * stay bright in both themes, so their labels always use FEELING_BUBBLE_TEXT.
+ * Soft Orbit colors stay the same in both themes, so feeling selections retain
+ * their emotional cue while labels use the dedicated dark ink below.
  */
 export const FEELING_BUBBLES: Record<FeelingFamily, FeelingBubbleColors> = {
   heavy: {
-    gradient: ['#FF7A45', '#EE3E68'],
-    shadow: '#B83A3F',
-    highlight: 'rgba(255, 255, 255, 0.12)',
+    light: '#FBDCE2',
+    deep: '#F3B3C1',
   },
   uncertain: {
-    gradient: ['#7DB8F8', '#6E7DF9'],
-    shadow: '#5563CF',
-    highlight: 'rgba(255, 255, 255, 0.12)',
+    light: '#E1E8F9',
+    deep: '#B9C8EE',
   },
   curious: {
-    gradient: ['#F8E06C', '#F8B425'],
-    shadow: '#B59127',
-    highlight: 'rgba(255, 255, 255, 0.16)',
+    light: '#FBEAD2',
+    deep: '#F3CE96',
   },
   hopeful: {
-    gradient: ['#8AEBA6', '#3FD08F'],
-    shadow: '#2F9A64',
-    highlight: 'rgba(255, 255, 255, 0.14)',
+    light: '#DCF0E5',
+    deep: '#ADDCC3',
   },
 };
 
-export const FEELING_BUBBLE_TEXT = '#1C1B22';
+export const FEELING_BUBBLE_TEXT = '#2C2560';
 
 /** Colors for the active light or dark theme. */
 export function usePalette(): Palette {

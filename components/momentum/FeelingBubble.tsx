@@ -1,6 +1,7 @@
 import { Text, View } from 'react-native';
 import { Check } from 'lucide-react-native';
 
+import { FeelingGroupIcon } from '@/components/momentum/FeelingGroupIcon';
 import { Tappable } from '@/components/momentum/Tappable';
 import { LinearGradient } from '@/components/ui/primitives/LinearGradient';
 import {
@@ -20,8 +21,10 @@ const BACK_OFFSETS = [
   { left: '7%', top: '8%' },
 ] as const;
 
-const FILL_START = { x: 0.5, y: 0 } as const;
-const FILL_END = { x: 0.5, y: 1 } as const;
+const GROUP_FILL_START = { x: 0, y: 0 } as const;
+const GROUP_FILL_END = { x: 1, y: 1 } as const;
+const FEELING_FILL_START = { x: 0.5, y: 0 } as const;
+const FEELING_FILL_END = { x: 0.5, y: 1 } as const;
 
 /** Reads one channel (0 red, 1 green, 2 blue) of a #RRGGBB color. */
 function channel(hex: string, i: number) {
@@ -90,33 +93,26 @@ export function FeelingGroupBubble({
         <View
           pointerEvents="none"
           className="absolute rounded-full"
-          style={{ width: '92%', height: '92%', ...offset, backgroundColor: colors.shadow }}
+          style={{ width: '92%', height: '92%', ...offset, backgroundColor: colors.deep }}
         />
         <LinearGradient
           pointerEvents="none"
-          colors={colors.gradient}
-          start={FILL_START}
-          end={FILL_END}
+          colors={[colors.light, colors.deep]}
+          start={GROUP_FILL_START}
+          end={GROUP_FILL_END}
           className="absolute items-center justify-center overflow-hidden rounded-full"
           style={{ width: '92%', height: '92%', left: '4%', top: '4%' }}
         >
-          <View
-            className="absolute rounded-full"
-            style={{
-              width: '86%',
-              height: '86%',
-              left: '4%',
-              top: '3%',
-              backgroundColor: colors.highlight,
-            }}
-          />
-          <Text
-            numberOfLines={3}
-            style={{ fontFamily: sans.semibold, color: FEELING_BUBBLE_TEXT }}
-            className="px-[14%] text-center text-[17px] leading-[22px]"
-          >
-            {label}
-          </Text>
+          <View className="items-center gap-[9px] px-[14%]">
+            <FeelingGroupIcon family={family} />
+            <Text
+              numberOfLines={3}
+              style={{ fontFamily: sans.semibold, color: FEELING_BUBBLE_TEXT }}
+              className="text-center text-[17px] leading-[22px]"
+            >
+              {label}
+            </Text>
+          </View>
         </LinearGradient>
         {count > 0 ? <CornerBadge count={count} /> : null}
       </Tappable>
@@ -144,10 +140,10 @@ export function FeelingBubble({
   onPress,
 }: FeelingBubbleProps) {
   const palette = usePalette();
-  const [from, to] = FEELING_BUBBLES[family].gradient;
+  const { light, deep } = FEELING_BUBBLES[family];
   const fill = [
-    mixHex(from, to, Math.max(shade - 0.3, 0)),
-    mixHex(from, to, Math.min(shade + 0.3, 1)),
+    mixHex(light, deep, Math.max(shade - 0.3, 0)),
+    mixHex(light, deep, Math.min(shade + 0.3, 1)),
   ] as const;
 
   return (
@@ -165,8 +161,8 @@ export function FeelingBubble({
         <LinearGradient
           pointerEvents="none"
           colors={fill}
-          start={FILL_START}
-          end={FILL_END}
+          start={FEELING_FILL_START}
+          end={FEELING_FILL_END}
           // Border only when chosen: a transparent border lets the gradient bleed past the curve.
           className={cn(
             'absolute inset-0 items-center justify-center overflow-hidden rounded-full',
