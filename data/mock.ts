@@ -88,6 +88,9 @@ export const ORIGIN_SUBHEAD =
   'Shared background often means shared context — we’ll use this to find common ground, not to categorize you.';
 export const ORIGIN_PLACEHOLDER = 'e.g. Accra, Ghana or Ghanaian';
 
+/** Posted in the chat thread when she skips a profile detail. */
+export const PROFILE_DETAIL_SKIPPED = 'Skipped';
+
 export const LANGUAGES_HEADLINE = 'What languages do you speak?';
 export const LANGUAGES_SUBHEAD =
   'So conversations can happen in whatever language feels most natural.';
@@ -320,6 +323,10 @@ export const HELP_REQUEST = {
 };
 
 export const HELP_ANSWER_PLACEHOLDER = 'What helped you, even a little?';
+
+/** Inserted by the demo mic on "Tell her the one thing you know". No audio is recorded. */
+export const HELP_ANSWER_MOCK_TRANSCRIPT =
+  "When we moved sites, I stopped trying to have every answer myself. I asked the team what they needed first, kept one ten-minute check-in each morning, and said out loud when I didn't know yet. That was enough to keep everyone steady.";
 
 /** A scripted first reply on the closing screen. Sample copy: no scheduling or availability. */
 export const MENTOR_FIRST_REPLY = {

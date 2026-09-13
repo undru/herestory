@@ -6,12 +6,18 @@ import { Bell, Check, MessageCircle } from 'lucide-react-native';
 import { ActionButton, TextLink } from '@/components/momentum/ActionButton';
 import { PreviewReturn } from '@/components/momentum/PreviewReturn';
 import { AnonymizedCardPreview } from '@/components/momentum/AnonymizedCardPreview';
-import { Body, BodyStrong, Caption, Display, Overline, Title } from '@/components/momentum/Type';
-import { CountdownRing } from '@/components/momentum/CountdownRing';
-import { MicButton } from '@/components/momentum/MicButton';
+import { ChatThread, Composer, type ChatMessage } from '@/components/momentum/ChatThread';
+import {
+  Body,
+  BodyStrong,
+  Caption,
+  Display,
+  Overline,
+  Quote,
+  Title,
+} from '@/components/momentum/Type';
 import { StepShell } from '@/components/momentum/StepShell';
 import { Tappable } from '@/components/momentum/Tappable';
-import { TextField } from '@/components/momentum/TextField';
 import { Waveform } from '@/components/momentum/Waveform';
 import { AVAILABILITY_SLOTS, MENTOR_REPLY_PROMPT, MENTOR_REPLY_SECONDS } from '@/data/mock';
 import { useMockRecorder } from '@/hooks/useRecorder';
@@ -72,72 +78,86 @@ function NotificationStage() {
   );
 }
 
+const REPLY_GUIDE: ChatMessage[] = [
+  { id: 'reply-prompt', from: 'guide', text: MENTOR_REPLY_PROMPT },
+  { id: 'reply-why', from: 'guide', text: 'No advice needed yet. Tell her you have been there.' },
+];
+
 function ReplyStage() {
-  const { isSendingReply, actions } = useMomentum();
-  const [typing, setTyping] = useState(false);
+  const { challenge, isSendingReply, actions } = useMomentum();
   const [text, setText] = useState('');
+  const [reply, setReply] = useState<ChatMessage | null>(null);
+
+  // Opened straight from the preview list: fetch the card for the top of the thread.
+  const requested = useRef(false);
+  useEffect(() => {
+    if (requested.current || challenge) return;
+    requested.current = true;
+    void actions.loadChallenge();
+  }, [actions, challenge]);
+
   const recorder = useMockRecorder('mentor-reply', {
     maxSeconds: MENTOR_REPLY_SECONDS,
-    onResult: (result) => void actions.submitVoiceReply(result),
+    onResult: (result) => {
+      setReply({
+        id: 'reply-voice',
+        from: 'her',
+        text: result.transcript,
+        voiceSeconds: result.durationSeconds,
+      });
+      void actions.submitVoiceReply(result);
+    },
   });
   const remaining = Math.max(MENTOR_REPLY_SECONDS - recorder.seconds, 0);
-  const status =
-    recorder.state === 'recording'
-      ? `${formatDuration(remaining)} left`
-      : recorder.state === 'transcribing' || isSendingReply
-        ? 'Sending your voice note'
-        : 'Tap to speak';
+  const isBusy =
+    reply !== null ||
+    isSendingReply ||
+    recorder.state === 'recording' ||
+    recorder.state === 'transcribing';
+
+  const sendText = () => {
+    const note = text.trim();
+    if (!note) return;
+    setReply({ id: 'reply-text', from: 'her', text: note });
+    setText('');
+    void actions.submitTextReply(note);
+  };
 
   return (
-    <StepShell
-      transitionKey="mentor-reply"
-      progress={null}
+    <ChatThread
       onBack={() => goBackOrReplace('/')}
-      eyebrow="Your reply"
-      headline={MENTOR_REPLY_PROMPT}
-      intro="No advice needed yet. Tell her you have been there."
-      footer={
-        typing ? (
-          <ActionButton
-            label="Send my note"
-            loading={isSendingReply}
-            disabled={!text.trim()}
-            onPress={() => void actions.submitTextReply(text)}
-          />
-        ) : undefined
+      header={
+        challenge ? (
+          <View className="border-line-firm rounded-[20px] border p-4">
+            <Overline>{challenge.label}</Overline>
+            <Quote className="mt-2">“{challenge.quote}”</Quote>
+          </View>
+        ) : null
       }
-    >
-      {typing ? (
-        <View className="gap-5">
-          <TextField
-            textarea
-            autoFocus
-            value={text}
-            onChangeText={setText}
-            placeholder="Write the thing you wish someone had told you..."
-          />
-          <TextLink label="I'd rather speak" onPress={() => setTyping(false)} />
-        </View>
-      ) : (
-        <View className="items-center pt-4">
-          <CountdownRing
-            seconds={recorder.seconds}
-            totalSeconds={MENTOR_REPLY_SECONDS}
-            active={recorder.state === 'recording'}
-          >
-            <MicButton
-              state={recorder.state}
-              seconds={recorder.seconds}
-              onPress={recorder.toggle}
-              size={124}
-              showLabel={false}
-            />
-          </CountdownRing>
-          <Caption className="mt-7">{status}</Caption>
-          <TextLink className="mt-4" label="I'd rather type" onPress={() => setTyping(true)} />
-        </View>
-      )}
-    </StepShell>
+      messages={reply ? [...REPLY_GUIDE, reply] : REPLY_GUIDE}
+      revealFrom={0}
+      composer={
+        <Composer
+          multiline
+          value={text}
+          onChangeText={setText}
+          placeholder="Write the thing you wish someone had told you..."
+          canSend={text.trim().length > 0 && !isBusy}
+          onSend={sendText}
+          recorder={{
+            state: recorder.state,
+            status:
+              recorder.state === 'recording'
+                ? `${formatDuration(remaining)} left`
+                : 'Sending your voice note',
+            onToggle: () => {
+              // Once a note is on its way, the mic stays put.
+              if (!reply && !isSendingReply) recorder.toggle();
+            },
+          }}
+        />
+      }
+    />
   );
 }
 

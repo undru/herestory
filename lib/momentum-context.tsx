@@ -114,17 +114,15 @@ export type MentorStage =
   | 'done'
   | 'declined';
 
-/** Where the back arrow leads. Deepening questions step back one at a time first. */
+/** Where the back arrow leads. A chat thread steps back to the screen before it, not per message. */
 function previousStep(step: MenteeStep): MenteeStep | null {
   switch (step) {
     case 'context':
       return 'feeling';
     case 'location':
-      return 'context';
     case 'origin':
-      return 'location';
     case 'languages':
-      return 'origin';
+      return 'context';
     case 'conversationIntro':
       return 'languages';
     case 'deepening':
@@ -219,6 +217,8 @@ interface MomentumActions {
   /** Adds a new recording to the end of what she already said. */
   appendAnswer: (questionId: string, text: string) => void;
   advanceDeepening: () => Promise<void>;
+  /** On to the moment card, rebuilding it only if her answers changed. */
+  finishConversation: () => Promise<void>;
   updateMomentCard: (patch: Partial<MomentCardData>) => void;
   commitMomentCard: () => Promise<void>;
   confirmMomentCard: () => void;
@@ -402,11 +402,7 @@ export function MomentumProvider({ children }: PropsWithChildren) {
     [feelings, workLife],
   );
 
-  const advanceDeepening = useCallback(async () => {
-    if (deepeningIndex < DEEPENING_QUESTIONS.length - 1) {
-      setDeepeningIndex(deepeningIndex + 1);
-      return;
-    }
+  const finishConversation = useCallback(async () => {
     setStep('moment');
     // Nothing new was added: keep the card, including any edits she made on it.
     if (momentCard && cardAnswers && sameAnswers(cardAnswers, answers)) {
@@ -414,7 +410,15 @@ export function MomentumProvider({ children }: PropsWithChildren) {
       return;
     }
     await buildCard(answers);
-  }, [answers, buildCard, cardAnswers, deepeningIndex, momentCard]);
+  }, [answers, buildCard, cardAnswers, momentCard]);
+
+  const advanceDeepening = useCallback(async () => {
+    if (deepeningIndex < DEEPENING_QUESTIONS.length - 1) {
+      setDeepeningIndex(deepeningIndex + 1);
+      return;
+    }
+    await finishConversation();
+  }, [deepeningIndex, finishConversation]);
 
   const updateMomentCard = useCallback((patch: Partial<MomentCardData>) => {
     setMomentCard((current) => (current ? { ...current, ...patch } : current));
@@ -446,8 +450,9 @@ export function MomentumProvider({ children }: PropsWithChildren) {
     setStep('destination');
   }, [answers, profileSnapshot, updateHistory]);
 
+  /** Every question is already in the thread, so the progress bar stays on the last one. */
   const addToAnswers = useCallback(() => {
-    setDeepeningIndex(0);
+    setDeepeningIndex(DEEPENING_QUESTIONS.length - 1);
     setStep('deepening');
   }, []);
 
@@ -567,13 +572,9 @@ export function MomentumProvider({ children }: PropsWithChildren) {
   const openMentorInbox = useCallback(() => setMentorStage('inbox'), []);
 
   const goBack = useCallback(() => {
-    if (step === 'deepening' && deepeningIndex > 0) {
-      setDeepeningIndex(deepeningIndex - 1);
-      return;
-    }
     const previous = previousStep(step);
     if (previous) setStep(previous);
-  }, [deepeningIndex, step]);
+  }, [step]);
 
   const loadChallenge = useCallback(async () => {
     setIsLoadingChallenge(true);
@@ -711,6 +712,7 @@ export function MomentumProvider({ children }: PropsWithChildren) {
       setAnswer,
       appendAnswer,
       advanceDeepening,
+      finishConversation,
       updateMomentCard,
       commitMomentCard,
       confirmMomentCard,
@@ -764,6 +766,7 @@ export function MomentumProvider({ children }: PropsWithChildren) {
       continueFromWorkLife,
       continueProfileDetail,
       dismissChallenge,
+      finishConversation,
       goBack,
       loadChallenge,
       offerHelp,

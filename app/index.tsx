@@ -12,19 +12,13 @@ import {
 } from '@/components/momentum/steps/ContinuationSteps';
 import { ContextStep } from '@/components/momentum/steps/ContextStep';
 import { ConversationIntroStep } from '@/components/momentum/steps/ConversationIntroStep';
-import { DeepeningStep } from '@/components/momentum/steps/DeepeningStep';
-import { DestinationStep } from '@/components/momentum/steps/DestinationStep';
 import { ExtrasStep } from '@/components/momentum/steps/ExtrasStep';
 import { FeelingStep } from '@/components/momentum/steps/FeelingStep';
+import { GuideThreadStep } from '@/components/momentum/steps/GuideThreadStep';
 import { FinishStep, HelpAnswerStep, HelpOfferStep } from '@/components/momentum/steps/HelpSteps';
 import { MatchesStep } from '@/components/momentum/steps/MatchesStep';
 import { MatchingStep } from '@/components/momentum/steps/MatchingStep';
 import { MomentStep } from '@/components/momentum/steps/MomentStep';
-import {
-  LanguagesStep,
-  LocationStep,
-  OriginStep,
-} from '@/components/momentum/steps/ProfileDetailSteps';
 import { RedactionStep } from '@/components/momentum/steps/RedactionStep';
 import { SentStep } from '@/components/momentum/steps/SentStep';
 import { WelcomeStep } from '@/components/momentum/steps/WelcomeStep';
@@ -38,20 +32,17 @@ function StepScreen({ step }: { step: MenteeStep }) {
       return <FeelingStep />;
     case 'context':
       return <ContextStep />;
+    // The same thread element across consecutive chat steps, so it is not rebuilt between them.
     case 'location':
-      return <LocationStep />;
     case 'origin':
-      return <OriginStep />;
     case 'languages':
-      return <LanguagesStep />;
+    case 'deepening':
+    case 'destination':
+      return <GuideThreadStep />;
     case 'conversationIntro':
       return <ConversationIntroStep />;
-    case 'deepening':
-      return <DeepeningStep />;
     case 'moment':
       return <MomentStep />;
-    case 'destination':
-      return <DestinationStep />;
     case 'matching':
       return <MatchingStep />;
     case 'matches':

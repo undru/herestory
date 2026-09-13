@@ -1,5 +1,6 @@
 import { useState } from 'react';
 import { View } from 'react-native';
+import { Mic } from 'lucide-react-native';
 
 import { ActionButton, TextLink } from '@/components/momentum/ActionButton';
 import { Avatar } from '@/components/momentum/Avatar';
@@ -7,6 +8,7 @@ import { ProfileHistoryButton } from '@/components/momentum/ProfileHistoryButton
 import { Seal } from '@/components/momentum/Seal';
 import { StartAgainSheet } from '@/components/momentum/StartAgainSheet';
 import { StepShell } from '@/components/momentum/StepShell';
+import { Tappable } from '@/components/momentum/Tappable';
 import { TextField } from '@/components/momentum/TextField';
 import {
   Body,
@@ -19,11 +21,13 @@ import {
 } from '@/components/momentum/Type';
 import {
   FEELING_OPTIONS,
+  HELP_ANSWER_MOCK_TRANSCRIPT,
   HELP_ANSWER_PLACEHOLDER,
   HELP_REQUEST,
   MENTOR_FIRST_REPLY,
 } from '@/data/mock';
 import { useMomentum } from '@/lib/momentum-context';
+import { usePalette } from '@/lib/theme';
 
 /** One woman a little further behind: can she say something? */
 export function HelpOfferStep() {
@@ -59,6 +63,7 @@ export function HelpOfferStep() {
 }
 
 export function HelpAnswerStep() {
+  const palette = usePalette();
   const { isSending, progress, actions } = useMomentum();
   const [text, setText] = useState('');
 
@@ -81,13 +86,32 @@ export function HelpAnswerStep() {
         />
       }
     >
-      <TextField
-        textarea
-        autoFocus
-        placeholder={HELP_ANSWER_PLACEHOLDER}
-        value={text}
-        onChangeText={setText}
-      />
+      <View>
+        <TextField
+          textarea
+          autoFocus
+          className="pr-14"
+          placeholder={HELP_ANSWER_PLACEHOLDER}
+          value={text}
+          onChangeText={setText}
+        />
+        {/* Demo only: inserts a prepared answer. Nothing is recorded and no permission is asked. */}
+        <Tappable
+          accessibilityRole="button"
+          accessibilityLabel="Record a voice answer (demo)"
+          pressScale={0.95}
+          onPress={() =>
+            setText((current) =>
+              current.trim()
+                ? `${current.trimEnd()} ${HELP_ANSWER_MOCK_TRANSCRIPT}`
+                : HELP_ANSWER_MOCK_TRANSCRIPT,
+            )
+          }
+          className="absolute right-2 bottom-2 h-11 w-11 items-center justify-center rounded-full"
+        >
+          <Mic size={20} color={palette.brand} strokeWidth={1.6} />
+        </Tappable>
+      </View>
       <Caption className="text-ink-soft mt-3">
         {"She sees your words. She will never see what you're going through."}
       </Caption>

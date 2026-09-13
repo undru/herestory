@@ -1,30 +1,18 @@
-import { ActivityIndicator, View } from 'react-native';
+import { View } from 'react-native';
 
 import { ActionButton, TextLink } from '@/components/momentum/ActionButton';
 import { Body, Caption, Overline, Title } from '@/components/momentum/Type';
 import { EditableChip, EditableField } from '@/components/momentum/EditableField';
 import { StepShell } from '@/components/momentum/StepShell';
+import { GuideThreadStep } from '@/components/momentum/steps/GuideThreadStep';
 import { useMomentum } from '@/lib/momentum-context';
-import { usePalette } from '@/lib/theme';
 
 export function MomentStep() {
   const { momentCard, isGeneratingCard, cardError, progress, actions } = useMomentum();
-  const palette = usePalette();
 
-  // The closing line stays up only while the card is really being built.
+  // The closing line and typing indicator stay in the thread only while the card is really being built.
   if (isGeneratingCard || (!momentCard && !cardError)) {
-    return (
-      <StepShell transitionKey="moment-loading" progress={progress} centered>
-        <View role="status" accessibilityLiveRegion="polite" className="items-center">
-          <Title className="text-center">
-            Thanks for being open with me. Give us a moment to put this together.
-          </Title>
-          <View className="mt-6" accessibilityElementsHidden importantForAccessibility="no">
-            <ActivityIndicator size="small" color={palette.inkFaint} />
-          </View>
-        </View>
-      </StepShell>
-    );
+    return <GuideThreadStep />;
   }
 
   if (cardError || !momentCard) {

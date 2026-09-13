@@ -30,6 +30,37 @@ interface StepShellProps {
   centered?: boolean;
 }
 
+interface StepHeaderProps {
+  progress: number | null;
+  onBack?: () => void;
+  headerAction?: ReactNode;
+}
+
+/** Progress bar, back arrow and top-right control shared by screens and chat threads. */
+export function StepHeader({ progress, onBack, headerAction }: StepHeaderProps) {
+  const palette = usePalette();
+
+  return (
+    <>
+      {progress === null ? <View className="h-[3px]" /> : <ProgressBar value={progress} />}
+
+      <View className="h-12 flex-row items-center px-3">
+        {onBack ? (
+          <Tappable
+            accessibilityRole="button"
+            accessibilityLabel="Go back"
+            className="h-11 w-11 items-center justify-center rounded-full"
+            onPress={onBack}
+          >
+            <ArrowLeft size={20} color={palette.inkSoft} strokeWidth={1.6} />
+          </Tappable>
+        ) : null}
+        {headerAction ? <View className="ml-auto">{headerAction}</View> : null}
+      </View>
+    </>
+  );
+}
+
 /**
  * One question per screen: progress bar, optional back control, slide-in
  * content, and a full-width button docked at the bottom.
@@ -47,25 +78,9 @@ export function StepShell({
   overlay,
   centered = false,
 }: StepShellProps) {
-  const palette = usePalette();
-
   return (
     <SafeAreaView className="bg-paper flex-1" edges={['top', 'bottom']}>
-      {progress === null ? <View className="h-[3px]" /> : <ProgressBar value={progress} />}
-
-      <View className="h-12 flex-row items-center px-3">
-        {onBack ? (
-          <Tappable
-            accessibilityRole="button"
-            accessibilityLabel="Go back"
-            className="h-11 w-11 items-center justify-center rounded-full"
-            onPress={onBack}
-          >
-            <ArrowLeft size={20} color={palette.inkSoft} strokeWidth={1.6} />
-          </Tappable>
-        ) : null}
-        {headerAction ? <View className="ml-auto">{headerAction}</View> : null}
-      </View>
+      <StepHeader progress={progress} onBack={onBack} headerAction={headerAction} />
 
       <KeyboardAvoidingView
         className="flex-1"
